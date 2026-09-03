@@ -120,10 +120,33 @@ h1{font-size:clamp(38px,7vw,84px);line-height:.98;color:var(--pink);font-weight:
 .sheet-head .titles{flex:1 1 230px;min-width:0}
 .sheet-head .titles .small{font-size:16px;color:var(--ink-soft);font-weight:500}
 .sheet-head .titles h2{font-size:clamp(30px,4.4vw,50px);line-height:1.1;color:var(--pink)}
-.qrbox{flex:0 0 auto;text-align:center}
-.qrbox .frame{background:#fff;border-radius:14px;padding:8px;box-shadow:0 6px 18px -8px rgba(120,90,10,.6);display:block;text-decoration:none}
-.qrbox svg{width:clamp(94px,11vw,124px);height:auto;display:block}
-.qrbox .cap{margin-top:8px;font-size:14.5px;color:var(--ink-soft);font-weight:500;display:flex;align-items:center;gap:5px;justify-content:center}
+/* כפתור השמעה */
+.playbox{
+  flex:0 0 auto;display:inline-flex;align-items:center;gap:14px;text-decoration:none;color:var(--ink);
+  background:#fff;border-radius:999px;padding:10px 22px 10px 10px;
+  box-shadow:0 12px 28px -14px rgba(120,90,10,.85);transition:.18s;border:2px solid transparent;
+}
+.playbox:hover{transform:translateY(-2px);border-color:var(--pink);box-shadow:0 16px 34px -14px rgba(229,50,106,.6)}
+.playbox .disc{
+  position:relative;flex:0 0 auto;width:60px;height:60px;border-radius:50%;
+  background:linear-gradient(135deg,var(--pink) 0%,#F0648F 100%);
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 8px 20px -8px rgba(229,50,106,.95);
+}
+.playbox .disc::before{
+  content:"";position:absolute;inset:-6px;border-radius:50%;border:2.5px solid var(--pink);
+  opacity:.5;animation:pulse 2.4s ease-out infinite;
+}
+@keyframes pulse{
+  0%{transform:scale(.92);opacity:.55}
+  70%{transform:scale(1.16);opacity:0}
+  100%{opacity:0}
+}
+.playbox .disc svg{width:24px;height:24px;fill:#fff;margin-inline-start:4px}
+.playbox .ptxt{display:flex;flex-direction:column;gap:2px;line-height:1.25}
+.playbox .ptxt b{font-size:20px;color:var(--pink-dark)}
+.playbox .ptxt small{font-size:14.5px;color:var(--ink-soft);font-weight:500}
+.playbox .url{display:none;font-size:13px;color:var(--ink-soft);direction:ltr}
 
 .sheet-body{padding:clamp(20px,3vw,36px);display:grid;gap:clamp(18px,2.6vw,28px)}
 @media(min-width:900px){.sheet-body{grid-template-columns:minmax(0,1fr) minmax(0,1.05fr)}}
@@ -225,6 +248,9 @@ ol.q ul li .he{position:absolute;inset-inline-start:0;top:0;color:var(--pink);fo
 @media print{
   body{background:#fff}
   .notes,.topbar .btn-row,.backbar,.footnote,.tile .go,.toolbar,.taskbtn{display:none !important}
+  .playbox{box-shadow:none;border:1.5px solid var(--pink)}
+  .playbox .disc::before{display:none}
+  .playbox .url{display:block}
   .ans{border:0;border-bottom:1.5px dotted rgba(38,54,95,.45);border-radius:0;background:transparent}
   .page{max-width:none;padding:0}
   .sheet{box-shadow:none;border-radius:0}
@@ -275,156 +301,6 @@ ol.q ul li .he{position:absolute;inset-inline-start:0;top:0;color:var(--pink);fo
 </div>
 
 <script>
-/* מחולל ברקוד QR (byte mode, רמת תיקון M, גרסאות 1-6) */
-var QR=(function(){
-  var EXP=new Array(512),LOG=new Array(256);
-  (function(){var x=1;for(var i=0;i<255;i++){EXP[i]=x;LOG[x]=i;x<<=1;if(x&0x100)x^=0x11d;}
-   for(var j=255;j<512;j++)EXP[j]=EXP[j-255];})();
-  function mul(a,b){return(a===0||b===0)?0:EXP[LOG[a]+LOG[b]];}
-  function genPoly(n){var g=[1];for(var i=0;i<n;i++){var ng=new Array(g.length+1);
-      for(var k=0;k<ng.length;k++)ng[k]=0;
-      for(var j=0;j<g.length;j++){ng[j]^=g[j];ng[j+1]^=mul(g[j],EXP[i]);}g=ng;}return g;}
-  function rs(data,ecLen){var g=genPoly(ecLen),res=new Array(ecLen);
-    for(var i=0;i<ecLen;i++)res[i]=0;
-    for(var d=0;d<data.length;d++){var f=data[d]^res[0];res.shift();res.push(0);
-      if(f!==0)for(var i2=0;i2<ecLen;i2++)res[i2]^=mul(g[i2+1],f);}
-    return res;}
-  /* [version]: {total, ec per block, blocks group1, data per block g1, blocks g2, data per block g2} — רמת M */
-  var VER={1:[26,10,1,16,0,0],2:[44,16,1,28,0,0],3:[70,26,1,44,0,0],
-           4:[100,18,2,32,0,0],5:[134,24,2,43,0,0],6:[172,16,4,27,0,0]};
-  var ALIGN={1:[],2:[6,18],3:[6,22],4:[6,26],5:[6,30],6:[6,34]};
-  var FMT=[0x5412,0x5125,0x5E7C,0x5B4B,0x45F9,0x40CE,0x4F97,0x4AA0]; /* level M, mask 0..7 */
-
-  function toBytes(str){var out=[],b=unescape(encodeURIComponent(str));
-    for(var i=0;i<b.length;i++)out.push(b.charCodeAt(i));return out;}
-
-  function build(text){
-    var bytes=toBytes(text),ver=0;
-    for(var v=1;v<=6;v++){var s=VER[v],cap=s[2]*s[3]+s[4]*s[5];
-      if(bytes.length+2<=cap){ver=v;break;}}
-    if(!ver)throw new Error('הטקסט ארוך מדי לברקוד');
-    var s=VER[ver],ecLen=s[1],totalData=s[2]*s[3]+s[4]*s[5];
-
-    /* --- זרם ביטים --- */
-    var bits=[];
-    function put(val,len){for(var i=len-1;i>=0;i--)bits.push((val>>i)&1);}
-    put(4,4);put(bytes.length,8);
-    for(var i=0;i<bytes.length;i++)put(bytes[i],8);
-    var rem=totalData*8-bits.length;
-    put(0,Math.min(4,rem));
-    while(bits.length%8)bits.push(0);
-    var dataCw=[];for(var i=0;i<bits.length;i+=8){var b=0;
-      for(var j=0;j<8;j++)b=(b<<1)|bits[i+j];dataCw.push(b);}
-    var pad=[0xEC,0x11],p=0;
-    while(dataCw.length<totalData){dataCw.push(pad[p++%2]);}
-
-    /* --- חלוקה לבלוקים + תיקון שגיאות --- */
-    var blocks=[],ecBlocks=[],idx=0,cnt=s[2]+s[4];
-    for(var b=0;b<cnt;b++){var len=(b<s[2])?s[3]:s[5];
-      var blk=dataCw.slice(idx,idx+len);idx+=len;blocks.push(blk);ecBlocks.push(rs(blk,ecLen));}
-    var final=[],maxLen=0;
-    for(var b=0;b<blocks.length;b++)maxLen=Math.max(maxLen,blocks[b].length);
-    for(var i=0;i<maxLen;i++)for(var b=0;b<blocks.length;b++)
-      if(i<blocks[b].length)final.push(blocks[b][i]);
-    for(var i=0;i<ecLen;i++)for(var b=0;b<ecBlocks.length;b++)final.push(ecBlocks[b][i]);
-
-    /* --- מטריצה --- */
-    var size=17+ver*4;
-    var m=[],res=[];
-    for(var r=0;r<size;r++){m.push(new Array(size).fill(0));res.push(new Array(size).fill(0));}
-    function setF(r,c,v){m[r][c]=v;res[r][c]=1;}
-    function finder(r,c){for(var i=-1;i<=7;i++)for(var j=-1;j<=7;j++){
-      var rr=r+i,cc=c+j;if(rr<0||cc<0||rr>=size||cc>=size)continue;
-      var on=(i>=0&&i<=6&&(j===0||j===6))||(j>=0&&j<=6&&(i===0||i===6))||(i>=2&&i<=4&&j>=2&&j<=4);
-      setF(rr,cc,on?1:0);}}
-    finder(0,0);finder(0,size-7);finder(size-7,0);
-    for(var i=8;i<size-8;i++){setF(6,i,(i%2===0)?1:0);setF(i,6,(i%2===0)?1:0);}
-    var al=ALIGN[ver];
-    for(var a=0;a<al.length;a++)for(var b2=0;b2<al.length;b2++){
-      var r=al[a],c=al[b2];
-      if((r<=7&&c<=7)||(r<=7&&c>=size-8)||(r>=size-8&&c<=7))continue;
-      for(var i=-2;i<=2;i++)for(var j=-2;j<=2;j++)
-        setF(r+i,c+j,(Math.max(Math.abs(i),Math.abs(j))!==1)?1:0);}
-    setF(size-8,8,1); /* dark module */
-    for(var i=0;i<9;i++){if(!res[8][i]&&i!==6)setF(8,i,0);if(!res[i][8]&&i!==6)setF(i,8,0);}
-    for(var i=0;i<8;i++){if(!res[8][size-1-i])setF(8,size-1-i,0);if(!res[size-1-i][8])setF(size-1-i,8,0);}
-
-    /* --- הזרמת הנתונים --- */
-    var dbits=[];
-    for(var i=0;i<final.length;i++)for(var j=7;j>=0;j--)dbits.push((final[i]>>j)&1);
-    var remBits={1:0,2:7,3:7,4:7,5:7,6:7}[ver];
-    for(var i=0;i<remBits;i++)dbits.push(0);
-    var pos=0,up=true;
-    for(var col=size-1;col>0;col-=2){
-      if(col===6)col--;
-      for(var k=0;k<size;k++){
-        var row=up?(size-1-k):k;
-        for(var c2=0;c2<2;c2++){
-          var cc=col-c2;
-          if(res[row][cc])continue;
-          m[row][cc]=(pos<dbits.length)?dbits[pos]:0;pos++;
-        }}
-      up=!up;}
-
-    /* --- מסכות + ניקוד --- */
-    function maskFn(k,r,c){
-      switch(k){case 0:return (r+c)%2===0;case 1:return r%2===0;case 2:return c%3===0;
-        case 3:return (r+c)%3===0;case 4:return (Math.floor(r/2)+Math.floor(c/3))%2===0;
-        case 5:return ((r*c)%2)+((r*c)%3)===0;case 6:return (((r*c)%2)+((r*c)%3))%2===0;
-        default:return (((r+c)%2)+((r*c)%3))%2===0;}}
-    function penalty(g){
-      var n=size,p=0,i,j,run,last;
-      for(i=0;i<n;i++){run=1;last=-1;
-        for(j=0;j<n;j++){if(g[i][j]===last)run++;else{if(run>=5)p+=3+(run-5);run=1;last=g[i][j];}}
-        if(run>=5)p+=3+(run-5);}
-      for(j=0;j<n;j++){run=1;last=-1;
-        for(i=0;i<n;i++){if(g[i][j]===last)run++;else{if(run>=5)p+=3+(run-5);run=1;last=g[i][j];}}
-        if(run>=5)p+=3+(run-5);}
-      for(i=0;i<n-1;i++)for(j=0;j<n-1;j++){var v=g[i][j];
-        if(v===g[i][j+1]&&v===g[i+1][j]&&v===g[i+1][j+1])p+=3;}
-      var pat=[1,0,1,1,1,0,1,0,0,0,0];
-      function match(arr,st){for(var t=0;t<11;t++)if(arr[st+t]!==pat[t])return false;return true;}
-      function matchR(arr,st){for(var t=0;t<11;t++)if(arr[st+t]!==pat[10-t])return false;return true;}
-      for(i=0;i<n;i++){var rowA=g[i],colA=[];for(j=0;j<n;j++)colA.push(g[j][i]);
-        for(j=0;j+11<=n;j++){if(match(rowA,j))p+=40;if(matchR(rowA,j))p+=40;
-          if(match(colA,j))p+=40;if(matchR(colA,j))p+=40;}}
-      var dark=0;for(i=0;i<n;i++)for(j=0;j<n;j++)dark+=g[i][j];
-      var pct=dark*100/(n*n);p+=Math.floor(Math.abs(pct-50)/5)*10;
-      return p;}
-
-    var best=null,bestP=Infinity,bestMask=0;
-    for(var k=0;k<8;k++){
-      var g=[];for(var r=0;r<size;r++)g.push(m[r].slice());
-      for(var r=0;r<size;r++)for(var c=0;c<size;c++)
-        if(!res[r][c]&&maskFn(k,r,c))g[r][c]^=1;
-      /* פורמט */
-      var f=FMT[k];
-      for(var i=0;i<15;i++){
-        var bit=(f>>i)&1;
-        /* אנכי ליד הפינה השמאלית העליונה */
-        if(i<6)g[i][8]=bit; else if(i<8)g[i+1][8]=bit;
-        else if(i===8)g[8][7]=bit; else g[8][14-i]=bit;
-        /* עותק שני */
-        if(i<8)g[8][size-1-i]=bit; else g[size-15+i][8]=bit;
-      }
-      g[size-8][8]=1;
-      var p=penalty(g);
-      if(p<bestP){bestP=p;best=g;bestMask=k;}
-    }
-    return best;
-  }
-
-  function svg(text,quiet,px){
-    var g=build(text),n=g.length;quiet=(quiet===undefined)?4:quiet;
-    var tot=n+quiet*2,d='';
-    for(var r=0;r<n;r++)for(var c=0;c<n;c++)
-      if(g[r][c])d+='M'+(c+quiet)+' '+(r+quiet)+'h1v1h-1z';
-    return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 '+tot+' '+tot+'" shape-rendering="crispEdges" width="'+(px||150)+'" height="'+(px||150)+'">'+
-      '<rect width="'+tot+'" height="'+tot+'" fill="#fff"/><path d="'+d+'" fill="#1b2340"/></svg>';
-  }
-  return {build:build,svg:svg};
-})();
-
 /* ===================== תוכן הכרטיסים ===================== */
 var EMOTIONS=[
   {emo:'💭',t:'געגוע'},
@@ -721,10 +597,11 @@ function openCard(i){
       '<div class="idx">'+(i+1)+'</div>'+
       '<div class="titles"><div class="small">כרטיס '+(i+1)+' · חקר פיוטי סליחות · כיתות ה׳–ו׳</div>'+
         '<h2>'+esc(c.name)+'</h2></div>'+
-      '<div class="qrbox">'+
-        '<a class="frame" href="'+esc(c.url)+'" target="_blank" rel="noopener">'+QR.svg(c.url,2,240)+'</a>'+
-        '<div class="cap">🎧 סרקו והאזינו לפיוט</div>'+
-      '</div>'+
+      '<a class="playbox" href="'+esc(c.url)+'" target="_blank" rel="noopener">'+
+        '<span class="disc"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.2v13.6c0 .8.9 1.3 1.6.9l11-6.8c.6-.4.6-1.4 0-1.8l-11-6.8c-.7-.4-1.6.1-1.6.9z"/></svg></span>'+
+        '<span class="ptxt"><b>האזינו לפיוט</b><small>לחצו להשמעה ▸</small>'+
+          '<span class="url">'+esc(c.url)+'</span></span>'+
+      '</a>'+
     '</div>'+
     '<div class="sheet-body">'+
       '<div class="block"><h3>♫ מילות הפיוט</h3>'+toolbarHTML()+'<div class="lyrics">'+lyricsHTML(c)+'</div></div>'+
