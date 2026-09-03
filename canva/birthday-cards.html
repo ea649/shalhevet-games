@@ -1,0 +1,331 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<title>כרטיסי יום הולדת – שלהבות חב"ד</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --indigo:#4F3795; --magenta:#AA479A; --pink:#EE3461;
+  --cyan:#08B7D5; --yellow:#FCB918; --lime:#BCCB33; --orange:#F36F28;
+  --ink:#1B1533; --ink2:#4A4368; --line:#D4CDEC; --border:#E7E2F6;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Heebo',Arial,sans-serif;background:#fff;-webkit-font-smoothing:antialiased}
+
+.page{width:1748px;height:2480px;position:relative;overflow:hidden;background:#FFFFFF}
+
+/* half of an A5 sheet */
+.half{position:absolute;right:0;left:0;height:1240px;padding:56px 60px}
+.half.top{top:0}
+.half.bot{top:1240px}
+
+.cut{
+  position:absolute;top:1238px;right:40px;left:40px;height:3px;
+  background:var(--border);
+}
+.cutico{
+  position:absolute;top:1206px;right:24px;width:66px;height:66px;border-radius:50%;
+  background:#fff;border:3px solid var(--border);display:flex;align-items:center;justify-content:center;
+}
+.cutico svg{width:34px;height:34px}
+
+.cardbox{
+  width:100%;height:100%;background:#FBFAFF;border:3px solid var(--border);
+  border-radius:56px;position:relative;overflow:hidden;
+  box-shadow:0 16px 40px rgba(79,55,149,.08);
+  padding:52px 58px 40px 58px;display:flex;flex-direction:column;
+}
+.stripe{position:absolute;top:0;right:0;left:0;height:16px}
+.s1{background:linear-gradient(90deg,#4F3795,#AA479A,#EE3461)}
+.s2{background:linear-gradient(90deg,#08B7D5,#4F3795,#AA479A)}
+.s3{background:linear-gradient(90deg,#FCB918,#F36F28,#EE3461)}
+.s4{background:linear-gradient(90deg,#BCCB33,#08B7D5,#4F3795)}
+.s5{background:linear-gradient(90deg,#AA479A,#4F3795,#08B7D5)}
+.s6{background:linear-gradient(90deg,#EE3461,#AA479A,#4F3795)}
+
+.head{display:flex;align-items:center;gap:30px;margin-top:14px}
+.badge{
+  width:104px;height:104px;border-radius:32px;flex:0 0 auto;
+  display:flex;align-items:center;justify-content:center;
+  color:#fff;font-size:58px;font-weight:900;
+  box-shadow:0 10px 26px rgba(79,55,149,.22);
+}
+.b1{background:linear-gradient(135deg,#4F3795,#AA479A)}
+.b2{background:linear-gradient(135deg,#AA479A,#EE3461)}
+.b3{background:linear-gradient(135deg,#08B7D5,#4F3795)}
+.b4{background:linear-gradient(135deg,#FCB918,#F36F28)}
+.b5{background:linear-gradient(135deg,#4F3795,#08B7D5)}
+.b6{background:linear-gradient(135deg,#EE3461,#AA479A)}
+.ttl{font-size:56px;font-weight:900;color:var(--ink);line-height:1.2}
+.sub{margin-top:22px;font-size:38px;line-height:1.5;color:var(--ink2)}
+.sub b{color:var(--indigo);font-weight:800}
+
+.zone{flex:1;display:flex;align-items:center;justify-content:center;gap:52px;margin-top:24px}
+
+.slot{
+  border:5px dashed #B9AEE4;border-radius:34px;background:#fff;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;
+}
+.slot .t{font-size:30px;font-weight:800;color:var(--indigo);text-align:center;line-height:1.3;padding:0 18px}
+
+.wlines{width:100%;display:flex;flex-direction:column;gap:52px;margin-top:8px}
+.wline{height:3px;background:var(--line);border-radius:3px}
+
+.foot{display:flex;align-items:center;justify-content:space-between;margin-top:18px}
+.foot img{width:330px;height:auto}
+.foot .tag{font-size:26px;font-weight:700;color:#9A93B8}
+</style>
+</head>
+<body>
+
+<!-- =================== כרטיס ראשון =================== -->
+<div class="page" data-document-role="page" data-label="כרטיס ראשון">
+
+  <div class="half top">
+    <div class="cardbox">
+      <div class="stripe s1"></div>
+      <div class="head">
+        <div class="badge b1">א</div>
+        <div class="ttl">ביום שנולדתי,<br>הבאתי אור למשפחתי</div>
+      </div>
+      <div class="sub">כל אחד מאיתנו הוא <b>נר קטן</b> שמאיר לכל הבית. הדביקו כאן אצבע שוקולד – זה הנר שלכם!</div>
+      <div class="zone">
+        <div style="display:flex;flex-direction:column;align-items:center;gap:10px">
+          <svg viewBox="0 0 100 130" style="width:120px;height:156px">
+            <defs><linearGradient id="fl" x1="0" y1="1" x2="0" y2="0">
+              <stop offset="0" stop-color="#F36F28"/><stop offset="1" stop-color="#FCB918"/></linearGradient></defs>
+            <path d="M50 4 C72 34 88 52 88 78 C88 106 71 126 50 126 C29 126 12 106 12 78 C12 52 28 34 50 4 Z" fill="url(#fl)"/>
+            <path d="M50 54 C61 71 67 81 67 92 C67 107 60 117 50 117 C40 117 33 107 33 92 C33 81 39 71 50 54 Z" fill="#FFF3C4"/>
+          </svg>
+          <div class="slot" style="width:150px;height:400px">
+            <div class="t">כאן<br>מדביקים<br>את אצבע<br>השוקולד</div>
+          </div>
+        </div>
+        <div style="max-width:640px">
+          <svg viewBox="0 0 300 200" style="width:100%;height:auto">
+            <rect x="30" y="96" width="240" height="86" rx="26" fill="#4F3795"/>
+            <rect x="30" y="96" width="240" height="86" rx="26" fill="url(#cakeg)"/>
+            <defs><linearGradient id="cakeg" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0" stop-color="#4F3795"/><stop offset="1" stop-color="#AA479A"/></linearGradient></defs>
+            <path d="M30 122 q30 20 60 0 q30 -20 60 0 q30 20 60 0 q30 -20 60 0 v-26 h-240 z" fill="#EE3461"/>
+            <circle cx="80" cy="150" r="9" fill="#FCB918"/><circle cx="150" cy="160" r="9" fill="#08B7D5"/>
+            <circle cx="220" cy="148" r="9" fill="#BCCB33"/>
+          </svg>
+          <div style="text-align:center;font-size:32px;font-weight:800;color:var(--indigo);margin-top:8px">האור שלי מאיר לכולם</div>
+        </div>
+      </div>
+      <div class="foot">
+        <img src="https://raw.githubusercontent.com/ea649/shalhevet-games/main/canva/assets/shalhevet-logo.png" alt="שלהבות חב״ד">
+        <div class="tag">מפגש יום הולדת · כרטיס א</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="cut"></div>
+  <div class="cutico"><svg viewBox="0 0 24 24" fill="none" stroke="#9A93B8" stroke-width="2" stroke-linecap="round"><circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M20 4L8.5 15.5M20 20L8.5 8.5"/></svg></div>
+
+  <div class="half bot">
+    <div class="cardbox">
+      <div class="stripe s2"></div>
+      <div class="head">
+        <div class="badge b2">ב</div>
+        <div class="ttl">אני מעביר אור הלאה!</div>
+      </div>
+      <div class="sub">ביום ההולדת נוהגים <b>להרבות במעשים טובים ובצדקה</b> לנזקקים. הדביקו כאן מטבע – והעבירו את האור הלאה.</div>
+      <div class="zone">
+        <div class="slot" style="width:300px;height:300px;border-radius:50%">
+          <svg viewBox="0 0 100 100" style="width:90px;height:90px">
+            <circle cx="50" cy="50" r="46" fill="#FCB918"/>
+            <circle cx="50" cy="50" r="35" fill="#F36F28" opacity=".28"/>
+            <path d="M50 73 C30 59 24 48 30 39 C36 30 47 33 50 41 C53 33 64 30 70 39 C76 48 70 59 50 73 Z" fill="#fff"/>
+          </svg>
+          <div class="t">כאן מדביקים<br>מטבע / מטבע שוקולד</div>
+        </div>
+        <div style="width:420px">
+          <svg viewBox="0 0 240 250" style="width:100%;height:auto">
+            <defs><linearGradient id="boxg" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0" stop-color="#4F3795"/><stop offset="1" stop-color="#AA479A"/></linearGradient></defs>
+            <rect x="34" y="70" width="172" height="150" rx="30" fill="url(#boxg)"/>
+            <rect x="86" y="96" width="68" height="12" rx="6" fill="#fff" opacity=".9"/>
+            <text x="120" y="180" text-anchor="middle" font-family="Heebo,Arial" font-size="46" font-weight="900" fill="#fff">צדקה</text>
+            <circle cx="120" cy="40" r="20" fill="#FCB918"/>
+            <path d="M120 26 v28 M108 40 h24" stroke="#F36F28" stroke-width="4" stroke-linecap="round"/>
+          </svg>
+        </div>
+      </div>
+      <div class="foot">
+        <img src="https://raw.githubusercontent.com/ea649/shalhevet-games/main/canva/assets/shalhevet-logo.png" alt="שלהבות חב״ד">
+        <div class="tag">מפגש יום הולדת · כרטיס ב</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- =================== כרטיס שני =================== -->
+<div class="page" data-document-role="page" data-label="כרטיס שני">
+
+  <div class="half top">
+    <div class="cardbox">
+      <div class="stripe s3"></div>
+      <div class="head">
+        <div class="badge b3">ג</div>
+        <div class="ttl">גדלתי בשנה!</div>
+      </div>
+      <div class="sub">מדדו את הגובה שלכם והכניסו כאן <b>עיפרון</b> – סימן שגדלתם. אפשר גם להוסיף תמונה שלכם מהשנה.</div>
+      <div class="zone">
+        <div style="display:flex;flex-direction:column;align-items:center;gap:12px">
+          <svg viewBox="0 0 70 330" style="width:88px;height:415px">
+            <rect x="18" y="46" width="34" height="230" fill="#FCB918" rx="6"/>
+            <rect x="18" y="46" width="11" height="230" fill="#F0A800" rx="4"/>
+            <path d="M18 276 L52 276 L35 320 Z" fill="#F6DCB8"/>
+            <path d="M27 297 L43 297 L35 320 Z" fill="#1B1533"/>
+            <rect x="15" y="14" width="40" height="34" rx="10" fill="#EE3461"/>
+            <rect x="15" y="44" width="40" height="10" fill="#9A93B8"/>
+          </svg>
+          <div style="font-size:28px;font-weight:800;color:var(--indigo)">כאן מכניסים עיפרון</div>
+          <div style="display:flex;gap:14px;align-items:center;margin-top:4px">
+            <div style="width:120px;height:4px;background:#1B1533;border-radius:4px"></div>
+            <svg viewBox="0 0 24 24" style="width:30px;height:30px" fill="none" stroke="#1B1533" stroke-width="2" stroke-linecap="round"><circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M20 4L8.5 15.5M20 20L8.5 8.5"/></svg>
+            <div style="width:120px;height:4px;background:#1B1533;border-radius:4px"></div>
+          </div>
+          <div style="font-size:24px;color:#9A93B8;font-weight:700">גזרו את שני החריצים</div>
+        </div>
+
+        <div class="slot" style="width:400px;height:430px">
+          <svg viewBox="0 0 24 24" style="width:80px;height:80px" fill="none" stroke="#B9AEE4" stroke-width="1.6" stroke-linecap="round"><rect x="3" y="4" width="18" height="16" rx="3"/><circle cx="9" cy="10" r="2"/><path d="M4 18l5-5 4 4 3-3 4 4"/></svg>
+          <div class="t">מקום לתמונה שלי</div>
+        </div>
+      </div>
+      <div class="foot">
+        <img src="https://raw.githubusercontent.com/ea649/shalhevet-games/main/canva/assets/shalhevet-logo.png" alt="שלהבות חב״ד">
+        <div class="tag">מפגש יום הולדת · כרטיס ג</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="cut"></div>
+  <div class="cutico"><svg viewBox="0 0 24 24" fill="none" stroke="#9A93B8" stroke-width="2" stroke-linecap="round"><circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M20 4L8.5 15.5M20 20L8.5 8.5"/></svg></div>
+
+  <div class="half bot">
+    <div class="cardbox">
+      <div class="stripe s4"></div>
+      <div class="head">
+        <div class="badge b4">ד</div>
+        <div class="ttl">ביום ההולדת אחשוב</div>
+      </div>
+      <div class="sub"><b>מה הספקתי השנה?</b> ומה ארצה להשיג ולהתקדם בשנה הבאה?</div>
+      <div class="zone" style="align-items:flex-start;gap:40px">
+        <div style="width:300px;display:flex;flex-direction:column;align-items:center;gap:14px;padding-top:16px">
+          <svg viewBox="0 0 220 170" style="width:250px;height:auto">
+            <defs><linearGradient id="erg" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0" stop-color="#08B7D5"/><stop offset="1" stop-color="#4F3795"/></linearGradient></defs>
+            <circle cx="110" cy="44" r="26" fill="#F6DCB8"/>
+            <path d="M84 116 q26 -34 52 0 z" fill="#EE3461"/>
+            <rect x="86" y="66" width="48" height="44" rx="18" fill="#EE3461"/>
+            <rect x="30" y="112" width="160" height="46" rx="16" fill="url(#erg)"/>
+            <rect x="30" y="112" width="160" height="16" rx="8" fill="#fff" opacity=".35"/>
+          </svg>
+          <div style="font-size:28px;font-weight:800;color:var(--indigo);text-align:center">יושב לרגע<br>וחושב על השנה</div>
+        </div>
+        <div style="flex:1">
+          <div style="font-size:32px;font-weight:800;color:var(--indigo)">השנה הספקתי…</div>
+          <div class="wlines" style="margin-top:34px">
+            <div class="wline"></div><div class="wline"></div>
+          </div>
+          <div style="font-size:32px;font-weight:800;color:var(--pink);margin-top:56px">בשנה הבאה ארצה…</div>
+          <div class="wlines" style="margin-top:34px">
+            <div class="wline"></div><div class="wline"></div>
+          </div>
+        </div>
+      </div>
+      <div class="foot">
+        <img src="https://raw.githubusercontent.com/ea649/shalhevet-games/main/canva/assets/shalhevet-logo.png" alt="שלהבות חב״ד">
+        <div class="tag">מפגש יום הולדת · כרטיס ד</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- =================== כרטיס שלישי =================== -->
+<div class="page" data-document-role="page" data-label="כרטיס שלישי">
+
+  <div class="half top">
+    <div class="cardbox">
+      <div class="stripe s5"></div>
+      <div class="head">
+        <div class="badge b5">ה</div>
+        <div class="ttl">אומר פרק תהילים<br>ומודה לבורא עולם</div>
+      </div>
+      <div class="sub">ביום ההולדת אני אומר את <b>פרק התהילים האישי</b> שלי, ומודה לה' שנתן לי חיים.</div>
+      <div class="zone">
+        <div class="slot" style="width:100%;height:430px;flex-direction:row;gap:36px">
+          <svg viewBox="0 0 120 140" style="width:110px;height:128px">
+            <defs><linearGradient id="bkg" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0" stop-color="#4F3795"/><stop offset="1" stop-color="#08B7D5"/></linearGradient></defs>
+            <rect x="14" y="12" width="92" height="116" rx="14" fill="url(#bkg)"/>
+            <rect x="26" y="26" width="68" height="88" rx="8" fill="#fff" opacity=".92"/>
+            <path d="M38 48h44M38 64h44M38 80h30" stroke="#B9AEE4" stroke-width="5" stroke-linecap="round"/>
+          </svg>
+          <div class="t" style="font-size:36px">כאן מכניסים את<br>פרק התהילים האישי</div>
+        </div>
+      </div>
+      <div class="foot">
+        <img src="https://raw.githubusercontent.com/ea649/shalhevet-games/main/canva/assets/shalhevet-logo.png" alt="שלהבות חב״ד">
+        <div class="tag">מפגש יום הולדת · כרטיס ה</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="cut"></div>
+  <div class="cutico"><svg viewBox="0 0 24 24" fill="none" stroke="#9A93B8" stroke-width="2" stroke-linecap="round"><circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M20 4L8.5 15.5M20 20L8.5 8.5"/></svg></div>
+
+  <div class="half bot">
+    <div class="cardbox">
+      <div class="stripe s6"></div>
+      <div class="head">
+        <div class="badge b6">ו</div>
+        <div class="ttl">אחגוג ואברך את<br>חבריי ומשפחתי</div>
+      </div>
+      <div class="sub">ביום הזה אני מחלק <b>ברכות טובות</b> לכל מי שסביבי. כתבו כאן את הברכות שלכם.</div>
+      <div class="zone" style="align-items:flex-start;gap:40px">
+        <div style="width:300px;padding-top:6px">
+          <svg viewBox="0 0 230 300" style="width:100%;height:auto">
+            <defs>
+              <linearGradient id="bl1" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#EE3461"/><stop offset="1" stop-color="#AA479A"/></linearGradient>
+              <linearGradient id="bl2" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#08B7D5"/><stop offset="1" stop-color="#4F3795"/></linearGradient>
+              <linearGradient id="bl3" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FCB918"/><stop offset="1" stop-color="#F36F28"/></linearGradient>
+            </defs>
+            <ellipse cx="62" cy="56" rx="42" ry="52" fill="url(#bl1)"/>
+            <ellipse cx="150" cy="42" rx="38" ry="47" fill="url(#bl2)"/>
+            <ellipse cx="118" cy="104" rx="34" ry="42" fill="url(#bl3)"/>
+            <path d="M62 108 C70 150 96 170 112 196" stroke="#B9AEE4" stroke-width="4" fill="none"/>
+            <path d="M150 89 C146 140 122 168 114 196" stroke="#B9AEE4" stroke-width="4" fill="none"/>
+            <path d="M118 146 C118 168 116 182 114 196" stroke="#B9AEE4" stroke-width="4" fill="none"/>
+            <!-- hand -->
+            <rect x="86" y="196" width="20" height="46" rx="10" fill="#F6DCB8"/>
+            <rect x="108" y="188" width="20" height="54" rx="10" fill="#F6DCB8"/>
+            <rect x="130" y="196" width="20" height="46" rx="10" fill="#F6DCB8"/>
+            <rect x="82" y="228" width="72" height="58" rx="24" fill="#F6DCB8"/>
+            <rect x="62" y="232" width="30" height="20" rx="10" fill="#F6DCB8"/>
+          </svg>
+        </div>
+        <div style="flex:1">
+          <div style="font-size:32px;font-weight:800;color:var(--indigo)">הברכות שלי</div>
+          <div class="wlines" style="margin-top:38px">
+            <div class="wline"></div><div class="wline"></div><div class="wline"></div><div class="wline"></div>
+          </div>
+        </div>
+      </div>
+      <div class="foot">
+        <img src="https://raw.githubusercontent.com/ea649/shalhevet-games/main/canva/assets/shalhevet-logo.png" alt="שלהבות חב״ד">
+        <div class="tag">מפגש יום הולדת · כרטיס ו</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

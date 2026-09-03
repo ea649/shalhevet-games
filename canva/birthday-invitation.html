@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<title>הזמנה למפגש יום הולדת – שלהבות חב"ד</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --indigo:#4F3795; --magenta:#AA479A; --pink:#EE3461;
+  --cyan:#08B7D5; --yellow:#FCB918; --lime:#BCCB33; --orange:#F36F28;
+  --ink:#1B1533; --ink2:#4A4368; --line:#D4CDEC; --border:#E7E2F6;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Heebo',Arial,sans-serif;background:#fff;-webkit-font-smoothing:antialiased}
+
+.page{
+  width:1748px;height:2480px;position:relative;overflow:hidden;
+  background:#FBFAFF;
+}
+
+/* ---------- header ---------- */
+.hdr{
+  position:absolute;top:0;right:0;left:0;height:840px;
+  background:linear-gradient(135deg,#4F3795 0%,#AA479A 55%,#EE3461 100%);
+  border-radius:0 0 130px 130px;
+  padding:70px 110px 0 110px;
+}
+.bh{position:absolute;top:52px;right:76px;color:#fff;opacity:.75;font-size:34px;font-weight:500}
+.dot{position:absolute;border-radius:50%;opacity:.22}
+.d1{width:300px;height:300px;background:#08B7D5;top:-90px;left:-70px;opacity:.28}
+.d2{width:170px;height:170px;background:#FCB918;top:520px;left:120px;opacity:.30}
+.d3{width:110px;height:110px;background:#BCCB33;top:170px;left:300px;opacity:.30}
+.d4{width:80px;height:80px;background:#08B7D5;top:640px;right:180px;opacity:.35}
+
+.kicker{
+  display:inline-block;margin-top:120px;
+  background:rgba(255,255,255,.20);border:2px solid rgba(255,255,255,.55);
+  color:#fff;font-size:36px;font-weight:700;letter-spacing:2px;
+  padding:16px 44px;border-radius:40px;
+}
+.title{
+  margin-top:44px;color:#fff;font-weight:900;font-size:104px;line-height:1.16;
+  text-shadow:0 6px 24px rgba(27,21,51,.18);
+}
+.title small{display:block;font-size:62px;font-weight:700;opacity:.95;margin-top:18px}
+
+/* ---------- name pill ---------- */
+.namepill{
+  position:absolute;top:770px;right:170px;left:170px;height:150px;
+  background:#fff;border-radius:38px;border:2px solid var(--border);
+  box-shadow:0 18px 44px rgba(79,55,149,.16);
+  display:flex;align-items:center;gap:34px;padding:0 56px;
+}
+.namepill .lbl{font-size:44px;font-weight:800;color:var(--indigo);white-space:nowrap}
+.namepill .ln{flex:1;height:2px;background:var(--line);margin-top:22px}
+
+/* ---------- body card ---------- */
+.card{
+  position:absolute;top:960px;right:110px;left:110px;
+  background:#fff;border:2px solid var(--border);border-radius:64px;
+  box-shadow:0 24px 60px rgba(79,55,149,.10);
+  padding:52px 74px 48px 74px;
+}
+.lead{font-size:40px;line-height:1.55;color:var(--ink2);font-weight:400}
+.lead b{color:var(--indigo);font-weight:800}
+.hl{
+  margin-top:24px;font-size:44px;line-height:1.45;font-weight:800;color:var(--ink);
+}
+.hl em{font-style:normal;
+  background:linear-gradient(135deg,#4F3795,#EE3461);
+  -webkit-background-clip:text;background-clip:text;color:#EE3461;
+}
+
+.rows{margin-top:38px;display:flex;flex-direction:column;gap:18px}
+.row{
+  display:flex;align-items:center;gap:26px;
+  background:#FBFAFF;border:2px solid var(--border);border-radius:30px;
+  padding:18px 30px;
+}
+.ic{width:72px;height:72px;border-radius:22px;flex:0 0 auto;display:flex;align-items:center;justify-content:center}
+.ic svg{width:42px;height:42px}
+.ic1{background:linear-gradient(135deg,#4F3795,#AA479A)}
+.ic2{background:linear-gradient(135deg,#AA479A,#EE3461)}
+.ic3{background:linear-gradient(135deg,#08B7D5,#4F3795)}
+.rl{font-size:38px;font-weight:800;color:var(--indigo);white-space:nowrap}
+.rline{flex:1;height:2px;background:var(--line);margin-top:22px}
+
+.close{
+  margin-top:34px;text-align:center;
+}
+.close .a{font-size:38px;color:var(--ink2);line-height:1.55}
+.close .b{
+  margin-top:22px;display:inline-block;
+  background:linear-gradient(135deg,#4F3795,#AA479A 60%,#EE3461);
+  color:#fff;font-size:42px;font-weight:900;border-radius:34px;padding:20px 46px;
+  box-shadow:0 14px 34px rgba(238,52,97,.24);
+}
+.close .c{margin-top:26px;font-size:40px;font-weight:700;color:var(--indigo)}
+
+/* ---------- footer ---------- */
+.foot{
+  position:absolute;bottom:78px;right:0;left:0;text-align:center;
+}
+.foot img{width:600px;height:auto}
+.rule{
+  position:absolute;bottom:326px;right:320px;left:320px;height:6px;border-radius:6px;
+  background:linear-gradient(90deg,#08B7D5,#BCCB33,#FCB918,#F36F28,#EE3461,#AA479A,#4F3795);
+  opacity:.9;
+}
+</style>
+</head>
+<body>
+
+<div class="page" data-document-role="page" data-label="הזמנה למפגש יום הולדת">
+
+  <div class="hdr">
+    <div class="dot d1"></div><div class="dot d2"></div>
+    <div class="dot d3"></div><div class="dot d4"></div>
+    <div class="bh">ב"ה</div>
+    <div class="kicker">הזמנה אישית</div>
+    <div class="title">מוזמן/ת למפגש<br>יום הולדת מיוחד!<small>מפגש עם המנהלת</small></div>
+  </div>
+
+  <div class="namepill">
+    <div class="lbl">לכבוד</div>
+    <div class="ln"></div>
+  </div>
+
+  <div class="card">
+    <div class="lead">
+      באת לעולם עם <b>האור המיוחד שלך</b>, כוחות לעשות ולשנות!<br>
+      זו הזדמנות לעצור לרגע, לחגוג יחד ולפתוח את השנה החדשה שלך
+      עם הרבה שמחה, מחשבה טובה ואיחולים מכל הלב.
+    </div>
+
+    <div class="hl">כל <em>ילדי יום ההולדת</em> מוזמנים למפגש<br>איכותי ומיוחד עם המנהלת</div>
+
+    <div class="rows">
+      <div class="row">
+        <div class="ic ic1"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M8 3v4M16 3v4M3 10h18"/></svg></div>
+        <div class="rl">חודש יום ההולדת</div><div class="rline"></div>
+      </div>
+      <div class="row">
+        <div class="ic ic2"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><path d="M4 20v-6a3 3 0 013-3h10a3 3 0 013 3v6z"/><path d="M4 16h16M9 8V6M12 8V5M15 8V6"/></svg></div>
+        <div class="rl">ביום</div><div class="rline"></div>
+      </div>
+      <div class="row">
+        <div class="ic ic3"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></div>
+        <div class="rl">בשעה</div><div class="rline"></div>
+      </div>
+    </div>
+
+    <div class="close">
+      <div class="a">מפגש של שיח, חיבור והתחלה טובה לשנה החדשה.</div>
+      <div class="b">שנה מלאה בטוב – זה בידיים שלנו!</div>
+      <div class="c">מחכה לכם בשמחה</div>
+    </div>
+  </div>
+
+  <div class="rule"></div>
+
+  <div class="foot">
+    <img src="https://raw.githubusercontent.com/ea649/shalhevet-games/main/canva/assets/shalhevet-logo.png" alt="שלהבות חב״ד">
+  </div>
+
+</div>
+</body>
+</html>
