@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>הפתעה · התחדשי</title>
+<style>
+@font-face{font-family:'Almoni';src:url(fonts/almoni-400.otf) format('opentype');font-weight:400;font-display:swap}
+@font-face{font-family:'Almoni';src:url(fonts/almoni-600.otf) format('opentype');font-weight:600;font-display:swap}
+@font-face{font-family:'Almoni';src:url(fonts/almoni-900.otf) format('opentype');font-weight:900;font-display:swap}
+@font-face{font-family:'Ziporen';src:url(fonts/ziporen.otf) format('opentype');font-weight:400;font-display:swap}
+
+:root{
+  --sand-050:#FBEEDC; --sand-100:#F8E4C8; --sand-300:#EACAA3; --sand-400:#DFB88C; --sand-500:#D0A272;
+  --copper:#B15C23; --copper-soft:#C67A45; --brown:#7A3919; --ink:#5A2A11; --ink-soft:#8F5732;
+  --gold:#C9A44F; --paper:#FEF9F0; --card:#FDF5E8;
+  --line:rgba(176,92,35,.22);
+  --shadow:0 30px 64px -34px rgba(90,42,17,.55);
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{min-height:100%}
+body{
+  font-family:'Almoni','Segoe UI',Arial,sans-serif;color:var(--ink);
+  background:var(--sand-300);
+  background-image:radial-gradient(120% 90% at 85% -5%,
+    var(--sand-050) 0%, var(--sand-100) 28%, var(--sand-300) 62%, var(--sand-400) 100%);
+  background-attachment:fixed;
+  display:flex;align-items:center;justify-content:center;
+  padding:26px 16px 46px;overflow-x:hidden;-webkit-font-smoothing:antialiased;
+}
+.stage{width:100%;max-width:540px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:22px;
+  box-shadow:var(--shadow);padding:26px 24px 30px}
+.kicker{font-family:'Ziporen','Almoni',cursive;font-size:clamp(24px,4.6vw,30px);
+  color:var(--copper);text-align:center;display:block}
+.rule{height:1px;margin:12px auto 6px;max-width:190px;
+  background:linear-gradient(90deg,transparent,var(--gold),transparent)}
+.screen{display:none;animation:in .5s cubic-bezier(.2,.8,.25,1) both}
+.screen.on{display:block}
+@keyframes in{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+
+/* ---------- gift ---------- */
+.giftwrap{position:relative;height:400px;margin:6px auto 0;max-width:340px;
+  display:flex;align-items:flex-end;justify-content:center;cursor:pointer}
+.giftwrap.opened{cursor:default}
+.note{
+  position:absolute;left:50%;bottom:100px;transform:translate(-50%,44px) scale(.55);z-index:4;
+  width:min(300px,92%);opacity:0;pointer-events:none;
+  background:var(--paper);border:1px solid rgba(201,164,79,.75);border-radius:14px;
+  padding:22px 16px;text-align:center;box-shadow:0 22px 42px -20px rgba(90,42,17,.55);
+  transition:transform .95s cubic-bezier(.2,1.15,.35,1), opacity .5s ease .12s;
+}
+.note:before{content:"";position:absolute;inset:5px;border:1px solid rgba(201,164,79,.35);border-radius:9px}
+.note b{display:block;font-size:clamp(24px,5.6vw,34px);font-weight:900;color:var(--brown);line-height:1.25}
+.opened .note{transform:translate(-50%,-72px) scale(1);opacity:1}
+.boxsvg{position:relative;width:250px;height:auto;z-index:2}
+.lid{position:absolute;left:50%;bottom:150px;width:200px;transform:translateX(-50%);
+  transition:transform 1s cubic-bezier(.3,1.2,.4,1);z-index:3}
+.opened .lid{transform:translateX(-50%) translateY(-140px) rotate(-12deg)}
+.tap{display:block;text-align:center;color:var(--ink-soft);font-weight:600;font-size:16.5px;margin-top:6px;
+  animation:bob 1.8s ease-in-out infinite}
+@keyframes bob{0%,100%{transform:translateY(0);opacity:.85}50%{transform:translateY(-4px);opacity:1}}
+.opened + .tap{display:none}
+
+/* ---------- form ---------- */
+.after{margin-top:18px;opacity:0;transform:translateY(12px);transition:.6s ease .8s}
+.after.show{opacity:1;transform:none}
+label.lbl{display:block;font-weight:600;font-size:16px;margin:16px 0 8px;color:var(--brown)}
+input[type=text],input[type=tel]{
+  width:100%;font-family:inherit;font-size:17px;color:var(--ink);
+  background:#FFFCF6;border:1.5px solid var(--line);border-radius:14px;padding:13px 15px;transition:.18s}
+input::placeholder{color:#C09A76}
+input:focus{outline:none;border-color:var(--copper-soft);background:#fff;box-shadow:0 0 0 4px rgba(177,92,35,.14)}
+.opt{display:flex;align-items:center;gap:12px;background:#FFFCF6;border:1.5px solid var(--line);
+  border-radius:14px;padding:13px 14px;margin-top:10px;cursor:pointer;font-size:17px;font-weight:600;transition:.16s}
+.opt:hover{border-color:var(--copper-soft)}
+.opt input{position:absolute;opacity:0;width:0;height:0}
+.mark{flex:0 0 auto;width:26px;height:26px;border-radius:8px;border:1.6px solid var(--copper-soft);
+  background:#fff;display:flex;align-items:center;justify-content:center;color:#fff;transition:.16s}
+.mark svg{width:16px;height:16px;opacity:0;transform:scale(.6);transition:.16s}
+.opt input:checked ~ .mark{background:var(--copper);border-color:var(--copper)}
+.opt input:checked ~ .mark svg{opacity:1;transform:none}
+.opt input:checked ~ .txt{color:var(--brown)}
+.opt:has(input:checked){background:rgba(177,92,35,.07);border-color:var(--copper)}
+.err{color:#A83A2A;font-size:15.5px;font-weight:600;margin-top:12px;min-height:20px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;width:100%;
+  background:var(--brown);color:#FBEEDC;border:none;border-radius:999px;
+  font-family:inherit;font-size:18.5px;font-weight:700;padding:14px 30px;cursor:pointer;
+  box-shadow:0 14px 26px -14px rgba(90,42,17,.85);transition:.18s;margin-top:16px}
+.btn:hover{background:var(--ink)}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.trap{position:absolute;left:-9999px}
+
+/* ---------- thanks ---------- */
+#screen-thanks .card{text-align:center;padding:44px 26px}
+.seal{width:74px;height:74px;border-radius:50%;margin:0 auto 18px;
+  background:radial-gradient(circle at 32% 28%,#F5DFC0,#C67A45 60%,#B15C23);
+  display:flex;align-items:center;justify-content:center;color:#FFF6E7}
+.seal svg{width:34px;height:34px}
+#thTitle{font-family:'Ziporen','Almoni',cursive;font-size:clamp(32px,6.6vw,44px);color:var(--brown);margin-bottom:8px}
+#thBody{font-size:clamp(17px,2.7vw,19.5px);color:var(--ink-soft);line-height:1.7}
+.item-said{margin-top:16px;display:inline-block;border:1px solid var(--gold);border-radius:999px;
+  padding:7px 18px;font-weight:600;color:var(--copper);background:rgba(201,164,79,.1)}
+
+/* ---------- preview list ---------- */
+.plist{display:grid;gap:10px;margin-top:16px}
+.pitem{display:flex;align-items:center;justify-content:space-between;gap:12px;
+  background:#FFFCF6;border:1.4px solid var(--line);border-radius:14px;padding:14px 15px;
+  text-decoration:none;color:var(--ink);font-weight:600;font-size:17px;transition:.16s}
+.pitem:hover{border-color:var(--copper-soft);transform:translateY(-2px)}
+.pitem span.go{color:var(--copper);font-size:20px}
+.pnote{font-size:15.5px;color:var(--ink-soft);line-height:1.7;margin-top:6px;text-align:center}
+.spark{position:fixed;font-size:18px;pointer-events:none;z-index:5;animation:up 2.6s ease-out forwards;color:var(--copper-soft)}
+@keyframes up{0%{opacity:0;transform:translateY(0) scale(.6)}18%{opacity:.95}100%{opacity:0;transform:translateY(-160px) scale(1.15)}}
+</style>
+</head>
+<body>
+
+<div class="stage">
+
+  <!-- ======== the surprise ======== -->
+  <section class="screen" id="screen-gift">
+    <div class="card">
+      <span class="kicker">לאשה יקרה!</span>
+      <div class="rule"></div>
+
+      <div class="giftwrap" id="gift">
+        <div class="note"><b id="phrase"></b></div>
+
+        <svg class="lid" viewBox="0 0 280 150" aria-hidden="true">
+          <defs>
+            <linearGradient id="mtl2" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0" stop-color="#E3C48D"/><stop offset=".5" stop-color="#B87C3C"/><stop offset="1" stop-color="#7A4A1C"/>
+            </linearGradient>
+            <linearGradient id="rib" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0" stop-color="#C0713A"/><stop offset="1" stop-color="#7A3919"/>
+            </linearGradient>
+          </defs>
+          <path d="M140 108 C 128 72, 92 48, 72 64 C 55 78, 80 108, 140 108 Z" fill="url(#rib)"/>
+          <path d="M140 108 C 152 72, 188 48, 208 64 C 225 78, 200 108, 140 108 Z" fill="url(#rib)"/>
+          <path d="M140 108 C 131 86, 108 70, 88 73" fill="none" stroke="#F0C79A" stroke-opacity=".45" stroke-width="3" stroke-linecap="round"/>
+          <path d="M140 108 C 149 86, 172 70, 192 73" fill="none" stroke="#F0C79A" stroke-opacity=".45" stroke-width="3" stroke-linecap="round"/>
+          <rect x="26" y="108" width="228" height="36" rx="10" fill="url(#mtl2)"/>
+          <rect x="26" y="108" width="228" height="11" rx="5" fill="#FFF3DC" opacity=".3"/>
+          <rect x="126" y="108" width="28" height="36" fill="url(#rib)"/>
+          <ellipse cx="140" cy="106" rx="16" ry="12" fill="#8A4520"/>
+          <ellipse cx="135" cy="102" rx="6" ry="4" fill="#D18A52" opacity=".6"/>
+        </svg>
+
+        <svg class="boxsvg" viewBox="0 0 250 190" aria-hidden="true">
+          <defs>
+            <linearGradient id="mtl" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0" stop-color="#F0DDB6"/><stop offset=".42" stop-color="#C9954F"/><stop offset="1" stop-color="#8A5A26"/>
+            </linearGradient>
+            <linearGradient id="rib2" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0" stop-color="#C0713A"/><stop offset="1" stop-color="#7A3919"/>
+            </linearGradient>
+          </defs>
+          <ellipse cx="125" cy="182" rx="92" ry="9" fill="#B98B58" opacity=".26"/>
+          <rect x="26" y="34" width="198" height="140" rx="12" fill="url(#mtl)"/>
+          <rect x="26" y="34" width="198" height="140" rx="12" fill="none" stroke="#7A4A1C" stroke-opacity=".3"/>
+          <rect x="34" y="42" width="22" height="124" rx="10" fill="#FFF3DC" opacity=".2"/>
+          <rect x="111" y="34" width="28" height="140" fill="url(#rib2)"/>
+          <rect x="26" y="34" width="198" height="16" rx="7" fill="#5A3418" opacity=".38"/><ellipse cx="125" cy="38" rx="94" ry="9" fill="#4A2A12" opacity=".45"/><ellipse cx="125" cy="36" rx="88" ry="6" fill="#7A4A1C" opacity=".5"/>
+        </svg>
+      </div>
+      <span class="tap" id="tap">לחצי על המתנה כדי לפתוח ✦</span>
+
+      <div class="after" id="after">
+        <form id="frm" name="surprise" method="POST" action="/surprise.html?done=1"
+              data-netlify="true" netlify-honeypot="bot-field">
+          <input type="hidden" name="form-name" value="surprise">
+          <input type="hidden" name="item" id="fItem">
+          <p class="trap"><label>נא לא למלא שדה זה <input name="bot-field" tabindex="-1"></label></p>
+
+          <label class="lbl" for="fName">השם שלך</label>
+          <input type="text" id="fName" name="name" autocomplete="name" placeholder="שם מלא">
+
+          <label class="lbl" for="fPhone">טלפון <span style="font-weight:400;color:var(--ink-soft)">(לא חובה)</span></label>
+          <input type="tel" id="fPhone" name="phone" autocomplete="tel" inputmode="tel" placeholder="050-0000000">
+
+          <div id="otherWrap" hidden>
+            <label class="lbl" for="fOther">מה היית רוצה שיהיה?</label>
+            <input type="text" id="fOther" name="other" placeholder="כתבי כאן…">
+          </div>
+
+          <label class="lbl" style="margin-top:20px">מה את מסמנת?</label>
+
+          <label class="opt">
+            <input type="checkbox" name="want" value="אשמח שיקרה" id="cWant">
+            <span class="mark"><svg viewBox="0 0 16 16" fill="none"><path d="M2.5 8.6 6.2 12.3 13.5 4.2" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+            <span class="txt">אשמח שיקרה</span>
+          </label>
+
+          <label class="opt">
+            <input type="checkbox" name="join" value="אשמח לקחת חלק" id="cJoin">
+            <span class="mark"><svg viewBox="0 0 16 16" fill="none"><path d="M2.5 8.6 6.2 12.3 13.5 4.2" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+            <span class="txt">אשמח לקחת חלק</span>
+          </label>
+
+          <p class="err" id="err"></p>
+          <button class="btn" type="submit" id="send">שליחה</button>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======== thanks ======== -->
+  <section class="screen" id="screen-thanks">
+    <div class="card">
+      <div class="seal"><svg viewBox="0 0 16 16" fill="none"><path d="M2.5 8.6 6.2 12.3 13.5 4.2" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      <div id="thTitle"></div>
+      <p id="thBody"></p>
+      <div class="item-said" id="thItem"></div>
+    </div>
+  </section>
+
+  <!-- ======== preview of all the surprises ======== -->
+  <section class="screen" id="screen-list">
+    <div class="card">
+      <span class="kicker">כל ההפתעות</span>
+      <div class="rule"></div>
+      <p class="pnote">תצוגה מקדימה — לכל הפתעה יהיה ברקוד וקישור נפרד משלה.</p>
+      <div class="plist" id="plist"></div>
+    </div>
+  </section>
+
+</div>
+
+<script>
+const ITEMS = [
+  {k:'chai-elul', t:'התוועדות ח״י אלול'},
+  {k:'kislev',    t:'התוועדות י״ט כסלו'},
+  {k:'tammuz',    t:'התוועדות ג׳ תמוז'},
+  {k:'shvat',     t:'התוועדות כ״ב שבט'},
+  {k:'shiur',     t:'שיעור שבועי'},
+  {k:'hapening',  t:'הפנינג לילדים'},
+  {k:'other',     t:'אחר'}
+];
+
+const $ = s => document.querySelector(s);
+const params = new URLSearchParams(location.search);
+const key = params.get('g');
+const item = ITEMS.find(i => i.k === key);
+
+function show(id){ document.querySelectorAll('.screen').forEach(s=>s.classList.remove('on')); $(id).classList.add('on'); }
+
+/* הגיע חזרה מ‑Netlify בלי JavaScript */
+if (params.get('done') === '1'){
+  $('#thTitle').textContent = 'תודה רבה!';
+  $('#thBody').textContent  = 'התשובה שלך נקלטה.';
+  $('#thItem').hidden = true;
+  show('#screen-thanks');
+} else if (!item){
+  const list = $('#plist');
+  ITEMS.forEach(i=>{
+    const a = document.createElement('a');
+    a.className = 'pitem'; a.href = 'surprise.html?g=' + i.k;
+    a.innerHTML = '<span class="tx"></span><span class="go">←</span>';
+    a.querySelector('.tx').textContent = i.t;
+    list.appendChild(a);
+  });
+  show('#screen-list');
+} else {
+  document.title = item.t + ' · התחדשי';
+  $('#phrase').textContent = item.t;
+  $('#fItem').value = item.t;
+  if (item.k === 'other') $('#otherWrap').hidden = false;
+  show('#screen-gift');
+  setTimeout(open, 900);          /* נפתחת לבד, ואפשר גם ללחוץ */
+}
+
+let opened = false;
+function open(){
+  if (opened) return; opened = true;
+  $('#gift').classList.add('opened');
+  $('#tap').style.display = 'none';
+  sparkle();
+  setTimeout(()=>$('#after').classList.add('show'), 500);
+}
+$('#gift') && ($('#gift').onclick = open);
+
+/* ---------- submit ---------- */
+const frm = $('#frm');
+if (frm){
+  frm.noValidate = true;
+  frm.addEventListener('submit', function(e){
+    e.preventDefault();
+    const name = $('#fName').value.trim();
+    const want = $('#cWant').checked, join = $('#cJoin').checked;
+    if (name.length < 2){ $('#err').textContent = 'נשמח לשם שלך.'; $('#fName').focus(); return; }
+    if (!want && !join){ $('#err').textContent = 'נותר רק לסמן — אפשר גם וגם.'; return; }
+    if (join && $('#fPhone').value.replace(/\D/g,'').length < 9){
+      $('#err').textContent = 'כדי שנוכל ליצור קשר נשמח למספר טלפון.'; $('#fPhone').focus(); return;
+    }
+    $('#err').textContent = '';
+    $('#send').disabled = true; $('#send').textContent = 'רגע, שומרים…';
+
+    const data = new FormData(frm);
+    fetch('/', {method:'POST', headers:{'Content-Type':'application/x-www-form-urlencoded'},
+                body:new URLSearchParams(data).toString()})
+      .then(done, done);
+
+    function done(){
+      if (join){
+        $('#thTitle').textContent = 'תודה על תרומתך!';
+        $('#thBody').textContent  = 'ניצור איתך קשר בהמשך.';
+      } else {
+        $('#thTitle').textContent = 'תודה על תשובתך';
+        $('#thBody').textContent  = 'חכי להפתעות…';
+      }
+      $('#thItem').textContent = item ? item.t : '';
+      show('#screen-thanks');
+      window.scrollTo({top:0,behavior:'smooth'});
+      sparkle();
+    }
+  });
+}
+
+function sparkle(){
+  const chars = ['✦','✧','·','✦'];
+  for (let i=0;i<18;i++){
+    setTimeout(()=>{
+      const s = document.createElement('div');
+      s.className = 'spark';
+      s.textContent = chars[Math.floor(Math.random()*chars.length)];
+      s.style.left = (Math.random()*84+8) + 'vw';
+      s.style.top  = (Math.random()*40+38) + 'vh';
+      document.body.appendChild(s);
+      setTimeout(()=>s.remove(), 2700);
+    }, i*100);
+  }
+}
+</script>
+</body>
+</html>
