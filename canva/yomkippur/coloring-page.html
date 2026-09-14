@@ -20,17 +20,18 @@
   .titlebar h1{font-size:140px;color:#fff;line-height:1.2}
   .lead{text-align:center;font-size:62px;color:#5C5480;margin-bottom:42px;line-height:1.35}
   .grid{
-    flex:1;display:grid;grid-template-columns:repeat(2,1fr);grid-template-rows:repeat(4,1fr);
-    gap:36px;
+    flex:1;min-height:0;display:grid;grid-template-columns:repeat(2,1fr);
+    grid-template-rows:repeat(4,minmax(0,1fr));gap:30px;
   }
   .box{
-    position:relative;border:6px solid #D9D3EF;border-radius:56px;
-    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;
-    padding:26px;
+    position:relative;min-height:0;overflow:hidden;
+    border:6px solid #D9D3EF;border-radius:56px;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;
+    padding:22px;
   }
   .box .art{position:relative;flex:1;width:100%;display:grid;place-items:center;min-height:0}
-  .box .art img{max-height:100%;max-width:80%;object-fit:contain}
-  .cap{font-size:64px;color:var(--ink);text-align:center;line-height:1.2}
+  .box .art img{max-height:100%;max-width:72%;object-fit:contain}
+  .cap{flex:none;font-size:56px;color:var(--ink);text-align:center;line-height:1.2}
   .n{
     position:absolute;top:-22px;right:40px;width:86px;height:86px;border-radius:28px;
     display:grid;place-items:center;font-size:50px;color:#fff;
@@ -38,8 +39,8 @@
   }
   .xmark{position:absolute;inset:0;display:grid;place-items:center;pointer-events:none}
   .xmark svg{width:38%;height:80%}
-  .greet{position:absolute;inset:0;display:grid;place-items:center;pointer-events:none}
-  .greet span{transform:rotate(-4deg);font-size:44px;color:#4A4368;text-align:center;max-width:44%;line-height:1.25}
+  .greet{position:absolute;inset:0;display:grid;place-items:start center;pointer-events:none}
+  .greet span{transform:rotate(-3deg);margin-top:9%;font-size:40px;color:#4A4368;text-align:center;max-width:40%;line-height:1.25}
   .logo{position:absolute;left:120px;bottom:56px;width:280px;opacity:.92}
   img{display:block}
 </style>

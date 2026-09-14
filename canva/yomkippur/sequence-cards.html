@@ -15,21 +15,18 @@
   }
   .half + .half{border-top:6px dashed #C9C2E4}
   .cardin{
-    position:relative;width:100%;height:100%;border-radius:90px;
-    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:40px;
-    padding:60px;
+    position:relative;width:100%;height:100%;border-radius:90px;overflow:hidden;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:30px;
+    padding:70px 60px 140px;
   }
-  .cardin img{max-height:64%;max-width:78%;object-fit:contain}
-  .t{font-size:130px;color:#fff;text-align:center;line-height:1.2;
-     padding:26px 64px;border-radius:60px;background:rgba(255,255,255,.22)}
-  .t.dark{color:var(--ink);background:transparent}
+  .t{flex:none;font-size:130px;color:var(--ink);text-align:center;line-height:1.2}
   .mini{position:absolute;bottom:40px;left:60px;width:250px;opacity:.9}
-  .art{position:relative;display:grid;place-items:center;width:100%;height:64%}
-  .art img{max-height:100%}
+  .art{position:relative;width:100%;flex:1;min-height:0}
+  .art img{width:100%;height:100%;object-fit:contain}
   .xmark{position:absolute;inset:0;display:grid;place-items:center;pointer-events:none}
-  .xmark svg{width:40%;height:90%}
-  .greet{position:absolute;inset:0;display:grid;place-items:center;pointer-events:none}
-  .greet span{transform:rotate(-4deg);font-size:76px;color:var(--indigo);line-height:1.25;text-align:center;max-width:36%;margin-top:1%}
+  .xmark svg{width:34%;height:52%}
+  .greet{position:absolute;inset:0;display:grid;place-items:start center;pointer-events:none}
+  .greet span{transform:rotate(-3deg);margin-top:11%;font-size:72px;color:var(--indigo);line-height:1.25;text-align:center;max-width:32%}
 
   .g1{background:linear-gradient(135deg,#FFF3D1 0%,#FFE3AE 100%)}
   .g2{background:linear-gradient(135deg,#FFE1EC 0%,#FFC9DD 100%)}
@@ -45,12 +42,12 @@
 <div class="page" data-document-role="page" data-label="רצף 1">
   <div class="half"><div class="cardin g1">
     <div class="art"><img src="https://raw.githubusercontent.com/ea649/shalhevet-games/main/canva/yomkippur/img/se_kaparot.png" alt=""></div>
-    <div class="t dark">כַּפָּרוֹת</div>
+    <div class="t">כַּפָּרוֹת</div>
     <img class="mini" src="https://raw.githubusercontent.com/ea649/shalhevet-games/main/canva/assets/shalhevet-logo.png" alt="">
   </div></div>
   <div class="half"><div class="cardin g2">
     <div class="art"><img src="https://raw.githubusercontent.com/ea649/shalhevet-games/main/canva/yomkippur/img/tzedaka.png" alt=""></div>
-    <div class="t dark">צְדָקָה</div>
+    <div class="t">צְדָקָה</div>
     <img class="mini" src="https://raw.githubusercontent.com/ea649/shalhevet-games/main/canva/assets/shalhevet-logo.png" alt="">
   </div></div>
 </div>
@@ -62,12 +59,12 @@
       <img src="https://raw.githubusercontent.com/ea649/shalhevet-games/main/canva/yomkippur/img/michtav.png" alt="">
       <div class="greet"><span>גְּמַר חֲתִימָה טוֹבָה</span></div>
     </div>
-    <div class="t dark">גְּמַר חֲתִימָה טוֹבָה</div>
+    <div class="t">גְּמַר חֲתִימָה טוֹבָה</div>
     <img class="mini" src="https://raw.githubusercontent.com/ea649/shalhevet-games/main/canva/assets/shalhevet-logo.png" alt="">
   </div></div>
   <div class="half"><div class="cardin g4">
     <div class="art"><img src="https://raw.githubusercontent.com/ea649/shalhevet-games/main/canva/yomkippur/img/se_seuda.png" alt=""></div>
-    <div class="t dark">סְעוּדָה מַפְסֶקֶת</div>
+    <div class="t">סְעוּדָה מַפְסֶקֶת</div>
     <img class="mini" src="https://raw.githubusercontent.com/ea649/shalhevet-games/main/canva/assets/shalhevet-logo.png" alt="">
   </div></div>
 </div>
@@ -79,12 +76,12 @@
       <img src="https://raw.githubusercontent.com/ea649/shalhevet-games/main/canva/yomkippur/img/ochel.png" alt="">
       <div class="xmark"><svg viewBox="0 0 100 100"><path d="M18 18 L82 82 M82 18 L18 82" stroke="#EE3461" stroke-width="11" stroke-linecap="round" fill="none"/></svg></div>
     </div>
-    <div class="t dark">צוֹם</div>
+    <div class="t">צוֹם</div>
     <img class="mini" src="https://raw.githubusercontent.com/ea649/shalhevet-games/main/canva/assets/shalhevet-logo.png" alt="">
   </div></div>
   <div class="half"><div class="cardin g6">
     <div class="art"><img src="https://raw.githubusercontent.com/ea649/shalhevet-games/main/canva/yomkippur/img/se_tefila.png" alt=""></div>
-    <div class="t dark">תְּפִלָּה בְּבֵית הַכְּנֶסֶת</div>
+    <div class="t">תְּפִלָּה בְּבֵית הַכְּנֶסֶת</div>
     <img class="mini" src="https://raw.githubusercontent.com/ea649/shalhevet-games/main/canva/assets/shalhevet-logo.png" alt="">
   </div></div>
 </div>
@@ -93,7 +90,7 @@
 <div class="page" data-document-role="page" data-label="רצף 4">
   <div class="half"><div class="cardin g7">
     <div class="art"><img src="https://raw.githubusercontent.com/ea649/shalhevet-games/main/canva/yomkippur/img/se_tokea.png" alt=""></div>
-    <div class="t dark">תְּקִיעַת שׁוֹפָר</div>
+    <div class="t">תְּקִיעַת שׁוֹפָר</div>
     <img class="mini" src="https://raw.githubusercontent.com/ea649/shalhevet-games/main/canva/assets/shalhevet-logo.png" alt="">
   </div></div>
   <div class="half"><div class="cardin" style="background:linear-gradient(135deg,#4F3795 0%,#AA479A 55%,#EE3461 100%)">
