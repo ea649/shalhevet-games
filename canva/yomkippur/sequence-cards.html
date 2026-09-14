@@ -1,0 +1,105 @@
+<meta charset="utf-8">
+<title>רצף אירועי יום הכיפורים – כרטיסים בגודל חצי דף</title>
+<style>
+  :root{--indigo:#4F3795;--magenta:#AA479A;--pink:#EE3461;--cyan:#08B7D5;
+        --yellow:#FCB918;--lime:#BCCB33;--orange:#F36F28;--ink:#1B1533}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:#eef1f7}
+  .page{
+    position:relative;width:2480px;height:3508px;overflow:hidden;background:#fff;
+    direction:rtl;font-family:"Arial Rounded MT Bold","Segoe UI",Arial,sans-serif;
+    display:flex;flex-direction:column;margin:0 auto 40px;
+  }
+  .half{
+    position:relative;height:50%;padding:90px;display:flex;align-items:center;justify-content:center;
+  }
+  .half + .half{border-top:6px dashed #C9C2E4}
+  .cardin{
+    position:relative;width:100%;height:100%;border-radius:90px;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:40px;
+    padding:60px;
+  }
+  .cardin img{max-height:64%;max-width:78%;object-fit:contain}
+  .t{font-size:130px;color:#fff;text-align:center;line-height:1.2;
+     padding:26px 64px;border-radius:60px;background:rgba(255,255,255,.22)}
+  .t.dark{color:var(--ink);background:transparent}
+  .mini{position:absolute;bottom:40px;left:60px;width:250px;opacity:.9}
+  .art{position:relative;display:grid;place-items:center;width:100%;height:64%}
+  .art img{max-height:100%}
+  .xmark{position:absolute;inset:0;display:grid;place-items:center;pointer-events:none}
+  .xmark svg{width:40%;height:90%}
+  .greet{position:absolute;inset:0;display:grid;place-items:center;pointer-events:none}
+  .greet span{transform:rotate(-4deg);font-size:76px;color:var(--indigo);line-height:1.25;text-align:center;max-width:36%;margin-top:1%}
+
+  .g1{background:linear-gradient(135deg,#FFF3D1 0%,#FFE3AE 100%)}
+  .g2{background:linear-gradient(135deg,#FFE1EC 0%,#FFC9DD 100%)}
+  .g3{background:linear-gradient(135deg,#D8F4FB 0%,#B8E8F7 100%)}
+  .g4{background:linear-gradient(135deg,#EBE4FB 0%,#D9CDF6 100%)}
+  .g5{background:linear-gradient(135deg,#E7F5D3 0%,#D2ECB4 100%)}
+  .g6{background:linear-gradient(135deg,#FFE6D6 0%,#FFD2B7 100%)}
+  .g7{background:linear-gradient(135deg,#DDEBFB 0%,#C2DBF6 100%)}
+  img{display:block}
+</style>
+
+<!-- דף 1 -->
+<div class="page" data-document-role="page" data-label="רצף 1">
+  <div class="half"><div class="cardin g1">
+    <div class="art"><img src="https://raw.githubusercontent.com/ea649/shalhevet-games/main/canva/yomkippur/img/se_kaparot.png" alt=""></div>
+    <div class="t dark">כַּפָּרוֹת</div>
+    <img class="mini" src="https://raw.githubusercontent.com/ea649/shalhevet-games/main/canva/assets/shalhevet-logo.png" alt="">
+  </div></div>
+  <div class="half"><div class="cardin g2">
+    <div class="art"><img src="https://raw.githubusercontent.com/ea649/shalhevet-games/main/canva/yomkippur/img/tzedaka.png" alt=""></div>
+    <div class="t dark">צְדָקָה</div>
+    <img class="mini" src="https://raw.githubusercontent.com/ea649/shalhevet-games/main/canva/assets/shalhevet-logo.png" alt="">
+  </div></div>
+</div>
+
+<!-- דף 2 -->
+<div class="page" data-document-role="page" data-label="רצף 2">
+  <div class="half"><div class="cardin g3">
+    <div class="art">
+      <img src="https://raw.githubusercontent.com/ea649/shalhevet-games/main/canva/yomkippur/img/michtav.png" alt="">
+      <div class="greet"><span>גְּמַר חֲתִימָה טוֹבָה</span></div>
+    </div>
+    <div class="t dark">גְּמַר חֲתִימָה טוֹבָה</div>
+    <img class="mini" src="https://raw.githubusercontent.com/ea649/shalhevet-games/main/canva/assets/shalhevet-logo.png" alt="">
+  </div></div>
+  <div class="half"><div class="cardin g4">
+    <div class="art"><img src="https://raw.githubusercontent.com/ea649/shalhevet-games/main/canva/yomkippur/img/se_seuda.png" alt=""></div>
+    <div class="t dark">סְעוּדָה מַפְסֶקֶת</div>
+    <img class="mini" src="https://raw.githubusercontent.com/ea649/shalhevet-games/main/canva/assets/shalhevet-logo.png" alt="">
+  </div></div>
+</div>
+
+<!-- דף 3 -->
+<div class="page" data-document-role="page" data-label="רצף 3">
+  <div class="half"><div class="cardin g5">
+    <div class="art">
+      <img src="https://raw.githubusercontent.com/ea649/shalhevet-games/main/canva/yomkippur/img/ochel.png" alt="">
+      <div class="xmark"><svg viewBox="0 0 100 100"><path d="M18 18 L82 82 M82 18 L18 82" stroke="#EE3461" stroke-width="11" stroke-linecap="round" fill="none"/></svg></div>
+    </div>
+    <div class="t dark">צוֹם</div>
+    <img class="mini" src="https://raw.githubusercontent.com/ea649/shalhevet-games/main/canva/assets/shalhevet-logo.png" alt="">
+  </div></div>
+  <div class="half"><div class="cardin g6">
+    <div class="art"><img src="https://raw.githubusercontent.com/ea649/shalhevet-games/main/canva/yomkippur/img/se_tefila.png" alt=""></div>
+    <div class="t dark">תְּפִלָּה בְּבֵית הַכְּנֶסֶת</div>
+    <img class="mini" src="https://raw.githubusercontent.com/ea649/shalhevet-games/main/canva/assets/shalhevet-logo.png" alt="">
+  </div></div>
+</div>
+
+<!-- דף 4 -->
+<div class="page" data-document-role="page" data-label="רצף 4">
+  <div class="half"><div class="cardin g7">
+    <div class="art"><img src="https://raw.githubusercontent.com/ea649/shalhevet-games/main/canva/yomkippur/img/se_tokea.png" alt=""></div>
+    <div class="t dark">תְּקִיעַת שׁוֹפָר</div>
+    <img class="mini" src="https://raw.githubusercontent.com/ea649/shalhevet-games/main/canva/assets/shalhevet-logo.png" alt="">
+  </div></div>
+  <div class="half"><div class="cardin" style="background:linear-gradient(135deg,#4F3795 0%,#AA479A 55%,#EE3461 100%)">
+    <div style="font-size:150px;color:#fff;text-align:center;line-height:1.2">רֶצֶף<br>אֵרוּעֵי הַיּוֹם</div>
+    <div style="font-size:80px;color:rgba(255,255,255,.92);text-align:center;max-width:80%;line-height:1.4">
+      סַדְּרוּ אֶת הַתְּמוּנוֹת לְפִי סֵדֶר הִתְרַחֲשׁוּתָן בְּיוֹם הַכִּפּוּרִים,<br>וְהַסְבִּירוּ מַדּוּעַ בְּחַרְתֶּם בָּרֶצֶף הַזֶּה.
+    </div>
+  </div></div>
+</div>

@@ -1,0 +1,50 @@
+<meta charset="utf-8">
+<title>שלטי הסלסלות – שייך / לא שייך ליום הכיפורים</title>
+<style>
+  :root{--indigo:#4F3795;--magenta:#AA479A;--pink:#EE3461;--cyan:#08B7D5;
+        --yellow:#FCB918;--lime:#BCCB33;--ink:#1B1533}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:#eef1f7}
+  .page{
+    position:relative;width:2480px;height:3508px;overflow:hidden;
+    direction:rtl;font-family:"Arial Rounded MT Bold","Segoe UI",Arial,sans-serif;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:130px;
+    margin:0 auto 40px;padding:180px;
+  }
+  .yes{background:linear-gradient(160deg,#E7F7EC 0%,#FFFFFF 55%,#F3FBF5 100%)}
+  .no{background:linear-gradient(160deg,#FFEEF2 0%,#FFFFFF 55%,#FFF4F6 100%)}
+  .mark{
+    width:900px;height:900px;border-radius:280px;display:grid;place-items:center;
+    box-shadow:0 40px 80px rgba(27,21,51,.16);
+  }
+  .mark.v{background:linear-gradient(135deg,#BCCB33 0%,#3FAE72 100%)}
+  .mark.x{background:linear-gradient(135deg,#EE3461 0%,#AA479A 100%)}
+  .mark svg{width:62%;height:62%}
+  h1{font-size:190px;line-height:1.25;text-align:center}
+  .yes h1{color:#2E8B57}
+  .no h1{color:var(--pink)}
+  .sub{font-size:86px;color:#6B6486;text-align:center;line-height:1.4}
+  .logo{position:absolute;left:150px;bottom:130px;width:360px;opacity:.95}
+  .bh{position:absolute;left:150px;top:110px;font-size:56px;color:#8C86A8;font-family:Arial,sans-serif}
+  img{display:block}
+</style>
+
+<div class="page yes" data-document-role="page" data-label="שייך ליום הכיפורים">
+  <div class="bh">ב"ה</div>
+  <div class="mark v">
+    <svg viewBox="0 0 100 100"><path d="M18 53 L40 76 L83 26" stroke="#fff" stroke-width="13" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>
+  </div>
+  <h1>שַׁיָּךְ<br>לְיוֹם הַכִּפּוּרִים</h1>
+  <div class="sub">כָּאן מַנִּיחִים אֶת הַתְּמוּנוֹת<br>שֶׁקְּשׁוּרוֹת לְיוֹם הַכִּפּוּרִים</div>
+  <img class="logo" src="https://raw.githubusercontent.com/ea649/shalhevet-games/main/canva/assets/shalhevet-logo.png" alt="שלהבות חב״ד">
+</div>
+
+<div class="page no" data-document-role="page" data-label="לא שייך ליום הכיפורים">
+  <div class="bh">ב"ה</div>
+  <div class="mark x">
+    <svg viewBox="0 0 100 100"><path d="M25 25 L75 75 M75 25 L25 75" stroke="#fff" stroke-width="13" stroke-linecap="round" fill="none"/></svg>
+  </div>
+  <h1>לֹא שַׁיָּךְ<br>לְיוֹם הַכִּפּוּרִים</h1>
+  <div class="sub">כָּאן מַנִּיחִים אֶת הַתְּמוּנוֹת<br>שֶׁאֵינָן קְשׁוּרוֹת לְיוֹם הַכִּפּוּרִים</div>
+  <img class="logo" src="https://raw.githubusercontent.com/ea649/shalhevet-games/main/canva/assets/shalhevet-logo.png" alt="שלהבות חב״ד">
+</div>

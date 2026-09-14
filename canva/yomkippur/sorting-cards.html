@@ -1,0 +1,87 @@
+<meta charset="utf-8">
+<title>שייך / לא שייך ליום הכיפורים – כרטיסים</title>
+<style>
+  :root{
+    --indigo:#4F3795; --magenta:#AA479A; --pink:#EE3461; --cyan:#08B7D5;
+    --yellow:#FCB918; --lime:#BCCB33; --orange:#F36F28; --ink:#1B1533;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:#eef1f7}
+  .page{
+    position:relative;width:2480px;height:3508px;overflow:hidden;background:#fff;
+    direction:rtl;font-family:"Arial Rounded MT Bold","Segoe UI",Arial,sans-serif;
+    margin:0 auto 40px;padding:120px 110px;
+  }
+  .grid{display:grid;grid-template-columns:repeat(2,1fr);grid-template-rows:repeat(3,1fr);
+        gap:60px;width:100%;height:100%}
+  .card{
+    position:relative;background:#FFFFFF;border:7px solid #E7E2F6;border-radius:80px;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:34px;
+    padding:60px;box-shadow:0 14px 30px rgba(79,55,149,.08);
+  }
+  .card .art{position:relative;display:grid;place-items:center;height:480px;width:100%}
+  .card .art img{max-height:480px;max-width:76%;object-fit:contain}
+  .label{font-size:92px;color:var(--ink);text-align:center;line-height:1.2}
+  .xmark{position:absolute;inset:0;display:grid;place-items:center;pointer-events:none}
+  .xmark svg{width:56%;height:56%}
+
+  /* כרטיס ברכה עם כיתוב אמיתי */
+  .greet{position:absolute;inset:0;display:grid;place-items:center;pointer-events:none}
+  .greet span{
+    transform:rotate(-4deg);font-size:62px;color:var(--indigo);line-height:1.25;
+    text-align:center;max-width:56%;margin-top:2%;
+  }
+  .head{
+    position:absolute;top:44px;right:110px;font-size:56px;color:#8C86A8;
+  }
+  .bh{position:absolute;left:110px;top:44px;font-size:44px;color:#8C86A8;font-family:Arial,sans-serif}
+  img{display:block}
+</style>
+
+<!-- ============ דף 1 – שייך ============ -->
+<div class="page" data-document-role="page" data-label="כרטיסים 1">
+  <div class="bh">ב"ה</div>
+  <div class="head">שַׁיָּךְ / לֹא שַׁיָּךְ לְיוֹם הַכִּפּוּרִים</div>
+  <div class="grid">
+    <div class="card"><div class="art"><img src="https://raw.githubusercontent.com/ea649/shalhevet-games/main/canva/yomkippur/img/shofar.png" alt=""></div><div class="label">שׁוֹפָר</div></div>
+    <div class="card"><div class="art"><img src="https://raw.githubusercontent.com/ea649/shalhevet-games/main/canva/yomkippur/img/siddur.png" alt=""></div><div class="label">סִדּוּר</div></div>
+    <div class="card"><div class="art"><img src="https://raw.githubusercontent.com/ea649/shalhevet-games/main/canva/yomkippur/img/slippers.png" alt=""></div><div class="label">נַעֲלֵי בַּד</div></div>
+    <div class="card"><div class="art">
+        <img src="https://raw.githubusercontent.com/ea649/shalhevet-games/main/canva/yomkippur/img/ochel.png" alt="">
+        <div class="xmark"><svg viewBox="0 0 100 100"><path d="M18 18 L82 82 M82 18 L18 82" stroke="#EE3461" stroke-width="11" stroke-linecap="round" fill="none"/></svg></div>
+      </div><div class="label">צוֹם</div></div>
+    <div class="card"><div class="art">
+        <img src="https://raw.githubusercontent.com/ea649/shalhevet-games/main/canva/yomkippur/img/michtav.png" alt="">
+        <div class="greet"><span>גְּמַר חֲתִימָה טוֹבָה</span></div>
+      </div><div class="label">כַּרְטִיס בְּרָכָה</div></div>
+    <div class="card"><div class="art"><img src="https://raw.githubusercontent.com/ea649/shalhevet-games/main/canva/yomkippur/img/tzitzit.png" alt=""></div><div class="label">צִיצִית</div></div>
+  </div>
+</div>
+
+<!-- ============ דף 2 – שייך + מסיחים ============ -->
+<div class="page" data-document-role="page" data-label="כרטיסים 2">
+  <div class="bh">ב"ה</div>
+  <div class="head">שַׁיָּךְ / לֹא שַׁיָּךְ לְיוֹם הַכִּפּוּרִים</div>
+  <div class="grid">
+    <div class="card"><div class="art"><img src="https://raw.githubusercontent.com/ea649/shalhevet-games/main/canva/yomkippur/img/kippa.png" alt=""></div><div class="label">כִּיפָּה</div></div>
+    <div class="card"><div class="art"><img src="https://raw.githubusercontent.com/ea649/shalhevet-games/main/canva/yomkippur/img/beitknesset.png" alt=""></div><div class="label">בֵּית הַכְּנֶסֶת</div></div>
+    <div class="card"><div class="art"><img src="https://raw.githubusercontent.com/ea649/shalhevet-games/main/canva/yomkippur/img/d_phone.png" alt=""></div><div class="label">פֶּלֶאפוֹן</div></div>
+    <div class="card"><div class="art"><img src="https://raw.githubusercontent.com/ea649/shalhevet-games/main/canva/yomkippur/img/d_laptop.png" alt=""></div><div class="label">מַחְשֵׁב</div></div>
+    <div class="card"><div class="art"><img src="https://raw.githubusercontent.com/ea649/shalhevet-games/main/canva/yomkippur/img/d_glida.png" alt=""></div><div class="label">גְּלִידָה</div></div>
+    <div class="card"><div class="art"><img src="https://raw.githubusercontent.com/ea649/shalhevet-games/main/canva/yomkippur/img/d_shokolad.png" alt=""></div><div class="label">שׁוֹקוֹלָד</div></div>
+  </div>
+</div>
+
+<!-- ============ דף 3 – מסיחים ============ -->
+<div class="page" data-document-role="page" data-label="כרטיסים 3">
+  <div class="bh">ב"ה</div>
+  <div class="head">שַׁיָּךְ / לֹא שַׁיָּךְ לְיוֹם הַכִּפּוּרִים</div>
+  <div class="grid">
+    <div class="card"><div class="art"><img src="https://raw.githubusercontent.com/ea649/shalhevet-games/main/canva/yomkippur/img/d_kalmar.png" alt=""></div><div class="label">קַלְמָר</div></div>
+    <div class="card"><div class="art"><img src="https://raw.githubusercontent.com/ea649/shalhevet-games/main/canva/yomkippur/img/d_yalkut.png" alt=""></div><div class="label">יַלְקוּט</div></div>
+    <div class="card"><div class="art"><img src="https://raw.githubusercontent.com/ea649/shalhevet-games/main/canva/yomkippur/img/d_tzeva.png" alt=""></div><div class="label">צִיּוּר</div></div>
+    <div class="card"><div class="art"><img src="https://raw.githubusercontent.com/ea649/shalhevet-games/main/canva/yomkippur/img/d_matos.png" alt=""></div><div class="label">מָטוֹס</div></div>
+    <div class="card"><div class="art"><img src="https://raw.githubusercontent.com/ea649/shalhevet-games/main/canva/yomkippur/img/d_mechonit.png" alt=""></div><div class="label">מְכוֹנִית</div></div>
+    <div class="card"><div class="art"><img src="https://raw.githubusercontent.com/ea649/shalhevet-games/main/canva/yomkippur/img/d_machberet.png" alt=""></div><div class="label">חוֹבֶרֶת</div></div>
+  </div>
+</div>
