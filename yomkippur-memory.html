@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>משחק זיכרון – הנהגות יום הכיפורים</title>
+<style>
+  :root{
+    --indigo:#4F3795; --magenta:#AA479A; --pink:#EE3461; --cyan:#08B7D5;
+    --yellow:#FCB918; --lime:#BCCB33; --orange:#F36F28; --ink:#1B1533;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+  body{
+    min-height:100dvh;background:
+      radial-gradient(1200px 600px at 80% -10%, #DCEFFC 0%, transparent 60%),
+      linear-gradient(165deg,#F6F4FF 0%,#FFFFFF 55%,#FFF3F7 100%);
+    font-family:"Arial Rounded MT Bold","Segoe UI",Arial,sans-serif;color:var(--ink);
+    padding:18px 16px 40px;
+  }
+  header{max-width:1100px;margin:0 auto 18px;text-align:center}
+  h1{
+    font-size:clamp(26px,6vw,46px);line-height:1.2;
+    background:linear-gradient(135deg,#4F3795 0%,#AA479A 55%,#EE3461 100%);
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+  }
+  .sub{margin-top:6px;font-size:clamp(14px,3.4vw,19px);color:#6B6486}
+
+  .bar{
+    max-width:1100px;margin:14px auto 18px;display:flex;flex-wrap:wrap;gap:10px;
+    align-items:center;justify-content:center;
+  }
+  .stat{
+    background:#fff;border:2px solid #E7E2F6;border-radius:18px;padding:9px 16px;
+    font-size:clamp(13px,3.2vw,17px);box-shadow:0 6px 16px rgba(79,55,149,.07);
+  }
+  .stat b{color:var(--indigo)}
+  button.btn{
+    border:0;border-radius:18px;padding:11px 22px;color:#fff;cursor:pointer;
+    font-size:clamp(13px,3.2vw,17px);font-family:inherit;
+    background:linear-gradient(135deg,#4F3795 0%,#AA479A 100%);
+    box-shadow:0 8px 20px rgba(79,55,149,.22);
+  }
+  button.btn:active{transform:translateY(1px)}
+
+  .board{
+    max-width:1100px;margin:0 auto;display:grid;gap:clamp(8px,1.6vw,16px);
+    grid-template-columns:repeat(6,1fr);
+  }
+  @media (max-width:760px){ .board{grid-template-columns:repeat(4,1fr)} }
+
+  .cell{perspective:1000px;aspect-ratio:3/4}
+  .card{
+    position:relative;width:100%;height:100%;transform-style:preserve-3d;
+    transition:transform .45s cubic-bezier(.4,.2,.2,1);cursor:pointer;
+  }
+  .cell.flipped .card, .cell.done .card{transform:rotateY(180deg)}
+  .face{
+    position:absolute;inset:0;backface-visibility:hidden;border-radius:clamp(12px,2vw,22px);
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+    overflow:hidden;
+  }
+  .back{
+    background:linear-gradient(135deg,#4F3795 0%,#AA479A 55%,#EE3461 100%);
+    color:#fff;box-shadow:0 10px 24px rgba(79,55,149,.20);
+  }
+  .back span{font-size:clamp(22px,5vw,40px);color:var(--yellow)}
+  .front{
+    transform:rotateY(180deg);background:#fff;border:3px solid #E7E2F6;
+    padding:8px 6px;gap:4px;box-shadow:0 10px 24px rgba(27,21,51,.10);
+  }
+  .front img{flex:1;min-height:0;max-width:88%;object-fit:contain}
+  .front .nm{font-size:clamp(9px,1.7vw,15px);text-align:center;line-height:1.15;color:#4A4368}
+  .cell.done .front{border-color:var(--lime);background:#FAFFF2}
+  .cell.done{animation:pop .4s ease}
+  @keyframes pop{0%{transform:scale(1)}45%{transform:scale(1.07)}100%{transform:scale(1)}}
+
+  .win{
+    max-width:1100px;margin:22px auto 0;text-align:center;padding:22px;
+    border-radius:26px;color:#fff;display:none;
+    background:linear-gradient(135deg,#4F3795 0%,#AA479A 55%,#EE3461 100%);
+    box-shadow:0 16px 34px rgba(79,55,149,.22);
+  }
+  .win.show{display:block}
+  .win h2{font-size:clamp(22px,5vw,36px);line-height:1.25}
+  .win p{margin-top:8px;font-size:clamp(14px,3.4vw,19px);color:rgba(255,255,255,.94)}
+  footer{max-width:1100px;margin:26px auto 0;text-align:center}
+  footer img{width:170px;opacity:.85;margin:0 auto}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>מִשְׂחַק זִכָּרוֹן – הַנְהָגוֹת יוֹם הַכִּפּוּרִים</h1>
+  <div class="sub">מָצְאוּ אֶת כָּל הַזּוּגוֹת הַמַּתְאִימִים</div>
+</header>
+
+<div class="bar">
+  <div class="stat">זוּגוֹת: <b id="pairs">0</b> / 12</div>
+  <div class="stat">מַהֲלָכִים: <b id="moves">0</b></div>
+  <button class="btn" id="again">מִשְׂחָק חָדָשׁ</button>
+</div>
+
+<div class="board" id="board"></div>
+
+<div class="win" id="win">
+  <h2>כָּל הַכָּבוֹד! מָצָאתֶם אֶת כָּל הַזּוּגוֹת 🎉</h2>
+  <p id="winline"></p>
+</div>
+
+<footer>
+  <img src="canva/assets/shalhevet-logo.png" alt="שלהבות חב״ד">
+</footer>
+
+<script>
+const BASE = 'canva/yomkippur/img/';
+const ITEMS = [
+  {f:'beitknesset.png', n:'בֵּית הַכְּנֶסֶת'},
+  {f:'shofar.png',      n:'שׁוֹפָר'},
+  {f:'se_seuda.png',    n:'סְעוּדָה מַפְסֶקֶת'},
+  {f:'ochel.png',       n:'צוֹם'},
+  {f:'michtav.png',     n:'גְּמַר חֲתִימָה טוֹבָה'},
+  {f:'slippers.png',    n:'נַעֲלֵי בַּד'},
+  {f:'kippa.png',       n:'כִּיפָּה'},
+  {f:'siddur.png',      n:'סִדּוּר'},
+  {f:'tzedaka.png',     n:'קֻפַּת צְדָקָה'},
+  {f:'tarnegol.png',    n:'כַּפָּרוֹת בְּתַרְנְגוֹל'},
+  {f:'kesef.png',       n:'כַּפָּרוֹת בְּכֶסֶף'},
+  {f:'tzitzit.png',     n:'צִיצִית'}
+];
+
+const board   = document.getElementById('board');
+const elPairs = document.getElementById('pairs');
+const elMoves = document.getElementById('moves');
+const elWin   = document.getElementById('win');
+const elWinLn = document.getElementById('winline');
+
+let first = null, lock = false, pairs = 0, moves = 0;
+
+function shuffle(a){
+  for (let i = a.length - 1; i > 0; i--){
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function build(){
+  board.innerHTML = '';
+  elWin.classList.remove('show');
+  first = null; lock = false; pairs = 0; moves = 0;
+  elPairs.textContent = 0; elMoves.textContent = 0;
+
+  const deck = shuffle(ITEMS.flatMap((it, i) => [{...it, id:i}, {...it, id:i}]));
+
+  deck.forEach(it => {
+    const cell = document.createElement('div');
+    cell.className = 'cell';
+    cell.dataset.id = it.id;
+    cell.innerHTML =
+      '<div class="card">' +
+        '<div class="face back"><span>✦</span></div>' +
+        '<div class="face front">' +
+          '<img src="' + BASE + it.f + '" alt="">' +
+          '<div class="nm">' + it.n + '</div>' +
+        '</div>' +
+      '</div>';
+    cell.addEventListener('click', () => pick(cell));
+    board.appendChild(cell);
+  });
+}
+
+function pick(cell){
+  if (lock) return;
+  if (cell.classList.contains('flipped') || cell.classList.contains('done')) return;
+
+  cell.classList.add('flipped');
+
+  if (!first){ first = cell; return; }
+
+  moves++; elMoves.textContent = moves;
+
+  if (first.dataset.id === cell.dataset.id){
+    first.classList.add('done');
+    cell.classList.add('done');
+    first = null;
+    pairs++; elPairs.textContent = pairs;
+    if (pairs === ITEMS.length){
+      elWinLn.textContent = 'סִיַּמְתֶּם בְּ־' + moves + ' מַהֲלָכִים';
+      elWin.classList.add('show');
+      elWin.scrollIntoView({behavior:'smooth', block:'nearest'});
+    }
+    return;
+  }
+
+  lock = true;
+  const a = first; first = null;
+  setTimeout(() => {
+    a.classList.remove('flipped');
+    cell.classList.remove('flipped');
+    lock = false;
+  }, 850);
+}
+
+document.getElementById('again').addEventListener('click', build);
+build();
+</script>
+</body>
+</html>
