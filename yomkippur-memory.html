@@ -10,81 +10,115 @@
     --yellow:#FCB918; --lime:#BCCB33; --orange:#F36F28; --ink:#1B1533;
   }
   *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+
+  html,body{height:100%}
   body{
-    min-height:100dvh;background:
+    height:100dvh; overflow:hidden;
+    display:flex; flex-direction:column;
+    background:
       radial-gradient(1200px 600px at 80% -10%, #DCEFFC 0%, transparent 60%),
       linear-gradient(165deg,#F6F4FF 0%,#FFFFFF 55%,#FFF3F7 100%);
     font-family:"Arial Rounded MT Bold","Segoe UI",Arial,sans-serif;color:var(--ink);
-    padding:18px 16px 40px;
+    padding:clamp(6px,1.4vh,14px) clamp(8px,2vw,20px);
+    gap:clamp(4px,1vh,10px);
   }
-  header{max-width:1100px;margin:0 auto 18px;text-align:center}
+
+  header{flex:none;text-align:center}
   h1{
-    font-size:clamp(26px,6vw,46px);line-height:1.2;
+    font-size:clamp(17px,3.1vh,34px);line-height:1.15;
     background:linear-gradient(135deg,#4F3795 0%,#AA479A 55%,#EE3461 100%);
     -webkit-background-clip:text;background-clip:text;color:transparent;
   }
-  .sub{margin-top:6px;font-size:clamp(14px,3.4vw,19px);color:#6B6486}
+  .sub{margin-top:2px;font-size:clamp(11px,1.5vh,16px);color:#6B6486}
 
   .bar{
-    max-width:1100px;margin:14px auto 18px;display:flex;flex-wrap:wrap;gap:10px;
+    flex:none;display:flex;flex-wrap:wrap;gap:clamp(5px,1vw,10px);
     align-items:center;justify-content:center;
   }
   .stat{
-    background:#fff;border:2px solid #E7E2F6;border-radius:18px;padding:9px 16px;
-    font-size:clamp(13px,3.2vw,17px);box-shadow:0 6px 16px rgba(79,55,149,.07);
+    background:#fff;border:2px solid #E7E2F6;border-radius:14px;
+    padding:clamp(3px,.7vh,8px) clamp(8px,1.4vw,15px);
+    font-size:clamp(11px,1.5vh,15px);box-shadow:0 4px 12px rgba(79,55,149,.07);
+    white-space:nowrap;
   }
   .stat b{color:var(--indigo)}
   button.btn{
-    border:0;border-radius:18px;padding:11px 22px;color:#fff;cursor:pointer;
-    font-size:clamp(13px,3.2vw,17px);font-family:inherit;
+    border:0;border-radius:14px;color:#fff;cursor:pointer;
+    padding:clamp(4px,.9vh,10px) clamp(11px,1.8vw,20px);
+    font-size:clamp(11px,1.5vh,15px);font-family:inherit;
     background:linear-gradient(135deg,#4F3795 0%,#AA479A 100%);
-    box-shadow:0 8px 20px rgba(79,55,149,.22);
+    box-shadow:0 6px 16px rgba(79,55,149,.22);white-space:nowrap;
   }
   button.btn:active{transform:translateY(1px)}
+  .bar img{height:clamp(16px,2.4vh,26px);width:auto;opacity:.85}
 
+  /* the board takes exactly the space that is left — never scrolls */
   .board{
-    max-width:1100px;margin:0 auto;display:grid;gap:clamp(8px,1.6vw,16px);
+    flex:1; min-height:0; width:100%; margin:0 auto;
+    display:grid; gap:clamp(4px,.9vh,13px);
     grid-template-columns:repeat(6,1fr);
+    grid-template-rows:repeat(4,1fr);
+    max-width:min(1100px, calc((100dvh - 150px) * 6 / 4 * 0.75));
   }
-  @media (max-width:760px){ .board{grid-template-columns:repeat(4,1fr)} }
+  @media (max-width:760px){
+    .board{
+      grid-template-columns:repeat(4,1fr);
+      grid-template-rows:repeat(6,1fr);
+      max-width:none;
+    }
+  }
 
-  .cell{perspective:1000px;aspect-ratio:3/4}
+  .cell{perspective:1000px;min-width:0;min-height:0}
   .card{
     position:relative;width:100%;height:100%;transform-style:preserve-3d;
     transition:transform .45s cubic-bezier(.4,.2,.2,1);cursor:pointer;
   }
   .cell.flipped .card, .cell.done .card{transform:rotateY(180deg)}
   .face{
-    position:absolute;inset:0;backface-visibility:hidden;border-radius:clamp(12px,2vw,22px);
+    position:absolute;inset:0;backface-visibility:hidden;
+    border-radius:clamp(9px,1.5vh,20px);
     display:flex;flex-direction:column;align-items:center;justify-content:center;
     overflow:hidden;
   }
   .back{
     background:linear-gradient(135deg,#4F3795 0%,#AA479A 55%,#EE3461 100%);
-    color:#fff;box-shadow:0 10px 24px rgba(79,55,149,.20);
+    color:#fff;box-shadow:0 8px 18px rgba(79,55,149,.20);
   }
-  .back span{font-size:clamp(22px,5vw,40px);color:var(--yellow)}
+  .back span{font-size:clamp(15px,3.4vh,38px);color:var(--yellow)}
   .front{
-    transform:rotateY(180deg);background:#fff;border:3px solid #E7E2F6;
-    padding:8px 6px;gap:4px;box-shadow:0 10px 24px rgba(27,21,51,.10);
+    transform:rotateY(180deg);background:#fff;border:2px solid #E7E2F6;
+    padding:clamp(3px,.8vh,9px) clamp(2px,.5vw,6px);gap:2px;
+    box-shadow:0 8px 18px rgba(27,21,51,.10);
   }
-  .front img{flex:1;min-height:0;max-width:88%;object-fit:contain}
-  .front .nm{font-size:clamp(9px,1.7vw,15px);text-align:center;line-height:1.15;color:#4A4368}
+  .front img{flex:1;min-height:0;max-width:90%;object-fit:contain}
+  .front .nm{
+    flex:none;font-size:clamp(7px,1.25vh,14px);text-align:center;
+    line-height:1.1;color:#4A4368;
+  }
   .cell.done .front{border-color:var(--lime);background:#FAFFF2}
   .cell.done{animation:pop .4s ease}
-  @keyframes pop{0%{transform:scale(1)}45%{transform:scale(1.07)}100%{transform:scale(1)}}
+  @keyframes pop{0%{transform:scale(1)}45%{transform:scale(1.06)}100%{transform:scale(1)}}
 
+  /* win message floats above the board so it never changes the layout height */
   .win{
-    max-width:1100px;margin:22px auto 0;text-align:center;padding:22px;
-    border-radius:26px;color:#fff;display:none;
-    background:linear-gradient(135deg,#4F3795 0%,#AA479A 55%,#EE3461 100%);
-    box-shadow:0 16px 34px rgba(79,55,149,.22);
+    position:fixed;inset:0;display:none;
+    align-items:center;justify-content:center;
+    background:rgba(27,21,51,.45);backdrop-filter:blur(3px);z-index:20;padding:20px;
   }
-  .win.show{display:block}
-  .win h2{font-size:clamp(22px,5vw,36px);line-height:1.25}
-  .win p{margin-top:8px;font-size:clamp(14px,3.4vw,19px);color:rgba(255,255,255,.94)}
-  footer{max-width:1100px;margin:26px auto 0;text-align:center}
-  footer img{width:170px;opacity:.85;margin:0 auto}
+  .win.show{display:flex}
+  .win .box{
+    text-align:center;padding:clamp(20px,4vh,40px) clamp(24px,5vw,54px);
+    border-radius:26px;color:#fff;max-width:520px;
+    background:linear-gradient(135deg,#4F3795 0%,#AA479A 55%,#EE3461 100%);
+    box-shadow:0 20px 50px rgba(27,21,51,.35);
+  }
+  .win h2{font-size:clamp(20px,3.4vh,34px);line-height:1.25}
+  .win p{margin:10px 0 18px;font-size:clamp(14px,2vh,20px);color:rgba(255,255,255,.94)}
+  .win button{
+    border:0;border-radius:16px;padding:11px 26px;cursor:pointer;
+    font-family:inherit;font-size:clamp(14px,2vh,19px);
+    background:#fff;color:var(--indigo);font-weight:bold;
+  }
 </style>
 </head>
 <body>
@@ -98,18 +132,18 @@
   <div class="stat">זוּגוֹת: <b id="pairs">0</b> / 12</div>
   <div class="stat">מַהֲלָכִים: <b id="moves">0</b></div>
   <button class="btn" id="again">מִשְׂחָק חָדָשׁ</button>
+  <img src="canva/assets/shalhevet-logo.png" alt="שלהבות חב״ד">
 </div>
 
 <div class="board" id="board"></div>
 
 <div class="win" id="win">
-  <h2>כָּל הַכָּבוֹד! מָצָאתֶם אֶת כָּל הַזּוּגוֹת 🎉</h2>
-  <p id="winline"></p>
+  <div class="box">
+    <h2>כָּל הַכָּבוֹד! מָצָאתֶם אֶת כָּל הַזּוּגוֹת 🎉</h2>
+    <p id="winline"></p>
+    <button id="againWin">מִשְׂחָק חָדָשׁ</button>
+  </div>
 </div>
-
-<footer>
-  <img src="canva/assets/shalhevet-logo.png" alt="שלהבות חב״ד">
-</footer>
 
 <script>
 const BASE = 'canva/yomkippur/img/';
@@ -187,7 +221,6 @@ function pick(cell){
     if (pairs === ITEMS.length){
       elWinLn.textContent = 'סִיַּמְתֶּם בְּ־' + moves + ' מַהֲלָכִים';
       elWin.classList.add('show');
-      elWin.scrollIntoView({behavior:'smooth', block:'nearest'});
     }
     return;
   }
@@ -202,6 +235,7 @@ function pick(cell){
 }
 
 document.getElementById('again').addEventListener('click', build);
+document.getElementById('againWin').addEventListener('click', build);
 build();
 </script>
 </body>
