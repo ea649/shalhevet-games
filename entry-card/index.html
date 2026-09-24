@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>כרטיס כניסה לשיעור – שלהבות חב"ד</title>
+<style>
+@font-face{font-family:'Almoni';src:url(../fonts/almoni-400.otf) format('opentype');font-weight:400;font-display:swap}
+@font-face{font-family:'Almoni';src:url(../fonts/almoni-600.otf) format('opentype');font-weight:600;font-display:swap}
+@font-face{font-family:'Almoni';src:url(../fonts/almoni-900.otf) format('opentype');font-weight:900;font-display:swap}
+@font-face{font-family:'Ziporen';src:url(../fonts/ziporen.otf) format('opentype');font-weight:400;font-display:swap}
+
+:root{
+  --indigo:#4F3795; --magenta:#AA479A; --pink:#EE3461; --cyan:#08B7D5;
+  --teal:#0DA6B9; --yellow:#FCB918; --lime:#BCCB33; --orange:#F36F28; --ink:#1B1533;
+  --muted:#6B6486; --line:#E7E2F6;
+  --grad:linear-gradient(135deg,#4F3795 0%,#AA479A 55%,#EE3461 100%);
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{min-height:100%}
+body{
+  font-family:'Almoni','Segoe UI',Arial,sans-serif;color:var(--ink);
+  background:
+    radial-gradient(1100px 560px at 85% -10%,#DCF4FA 0%,transparent 60%),
+    radial-gradient(900px 500px at 0% 110%,#FFF1D1 0%,transparent 60%),
+    linear-gradient(165deg,#F6F4FF 0%,#FFFFFF 55%,#FFF3F7 100%);
+  background-attachment:fixed;
+  padding:clamp(10px,2vh,22px) clamp(12px,2.4vw,30px) 28px;
+  -webkit-font-smoothing:antialiased;
+}
+.page{max-width:1280px;margin:0 auto;display:grid;gap:clamp(10px,1.6vh,18px)}
+
+/* ---------- toolbar ---------- */
+.tools{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between}
+.tools .logo{height:clamp(34px,5.4vh,54px);width:auto}
+.tools .btns{display:flex;flex-wrap:wrap;gap:8px}
+.tb{
+  border:2px solid var(--line);background:#fff;color:var(--indigo);border-radius:14px;
+  padding:8px 14px;font:600 15px 'Almoni',sans-serif;cursor:pointer;
+  box-shadow:0 4px 12px rgba(79,55,149,.07);transition:.15s;
+}
+.tb:hover{border-color:var(--magenta)}
+.tb.main{background:var(--grad);color:#fff;border-color:transparent}
+.toast{position:fixed;bottom:22px;left:50%;transform:translate(-50%,30px);opacity:0;
+  background:var(--ink);color:#fff;padding:10px 18px;border-radius:12px;font-size:15px;transition:.3s;z-index:50}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+
+/* ---------- top: timer + goal + entry ---------- */
+.top{display:grid;grid-template-columns:auto 1fr;gap:clamp(10px,1.6vw,20px);align-items:stretch}
+.heads{display:grid;gap:clamp(10px,1.6vh,16px)}
+
+.box{
+  position:relative;background:rgba(255,255,255,.92);border:3px solid var(--c);
+  border-radius:22px;padding:clamp(10px,1.6vh,16px) clamp(14px,1.8vw,22px);
+  box-shadow:0 12px 26px -18px rgba(27,21,51,.35);
+}
+.box.goal{--c:var(--yellow);background:#FFFBEE}
+.box.entry{--c:var(--cyan);background:#F1FBFD}
+.box.exit{--c:var(--magenta);background:#FBF3FA}
+
+.row{display:flex;align-items:center;gap:12px}
+.lbl{font-weight:900;font-size:clamp(18px,2.4vh,26px);white-space:nowrap;color:var(--ink)}
+.lbl.sm{font-weight:600;font-size:clamp(14px,1.8vh,18px);color:var(--muted)}
+.ico{flex:none;width:clamp(34px,5vh,50px);height:auto}
+
+/* brush-stroke title */
+.brush{
+  display:inline-block;font-family:'Ziporen','Almoni',cursive;font-weight:400;
+  font-size:clamp(24px,3.6vh,38px);line-height:1.1;padding:2px 26px 4px;color:var(--ink);
+  background:
+    radial-gradient(60% 90% at 50% 55%,var(--b) 55%,transparent 72%),
+    linear-gradient(90deg,transparent 0,var(--b) 8%,var(--b) 92%,transparent 100%);
+  background-size:100% 100%,100% 62%;background-repeat:no-repeat;background-position:center,center 60%;
+  border-radius:40% 55% 45% 60% / 60% 40% 60% 40%;
+}
+.entry .brush{--b:#BDEBF4}
+.exit .brush{--b:#EED3EA}
+
+/* editable text */
+[contenteditable]{outline:none;border-radius:8px;transition:background .15s}
+.editing [contenteditable]:hover{background:rgba(79,55,149,.05)}
+.editing [contenteditable]:focus{background:rgba(79,55,149,.08)}
+[contenteditable]:empty:before{content:attr(data-ph);color:#B7B1CC}
+.fill{
+  flex:1;min-width:0;font-size:clamp(17px,2.3vh,24px);line-height:1.5;padding:2px 6px;
+  border-bottom:2px dashed #C9C2E0;min-height:1.6em;
+}
+.entry .body{margin-top:6px;text-align:center}
+.entry .q{font-size:clamp(20px,2.9vh,30px);font-weight:600;line-height:1.45;min-height:1.5em;padding:2px 8px}
+.entry .row{margin-top:8px}
+.entry .ticket{position:absolute;top:10px;right:14px}
+.exit .ticket{position:absolute;top:50%;transform:translateY(-50%)}
+.exit .ticket.r{right:16px}.exit .ticket.l{left:16px;transform:translateY(-50%) scaleX(-1)}
+.ticket{width:clamp(40px,6vh,64px);height:auto}
+
+/* ---------- timer ---------- */
+.timer{
+  width:clamp(170px,24vh,240px);display:flex;flex-direction:column;align-items:center;gap:8px;
+}
+.dial{position:relative;width:100%;aspect-ratio:1;cursor:pointer}
+.dial svg{width:100%;height:100%;display:block}
+.dial .face{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.dial .t1{font-family:'Ziporen','Almoni',cursive;font-size:clamp(20px,3vh,28px);color:var(--indigo);line-height:1}
+.dial .time{font-weight:900;font-size:clamp(34px,5.6vh,54px);font-variant-numeric:tabular-nums;color:var(--ink);line-height:1.05;direction:ltr}
+.dial .st{font-size:clamp(12px,1.6vh,15px);color:var(--muted)}
+#ring{transition:stroke-dashoffset .95s linear,stroke .4s}
+.timer.end .dial{animation:shake .6s ease 3}
+.timer.end .time{color:var(--pink)}
+@keyframes shake{0%,100%{transform:rotate(0)}25%{transform:rotate(-4deg)}75%{transform:rotate(4deg)}}
+.tctl{display:flex;gap:6px;flex-wrap:wrap;justify-content:center;max-width:100%}
+.tctl button{white-space:nowrap;
+  border:0;border-radius:12px;padding:6px 11px;cursor:pointer;font:600 15px 'Almoni',sans-serif;
+  background:#fff;color:var(--indigo);box-shadow:0 3px 10px rgba(79,55,149,.14);
+}
+.tctl button.go{background:var(--grad);color:#fff;min-width:74px}
+.tctl button.on{outline:2px solid var(--magenta)}
+.tctl input{width:46px;border:2px solid var(--line);border-radius:10px;padding:4px;text-align:center;font:600 15px 'Almoni',sans-serif}
+
+/* ---------- stations ---------- */
+.stations{display:grid;grid-template-columns:repeat(4,1fr);gap:clamp(10px,1.4vw,18px)}
+.st-card{
+  --c:var(--indigo);--b:#E4DDF6;--bg:#F8F6FE;
+  background:var(--bg);border:3px solid var(--c);border-radius:22px;
+  padding:clamp(10px,1.4vh,14px);display:flex;flex-direction:column;gap:8px;
+  box-shadow:0 12px 26px -18px rgba(27,21,51,.35);min-height:clamp(230px,34vh,360px);
+}
+.st-card:nth-child(2){--c:var(--cyan);--b:#C6EEF6;--bg:#F1FBFD}
+.st-card:nth-child(3){--c:#9AAE1F;--b:#E6EDB6;--bg:#F9FBEC}
+.st-card:nth-child(4){--c:var(--pink);--b:#FBD0DB;--bg:#FFF4F7}
+.st-head{display:flex;align-items:center;gap:8px}
+.st-head .brush{--b:inherit;flex:1;text-align:center;font-size:clamp(22px,3vh,32px);padding:2px 12px 4px}
+.st-card .brush{background:
+    radial-gradient(60% 90% at 50% 55%,var(--b) 55%,transparent 72%),
+    linear-gradient(90deg,transparent 0,var(--b) 8%,var(--b) 92%,transparent 100%);
+  background-size:100% 100%,100% 62%;background-repeat:no-repeat;background-position:center,center 60%}
+.intel{
+  flex:none;width:clamp(64px,9.5vh,96px);aspect-ratio:1;border:0;background:none;cursor:pointer;
+  border-radius:16px;position:relative;
+}
+.intel img{width:100%;height:100%;object-fit:contain;display:block;transform:scale(1.28)}
+.intel.none{border:2px dashed var(--c);color:var(--c);font:600 13px 'Almoni',sans-serif;line-height:1.15;padding:4px}
+.st-sub{font-weight:600;font-size:clamp(16px,2vh,20px);text-align:center;min-height:1.4em;color:var(--c);filter:brightness(.8)}
+.lines{
+  flex:1;font-size:clamp(16px,2.1vh,21px);line-height:2em;padding:0 6px;min-height:6em;
+  background-image:repeating-linear-gradient(to bottom,transparent 0,transparent calc(2em - 2px),var(--b) calc(2em - 2px),var(--b) 2em);
+  background-attachment:local;
+}
+.exit{text-align:center;padding-inline:clamp(70px,9vw,110px)}
+.exit .lines{min-height:4em;text-align:right;margin-top:4px}
+
+/* ---------- intelligence picker ---------- */
+.pick{position:fixed;inset:0;background:rgba(27,21,51,.45);backdrop-filter:blur(3px);display:none;
+  align-items:center;justify-content:center;z-index:40;padding:16px}
+.pick.show{display:flex}
+.pick .panel{background:#fff;border-radius:24px;padding:20px;max-width:640px;width:100%;
+  box-shadow:0 20px 50px rgba(27,21,51,.35)}
+.pick h3{text-align:center;font-family:'Ziporen','Almoni',cursive;font-weight:400;font-size:28px;color:var(--indigo);margin-bottom:12px}
+.pick .grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.pick .grid button{border:2px solid transparent;background:#FAF9FE;border-radius:16px;padding:4px;cursor:pointer}
+.pick .grid button:hover,.pick .grid button.sel{border-color:var(--magenta)}
+.pick .grid img{width:100%;display:block}
+.pick .foot{display:flex;justify-content:center;gap:10px;margin-top:14px}
+
+.foot-note{text-align:center;color:#8A83A6;font-size:14px}
+
+/* ---------- presentation mode ---------- */
+body.present .tools .btns .edit-only{display:none}
+body.present .foot-note{display:none}
+
+@media (max-width:900px){
+  .stations{grid-template-columns:repeat(2,1fr)}
+}
+@media (max-width:620px){
+  .top{grid-template-columns:1fr}
+  .timer{margin:0 auto}
+  .stations{grid-template-columns:1fr}
+  .row{flex-wrap:wrap}
+  .exit{padding-inline:14px}
+  .exit .ticket{display:none}
+  .entry .ticket{display:none}
+  .pick .grid{grid-template-columns:repeat(2,1fr)}
+}
+@media print{
+  body{background:#fff;padding:0}
+  .tools .btns,.tctl,.foot-note,.toast{display:none!important}
+  .page{max-width:none}
+  .box,.st-card{box-shadow:none}
+  @page{size:A4 landscape;margin:8mm}
+}
+</style>
+</head>
+<body class="editing">
+<div class="page">
+
+  <div class="tools">
+    <img class="logo" src="../canva/assets/shalhevet-logo.png" alt="שלהבות חב&quot;ד">
+    <div class="btns">
+      <button class="tb main" id="presentBtn">מצב הקרנה</button>
+      <button class="tb edit-only" id="shareBtn">העתקת קישור לשיעור</button>
+      <button class="tb edit-only" id="printBtn">הדפסה</button>
+      <button class="tb edit-only" id="clearBtn">תבנית ריקה</button>
+    </div>
+  </div>
+
+  <!-- top area: timer (right) + goal + entry card -->
+  <section class="top">
+    <div class="timer" id="timer">
+      <div class="dial" id="dial" title="לחיצה: הפעלה / עצירה">
+        <svg viewBox="0 0 200 200" aria-hidden="true">
+          <defs>
+            <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0" stop-color="#08B7D5"/><stop offset=".5" stop-color="#AA479A"/><stop offset="1" stop-color="#EE3461"/>
+            </linearGradient>
+          </defs>
+          <g stroke="#FCB918" stroke-width="5" stroke-linecap="round">
+            <line x1="100" y1="3" x2="100" y2="-8" transform="rotate(-40 100 100)"/>
+            <line x1="100" y1="3" x2="100" y2="-8" transform="rotate(-25 100 100)"/>
+            <line x1="100" y1="3" x2="100" y2="-8" transform="rotate(25 100 100)" stroke="#08B7D5"/>
+            <line x1="100" y1="3" x2="100" y2="-8" transform="rotate(40 100 100)" stroke="#08B7D5"/>
+          </g>
+          <circle cx="100" cy="100" r="86" fill="#fff" stroke="#EEEAF8" stroke-width="14"/>
+          <circle id="ring" cx="100" cy="100" r="86" fill="none" stroke="url(#g)" stroke-width="14"
+                  stroke-linecap="round" transform="rotate(-90 100 100)"/>
+          <g stroke="#C9C2E0" stroke-width="3" stroke-linecap="round" id="ticks"></g>
+        </svg>
+        <div class="face">
+          <div class="t1">טיימר</div>
+          <div class="time" id="time">15:00</div>
+          <div class="st" id="tstate">לחצו להפעלה</div>
+        </div>
+      </div>
+      <div class="tctl">
+        <button class="go" id="goBtn">הפעלה</button>
+        <button id="resetBtn">איפוס</button>
+      </div>
+      <div class="tctl">
+        <button data-min="15">15 דק׳</button>
+        <button data-min="20">20 דק׳</button>
+        <input id="customMin" type="number" min="1" max="120" title="דקות" aria-label="דקות">
+      </div>
+    </div>
+
+    <div class="heads">
+      <div class="box goal">
+        <div class="row">
+          <svg class="ico" viewBox="0 0 64 64" aria-hidden="true"><circle cx="30" cy="34" r="24" fill="#FFF3C9" stroke="#4F3795" stroke-width="4"/><circle cx="30" cy="34" r="15" fill="none" stroke="#EE3461" stroke-width="4"/><circle cx="30" cy="34" r="6" fill="#4F3795"/><path d="M30 34 54 10" stroke="#4F3795" stroke-width="4" stroke-linecap="round"/><path d="M48 6l6 4 4-2-2 8-8 2 2-4z" fill="#F36F28"/></svg>
+          <span class="lbl">מטרת השיעור:</span>
+          <div class="fill" contenteditable="true" data-k="goal" data-ph="מה התלמידים ידעו / ירגישו / יעשו בסוף השיעור?"></div>
+        </div>
+      </div>
+
+      <div class="box entry">
+        <svg class="ticket" viewBox="0 0 80 50" aria-hidden="true"><g transform="rotate(-14 40 25)"><path d="M8 10h64v10a5 5 0 0 0 0 10v10H8V30a5 5 0 0 0 0-10z" fill="#BDEBF4" stroke="#0DA6B9" stroke-width="3" stroke-linejoin="round"/><path d="M26 11v28" stroke="#0DA6B9" stroke-width="2.5" stroke-dasharray="3 3"/><path d="m48 16 2.6 5.4 5.9.8-4.3 4.1 1 5.8-5.2-2.8-5.2 2.8 1-5.8-4.3-4.1 5.9-.8z" fill="#FCB918" stroke="#0DA6B9" stroke-width="2" stroke-linejoin="round"/></g></svg>
+        <div class="body">
+          <span class="brush">כרטיס כניסה לשיעור</span>
+          <div class="q" contenteditable="true" data-k="entry" data-ph="כתבו כאן את שאלת הפתיחה / המשימה של כרטיס הכניסה"></div>
+        </div>
+        <div class="row">
+          <span class="lbl sm">מסר השיעור:</span>
+          <div class="fill" contenteditable="true" data-k="message" data-ph="המסר המרכזי שנרצה שיישאר"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- stations -->
+  <section class="stations" id="stations"></section>
+
+  <!-- exit card -->
+  <div class="box exit">
+    <svg class="ticket r" viewBox="0 0 80 50" aria-hidden="true"><g transform="rotate(-14 40 25)"><path d="M8 10h64v10a5 5 0 0 0 0 10v10H8V30a5 5 0 0 0 0-10z" fill="#EED3EA" stroke="#AA479A" stroke-width="3" stroke-linejoin="round"/><path d="M26 11v28" stroke="#AA479A" stroke-width="2.5" stroke-dasharray="3 3"/><path d="m48 16 2.6 5.4 5.9.8-4.3 4.1 1 5.8-5.2-2.8-5.2 2.8 1-5.8-4.3-4.1 5.9-.8z" fill="#FCB918" stroke="#AA479A" stroke-width="2" stroke-linejoin="round"/></g></svg>
+    <svg class="ticket l" viewBox="0 0 80 50" aria-hidden="true"><g transform="rotate(-14 40 25)"><path d="M8 10h64v10a5 5 0 0 0 0 10v10H8V30a5 5 0 0 0 0-10z" fill="#EED3EA" stroke="#AA479A" stroke-width="3" stroke-linejoin="round"/><path d="M26 11v28" stroke="#AA479A" stroke-width="2.5" stroke-dasharray="3 3"/><path d="m48 16 2.6 5.4 5.9.8-4.3 4.1 1 5.8-5.2-2.8-5.2 2.8 1-5.8-4.3-4.1 5.9-.8z" fill="#FCB918" stroke="#AA479A" stroke-width="2" stroke-linejoin="round"/></g></svg>
+    <span class="brush">כרטיס יציאה מהשיעור</span>
+    <div class="lines" contenteditable="true" data-k="exit" data-ph="שאלת סיכום / רפלקציה לסוף השיעור"></div>
+  </div>
+
+  <p class="foot-note">לוחצים על כל שדה וכותבים · לוחצים על האייקון של התחנה כדי לבחור אינטליגנציה · הכול נשמר אוטומטית במחשב הזה</p>
+</div>
+
+<!-- intelligence picker -->
+<div class="pick" id="pick">
+  <div class="panel">
+    <h3>בחירת אינטליגנציה לתחנה</h3>
+    <div class="grid" id="pickGrid"></div>
+    <div class="foot"><button class="tb" id="noIntel">בלי אייקון</button><button class="tb main" id="pickClose">סגירה</button></div>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+const INTEL = [
+  ['linguistic','לשונית'],['logical','לוגית מתמטית'],['spatial','מרחבית'],['bodily','גופנית תנועתית'],
+  ['musical','מוזיקלית'],['interpersonal','בין אישית'],['intrapersonal','תוך אישית'],['naturalist','נטורליסטית']
+];
+const KEY = 'shalhevet-entry-card-v1';
+const blank = () => ({goal:'',entry:'',message:'',exit:'',minutes:15,
+  stations:[{intel:'logical',sub:'',text:''},{intel:'linguistic',sub:'',text:''},{intel:'interpersonal',sub:'',text:''},{intel:'bodily',sub:'',text:''}]});
+
+// ---------- state: link hash > local storage > blank ----------
+function decode(s){try{return JSON.parse(decodeURIComponent(escape(atob(s))))}catch(e){return null}}
+function encode(o){return btoa(unescape(encodeURIComponent(JSON.stringify(o))))}
+let state = null;
+if (location.hash.length > 2) state = decode(location.hash.slice(1));
+if (!state) { try { state = JSON.parse(localStorage.getItem(KEY)) } catch(e) {} }
+if (!state || !state.stations) state = blank();
+function save(){ try { localStorage.setItem(KEY, JSON.stringify(state)) } catch(e) {} }
+
+// ---------- stations ----------
+const wrap = document.getElementById('stations');
+function renderStations(){
+  wrap.innerHTML = '';
+  state.stations.forEach((s,i) => {
+    const el = document.createElement('div');
+    el.className = 'st-card';
+    const it = INTEL.find(x => x[0] === s.intel);
+    el.innerHTML = `
+      <div class="st-head">
+        <button class="intel ${it?'':'none'}" data-i="${i}" title="בחירת אינטליגנציה">
+          ${it ? `<img src="img/${it[0]}.png" alt="${it[1]}">` : 'בחירת<br>אייקון'}
+        </button>
+        <span class="brush">תחנה ${i+1}</span>
+      </div>
+      <div class="st-sub" contenteditable="true" data-s="${i}" data-f="sub" data-ph="שם התחנה"></div>
+      <div class="lines" contenteditable="true" data-s="${i}" data-f="text" data-ph="מה עושים בתחנה?"></div>`;
+    wrap.appendChild(el);
+    el.querySelector('[data-f=sub]').innerText = s.sub || '';
+    el.querySelector('[data-f=text]').innerText = s.text || '';
+  });
+}
+renderStations();
+
+// ---------- editable fields ----------
+document.querySelectorAll('[data-k]').forEach(el => { el.innerText = state[el.dataset.k] || '' });
+document.addEventListener('input', e => {
+  const t = e.target;
+  if (t.dataset.k) state[t.dataset.k] = t.innerText.trim();
+  else if (t.dataset.s) state.stations[+t.dataset.s][t.dataset.f] = t.innerText.trim();
+  else return;
+  save();
+});
+// keep pasted text plain
+document.addEventListener('paste', e => {
+  if (!e.target.closest('[contenteditable]')) return;
+  e.preventDefault();
+  document.execCommand('insertText', false, (e.clipboardData || window.clipboardData).getData('text'));
+});
+
+// ---------- intelligence picker ----------
+const pick = document.getElementById('pick'), grid = document.getElementById('pickGrid');
+let pickFor = -1;
+grid.innerHTML = INTEL.map(([k,n]) => `<button data-v="${k}" title="${n}"><img src="img/${k}.png" alt="${n}"></button>`).join('');
+wrap.addEventListener('click', e => {
+  const b = e.target.closest('.intel'); if (!b) return;
+  pickFor = +b.dataset.i;
+  grid.querySelectorAll('button').forEach(x => x.classList.toggle('sel', x.dataset.v === state.stations[pickFor].intel));
+  pick.classList.add('show');
+});
+function setIntel(v){ state.stations[pickFor].intel = v; save(); renderStations(); pick.classList.remove('show'); }
+grid.addEventListener('click', e => { const b = e.target.closest('button'); if (b) setIntel(b.dataset.v); });
+document.getElementById('noIntel').onclick = () => setIntel('');
+document.getElementById('pickClose').onclick = () => pick.classList.remove('show');
+pick.addEventListener('click', e => { if (e.target === pick) pick.classList.remove('show'); });
+
+// ---------- timer ----------
+const ring = document.getElementById('ring'), C = 2 * Math.PI * 86;
+ring.style.strokeDasharray = C;
+const ticks = document.getElementById('ticks');
+for (let i = 0; i < 12; i++) {
+  const a = i * 30 * Math.PI / 180, r1 = 70, r2 = i % 3 ? 74 : 66;
+  ticks.insertAdjacentHTML('beforeend',
+    `<line x1="${100+r1*Math.sin(a)}" y1="${100-r1*Math.cos(a)}" x2="${100+r2*Math.sin(a)}" y2="${100-r2*Math.cos(a)}"/>`);
+}
+const timerEl = document.getElementById('timer'), timeEl = document.getElementById('time'),
+      stEl = document.getElementById('tstate'), goBtn = document.getElementById('goBtn'),
+      customMin = document.getElementById('customMin');
+let total, left, endAt = 0, tick = null;
+
+function fmt(s){ s = Math.max(0, Math.ceil(s)); return String(Math.floor(s/60)).padStart(2,'0') + ':' + String(s%60).padStart(2,'0'); }
+function draw(){
+  timeEl.textContent = fmt(left);
+  ring.style.strokeDashoffset = C * (1 - left / total);
+  ring.style.stroke = left <= 60 && left > 0 ? '#EE3461' : 'url(#g)';
+}
+function setMinutes(m){
+  m = Math.min(120, Math.max(1, Math.round(m) || 15));
+  stop(); total = left = m * 60; state.minutes = m; save();
+  customMin.value = m; timerEl.classList.remove('end');
+  document.querySelectorAll('[data-min]').forEach(b => b.classList.toggle('on', +b.dataset.min === m));
+  stEl.textContent = 'לחצו להפעלה'; goBtn.textContent = 'הפעלה';
+  ring.style.transition = 'none'; draw(); ring.getBoundingClientRect(); ring.style.transition = '';
+}
+function start(){
+  if (left <= 0) setMinutes(state.minutes);
+  endAt = Date.now() + left * 1000; timerEl.classList.remove('end');
+  tick = setInterval(() => {
+    left = (endAt - Date.now()) / 1000;
+    if (left <= 0) { left = 0; draw(); finish(); return; }
+    draw();
+  }, 250);
+  goBtn.textContent = 'עצירה'; stEl.textContent = 'הזמן רץ…';
+}
+function stop(){ if (tick) { clearInterval(tick); tick = null; } }
+function pause(){ stop(); goBtn.textContent = 'המשך'; stEl.textContent = 'בהשהיה'; }
+function toggle(){ tick ? pause() : start(); }
+function finish(){
+  stop(); timerEl.classList.add('end'); goBtn.textContent = 'שוב'; stEl.textContent = 'הזמן נגמר!';
+  chime();
+}
+function chime(){
+  try {
+    const ac = new (window.AudioContext || window.webkitAudioContext)();
+    [0, .28, .56].forEach((d, i) => {
+      const o = ac.createOscillator(), g = ac.createGain();
+      o.type = 'sine'; o.frequency.value = [784, 988, 1175][i];
+      g.gain.setValueAtTime(0, ac.currentTime + d);
+      g.gain.linearRampToValueAtTime(.3, ac.currentTime + d + .02);
+      g.gain.exponentialRampToValueAtTime(.001, ac.currentTime + d + .9);
+      o.connect(g).connect(ac.destination); o.start(ac.currentTime + d); o.stop(ac.currentTime + d + 1);
+    });
+  } catch(e) {}
+}
+goBtn.onclick = toggle;
+document.getElementById('dial').onclick = toggle;
+document.getElementById('resetBtn').onclick = () => setMinutes(state.minutes);
+document.querySelectorAll('[data-min]').forEach(b => b.onclick = () => setMinutes(+b.dataset.min));
+customMin.addEventListener('change', () => setMinutes(+customMin.value));
+setMinutes(state.minutes || 15);
+
+// ---------- toolbar ----------
+const toast = document.getElementById('toast');
+function say(t){ toast.textContent = t; toast.classList.add('show'); setTimeout(() => toast.classList.remove('show'), 2200); }
+const presentBtn = document.getElementById('presentBtn');
+function setPresent(on){
+  document.body.classList.toggle('present', on);
+  document.body.classList.toggle('editing', !on);
+  document.querySelectorAll('[contenteditable]').forEach(el => el.contentEditable = on ? 'false' : 'true');
+  presentBtn.textContent = on ? 'חזרה לעריכה' : 'מצב הקרנה';
+  if (on && document.documentElement.requestFullscreen) document.documentElement.requestFullscreen().catch(() => {});
+  if (!on && document.fullscreenElement) document.exitFullscreen().catch(() => {});
+}
+presentBtn.onclick = () => setPresent(!document.body.classList.contains('present'));
+document.addEventListener('fullscreenchange', () => { if (!document.fullscreenElement && document.body.classList.contains('present')) setPresent(false); });
+document.getElementById('printBtn').onclick = () => window.print();
+document.getElementById('shareBtn').onclick = async () => {
+  const url = location.href.split('#')[0] + '#' + encode(state);
+  try { await navigator.clipboard.writeText(url); say('הקישור הועתק – מי שיפתח אותו יראה את השיעור הזה'); }
+  catch(e) { prompt('העתיקו את הקישור:', url); }
+};
+document.getElementById('clearBtn').onclick = () => {
+  if (!confirm('לנקות את כל השדות ולהתחיל תבנית חדשה?')) return;
+  state = blank(); save(); history.replaceState(null, '', location.pathname);
+  document.querySelectorAll('[data-k]').forEach(el => el.innerText = '');
+  renderStations(); setMinutes(15);
+};
+</script>
+</body>
+</html>
