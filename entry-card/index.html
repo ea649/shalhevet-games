@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>כרטיס כניסה לשיעור – שלהבות חב"ד</title>
+<link rel="preload" href="img/char3.webp" as="image">
 <style>
 @font-face{font-family:'Tamlil';src:url(../fonts/FbTamlil-Regular.otf) format('opentype');font-weight:400;font-display:swap}
 @font-face{font-family:'Tamlil';src:url(../fonts/FbTamlil-Medium.otf) format('opentype');font-weight:500;font-display:swap}
@@ -11,129 +12,152 @@
 @font-face{font-family:'TamlilCond';src:url(../fonts/FbTamlilCondensed-Black.otf) format('opentype');font-weight:900;font-display:swap}
 
 :root{
-  --indigo:#4F3795; --magenta:#AA479A; --pink:#EE3461; --cyan:#08B7D5;
-  --teal:#0DA6B9; --yellow:#FCB918; --lime:#BCCB33; --orange:#F36F28; --ink:#1B1533;
-  --muted:#6B6486;
-  --g-brand:linear-gradient(120deg,#08B7D5 0%,#4F3795 45%,#AA479A 72%,#EE3461 100%);
-  --g-goal:linear-gradient(120deg,#FCB918,#F36F28);
-  --g-entry:linear-gradient(120deg,#08B7D5,#4F3795);
-  --g-exit:linear-gradient(120deg,#AA479A,#EE3461);
+  --indigo:#513996; --magenta:#AA479A; --pink:#EE2F62; --cyan:#1EBCD7;
+  --yellow:#FDB916; --lime:#BDCC32; --orange:#F36F29; --ink:#1B1533; --muted:#6B6486;
+  --page:#FFFFFF;
+  --g-brand:linear-gradient(120deg,#1EBCD7 0%,#513996 45%,#AA479A 72%,#EE2F62 100%);
 }
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 html,body{min-height:100%}
 body{
   font-family:'Tamlil','Segoe UI',Arial,sans-serif;font-weight:500;color:var(--ink);
-  background:#F7F5FF;
-  padding:clamp(10px,2vh,22px) clamp(12px,2.4vw,30px) 28px;
-  -webkit-font-smoothing:antialiased;position:relative;overflow-x:hidden;
+  background:var(--page);
+  padding:clamp(10px,1.8vh,20px) clamp(14px,2.4vw,32px) 28px;
+  -webkit-font-smoothing:antialiased;overflow-x:hidden;
 }
-/* soft colour blobs behind everything */
-body:before{
-  content:"";position:fixed;inset:-20%;z-index:-1;filter:blur(60px);opacity:.55;
-  background:
-    radial-gradient(28% 32% at 88% 10%,#8FE3F2 0%,transparent 70%),
-    radial-gradient(30% 34% at 12% 18%,#C9B8F2 0%,transparent 70%),
-    radial-gradient(32% 30% at 20% 92%,#FFD27A 0%,transparent 70%),
-    radial-gradient(30% 34% at 86% 88%,#F7A8C4 0%,transparent 70%);
-  animation:drift 24s ease-in-out infinite alternate;
-}
-@keyframes drift{to{transform:translate(3%,-2%) rotate(4deg)}}
-.page{max-width:1280px;margin:0 auto;display:grid;gap:clamp(12px,1.8vh,20px)}
+.page{max-width:1320px;margin:0 auto;display:grid;gap:clamp(14px,2vh,22px)}
 
 /* ---------- toolbar ---------- */
 .tools{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between}
-.tools .logo{height:clamp(36px,5.6vh,56px);width:auto}
+.tools .logo{height:clamp(34px,5.2vh,54px);width:auto}
 .tools .btns{display:flex;flex-wrap:wrap;gap:8px}
 .tb{
-  border:0;background:rgba(255,255,255,.8);color:var(--indigo);border-radius:999px;
-  padding:9px 18px;font:500 16px 'Tamlil',sans-serif;cursor:pointer;
-  box-shadow:0 4px 14px rgba(79,55,149,.12), inset 0 0 0 1.5px rgba(79,55,149,.14);transition:.18s;
-  backdrop-filter:blur(8px);
+  border:0;background:#fff;color:var(--indigo);border-radius:999px;
+  padding:8px 18px;font:500 16px 'Tamlil',sans-serif;cursor:pointer;
+  box-shadow:0 4px 14px rgba(81,57,150,.12), inset 0 0 0 1.5px rgba(81,57,150,.16);transition:.18s;
 }
-.tb:hover{transform:translateY(-1px);box-shadow:0 8px 20px rgba(79,55,149,.18), inset 0 0 0 1.5px rgba(170,71,154,.5)}
-.tb.main{background:var(--g-brand);background-size:160% 100%;color:#fff;box-shadow:0 8px 20px rgba(79,55,149,.3)}
-.tb.main:hover{background-position:100% 0}
+.tb:hover{transform:translateY(-1px);box-shadow:0 8px 20px rgba(81,57,150,.18), inset 0 0 0 1.5px rgba(170,71,154,.5)}
+.tb.main{background:var(--g-brand);color:#fff;box-shadow:0 8px 20px rgba(81,57,150,.3)}
 .toast{position:fixed;bottom:22px;left:50%;transform:translate(-50%,30px);opacity:0;
   background:var(--ink);color:#fff;padding:10px 18px;border-radius:12px;font-size:16px;transition:.3s;z-index:50}
 .toast.show{opacity:1;transform:translate(-50%,0)}
 
-/* ---------- gradient-border cards ---------- */
-.box,.st-card{
-  position:relative;border:3px solid transparent;border-radius:26px;
-  background:linear-gradient(var(--tint),var(--tint)) padding-box, var(--g) border-box;
-  box-shadow:0 20px 40px -26px var(--glow);
+/* ======================================================================
+   CARD – the look of the Canva work-cards:
+   strong colour on top fading to a pale tint, big white title,
+   a small tab, a white "cut-out" corner, and a character that
+   steps out of the card.
+   ====================================================================== */
+.card{
+  --c:var(--magenta); --l:#FFF1FD; --tab:var(--cyan);
+  position:relative;border-radius:22px;isolation:isolate;
+  background:linear-gradient(180deg,var(--c) 0%,color-mix(in srgb,var(--c) 62%,var(--l)) 30%,var(--l) 86%);
+  box-shadow:0 18px 34px -24px color-mix(in srgb,var(--c) 80%,#000);
 }
-.box{padding:clamp(12px,1.8vh,18px) clamp(14px,1.8vw,24px)}
-.box.goal{--g:var(--g-goal);--tint:#FFFCF3;--glow:rgba(243,111,40,.55)}
-.box.entry{--g:var(--g-entry);--tint:#F6FBFF;--glow:rgba(8,183,213,.55)}
-.box.exit{--g:var(--g-exit);--tint:#FFF7FB;--glow:rgba(238,52,97,.5)}
+.card.c-magenta{--c:#AA479A;--l:#FFF1FD;--tab:#1EBCD7}
+.card.c-pink   {--c:#EE2F62;--l:#FFE8EE;--tab:#FDB916}
+.card.c-indigo {--c:#513996;--l:#F6F2FF;--tab:#F36F29}
+.card.c-cyan   {--c:#1EBCD7;--l:#F1FDFF;--tab:#FDB916}
+.card.c-lime   {--c:#A9BA1E;--l:#FEFFF0;--tab:#513996}
+.card.c-orange {--c:#F36F29;--l:#FFECE3;--tab:#513996}
+.card.c-yellow {--c:#FDB916;--l:#FFF2D1;--tab:#EE2F62}
 
-/* gradient pill titles */
-.pill{
-  display:inline-flex;align-items:center;gap:8px;
-  font:900 clamp(22px,3.2vh,34px)/1.1 'TamlilCond','Tamlil',sans-serif;color:#fff;
-  padding:6px 22px 7px;border-radius:999px;background:var(--g);
-  box-shadow:0 10px 22px -10px var(--glow);letter-spacing:.2px;
+.tab{
+  position:absolute;top:12px;left:14px;z-index:3;
+  background:var(--tab);color:#fff;border-radius:9px;padding:3px 12px 4px;
+  font:900 clamp(14px,1.9vh,19px)/1.1 'TamlilCond','Tamlil',sans-serif;white-space:nowrap;
+  box-shadow:0 4px 10px -4px rgba(0,0,0,.35);
 }
-.pill svg{width:1.05em;height:1.05em;flex:none}
-
-.top{display:grid;grid-template-columns:auto 1fr;gap:clamp(12px,1.6vw,22px);align-items:stretch}
-.heads{display:grid;grid-template-rows:auto 1fr;gap:clamp(12px,1.8vh,18px)}
-.entry{display:flex;flex-direction:column;justify-content:center}
-.row{display:flex;align-items:center;gap:12px}
-.lbl{font:900 clamp(20px,2.7vh,28px) 'TamlilCond','Tamlil',sans-serif;white-space:nowrap;
-  background:var(--g);-webkit-background-clip:text;background-clip:text;color:transparent}
-.lbl.sm{font:700 clamp(15px,1.9vh,19px) 'Tamlil',sans-serif}
-.ico{flex:none;width:clamp(38px,5.4vh,54px);height:auto}
+.ttl{
+  display:block;text-align:center;color:#fff;
+  font:900 clamp(26px,4.4vh,50px)/1 'TamlilCond','Tamlil',sans-serif;
+  text-shadow:0 2px 12px color-mix(in srgb,var(--c) 70%,#000 30%);
+  padding:0 8px;
+}
+/* white corner "cut-out" (top right), like the logo corner in the Canva cards */
+.corner{
+  position:absolute;top:-2px;right:-2px;z-index:2;
+  width:clamp(88px,13vh,140px);height:clamp(70px,10vh,110px);
+  background:var(--page);border-radius:0 22px 0 100% / 0 22px 0 100%;
+  display:flex;align-items:flex-start;justify-content:flex-end;padding:8px 10px 0 0;
+}
+.corner img.lg{width:88%;height:auto}
+/* decorative sparkle */
+.spark{position:absolute;z-index:3;width:clamp(22px,3.4vh,34px);height:auto;pointer-events:none}
+/* the character */
+.char{
+  position:absolute;z-index:4;pointer-events:none;height:var(--ch,60%);width:auto;
+  left:var(--cx,-16px);bottom:var(--cy,-12px);
+  filter:drop-shadow(0 10px 14px rgba(27,21,51,.22));
+}
+.char.flip{transform:scaleX(-1)}
 
 /* editable text */
 [contenteditable]{outline:none;border-radius:10px;transition:background .15s}
-.editing [contenteditable]:hover{background:rgba(79,55,149,.05)}
-.editing [contenteditable]:focus{background:rgba(79,55,149,.08)}
-[contenteditable]:empty:before{content:attr(data-ph);color:#B4ADCB;font-weight:400}
-.fill{
-  flex:1;min-width:0;font-size:clamp(18px,2.4vh,25px);line-height:1.5;padding:2px 8px;min-height:1.6em;
-  background-image:linear-gradient(90deg,var(--c1,#C9C2E0),var(--c2,#C9C2E0));
-  background-size:100% 2px;background-repeat:no-repeat;background-position:0 100%;
+.editing [contenteditable]:hover{background:rgba(255,255,255,.35)}
+.editing [contenteditable]:focus{background:rgba(255,255,255,.55)}
+[contenteditable]:empty:before{content:attr(data-ph);color:color-mix(in srgb,var(--c) 45%,#8E88A6);font-weight:400}
+.ttl[contenteditable]:empty:before{color:rgba(255,255,255,.72)}
+.hint{display:block;font:italic 500 clamp(13px,1.6vh,16px) 'Tamlil',sans-serif;color:color-mix(in srgb,var(--c) 55%,#3A3350)}
+.lines{
+  font-size:clamp(16px,2.1vh,22px);line-height:1.9em;padding:0 6px;min-height:3.8em;color:var(--ink);
+  background-image:repeating-linear-gradient(to bottom,transparent 0,transparent calc(1.9em - 2px),
+    color-mix(in srgb,var(--c) 30%,transparent) calc(1.9em - 2px),color-mix(in srgb,var(--c) 30%,transparent) 1.9em);
+  background-attachment:local;
 }
-.goal .fill{--c1:#FCB918;--c2:#F36F28}
-.entry .fill{--c1:#08B7D5;--c2:#4F3795}
-.entry .body{text-align:center}
-.entry .q{font-size:clamp(21px,3vh,31px);font-weight:700;line-height:1.45;min-height:1.5em;padding:6px 8px 2px}
-.entry .row{margin-top:8px}
+
+/* ---------- top: timer + goal + entry ---------- */
+.top{display:grid;grid-template-columns:auto 1fr;gap:clamp(14px,1.8vw,24px);align-items:stretch}
+.heads{display:grid;grid-template-rows:auto 1fr;gap:clamp(12px,1.8vh,18px)}
+
+.goal{display:flex;align-items:center;gap:12px;padding:clamp(10px,1.5vh,14px) clamp(120px,10vw,150px) clamp(10px,1.5vh,14px) 20px}
+.goal .lbl{font:900 clamp(22px,3vh,32px)/1 'TamlilCond','Tamlil',sans-serif;color:#fff;white-space:nowrap;
+  text-shadow:0 2px 10px rgba(160,90,0,.45)}
+.goal .fill{flex:1;min-width:0;font-size:clamp(18px,2.4vh,25px);line-height:1.45;padding:2px 10px;min-height:1.5em;
+  background:rgba(255,255,255,.7);border-radius:12px}
+.goal .char{--ch:230%;left:auto;right:10px;bottom:-8px}
+
+.entry{padding:clamp(14px,2.2vh,24px) clamp(16px,2vw,28px) clamp(12px,1.8vh,18px) clamp(150px,17vw,230px);
+  display:flex;flex-direction:column;justify-content:center;gap:clamp(6px,1vh,10px)}
+.entry .ttl{padding-left:0}
+.entry .q{font-size:clamp(20px,2.9vh,30px);font-weight:700;line-height:1.4;min-height:1.4em;padding:4px 10px;text-align:center}
+.entry .row{display:flex;align-items:center;gap:10px}
+.entry .row .lbl{font:700 clamp(15px,1.9vh,19px) 'Tamlil',sans-serif;color:var(--c);white-space:nowrap}
+.entry .fill{flex:1;min-width:0;font-size:clamp(17px,2.2vh,23px);line-height:1.45;padding:2px 8px;min-height:1.5em;
+  border-bottom:2px dashed color-mix(in srgb,var(--c) 45%,transparent)}
+.entry .char{--ch:104%;--cx:-18px;--cy:-10px}
+.entry .spark{top:clamp(72px,10.5vh,115px);right:8px}
 
 /* ---------- timer ---------- */
 .timer{
-  width:clamp(190px,26vh,250px);display:flex;flex-direction:column;align-items:center;gap:10px;
-  padding:14px 12px;border-radius:30px;
-  background:linear-gradient(160deg,rgba(255,255,255,.95),rgba(255,255,255,.7)) padding-box, var(--g-brand) border-box;
-  border:3px solid transparent;box-shadow:0 22px 44px -26px rgba(79,55,149,.6);
+  display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:26px;
+  background:linear-gradient(180deg,#F6F2FF,#fff);
+  box-shadow:0 18px 34px -24px rgba(81,57,150,.7), inset 0 0 0 2px #E6DEF8;
 }
-.dial{position:relative;width:100%;aspect-ratio:1;cursor:pointer}
+.dial{position:relative;flex:none;width:clamp(140px,21vh,220px);aspect-ratio:1;cursor:pointer}
 .dial svg{width:100%;height:100%;display:block;overflow:visible}
 .dial .face{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
-.dial .t1{font:900 clamp(18px,2.6vh,24px) 'TamlilCond',sans-serif;
-  background:var(--g-brand);-webkit-background-clip:text;background-clip:text;color:transparent}
-.dial .time{font:700 clamp(38px,6vh,58px)/1.05 'Tamlil',sans-serif;font-variant-numeric:tabular-nums;color:var(--ink);direction:ltr}
-.dial .st{font-size:clamp(13px,1.7vh,16px);color:var(--muted)}
+.dial .t1{font:900 clamp(18px,2.6vh,24px) 'TamlilCond',sans-serif;color:var(--indigo)}
+.dial .time{font:700 clamp(32px,5.4vh,54px)/1.05 'Tamlil',sans-serif;font-variant-numeric:tabular-nums;color:var(--ink);direction:ltr}
+.dial .tst{font-size:clamp(13px,1.7vh,16px);color:var(--muted)}
 #ring{transition:stroke-dashoffset .95s linear}
 .timer.run #glow{animation:pulse 2s ease-in-out infinite}
 @keyframes pulse{50%{opacity:.35}}
 .timer.end .dial{animation:shake .6s ease 3}
 .timer.end .time{color:var(--pink)}
 @keyframes shake{0%,100%{transform:rotate(0)}25%{transform:rotate(-4deg)}75%{transform:rotate(4deg)}}
-
+.tside{display:flex;flex-direction:column;align-items:center;gap:8px;width:clamp(150px,15vw,190px)}
 .tctl{display:flex;gap:6px;flex-wrap:wrap;justify-content:center;max-width:100%}
 .tctl button{
   border:0;border-radius:999px;padding:7px 14px;cursor:pointer;font:700 16px 'Tamlil',sans-serif;white-space:nowrap;
-  background:#fff;color:var(--indigo);box-shadow:0 3px 10px rgba(79,55,149,.14), inset 0 0 0 1.5px rgba(79,55,149,.12);
+  background:#fff;color:var(--indigo);box-shadow:0 3px 10px rgba(81,57,150,.14), inset 0 0 0 1.5px rgba(81,57,150,.12);
 }
 .tctl button.go{background:var(--g-brand);color:#fff;min-width:88px}
-.dur{width:100%;border-top:1.5px dashed rgba(79,55,149,.18);padding-top:10px;display:grid;gap:8px;justify-items:center}
+.dur{width:100%;border-top:1.5px dashed rgba(81,57,150,.2);padding-top:8px;display:grid;gap:6px;justify-items:center}
 .dur .h{font:700 15px 'Tamlil',sans-serif;color:var(--muted)}
 .stepper{display:flex;align-items:center;gap:8px}
 .stepper button{width:34px;height:34px;border-radius:50%;border:0;cursor:pointer;
-  font:700 22px/1 'Tamlil',sans-serif;color:#fff;background:var(--g-entry);box-shadow:0 4px 10px rgba(79,55,149,.25)}
+  font:700 22px/1 'Tamlil',sans-serif;color:#fff;background:linear-gradient(135deg,#1EBCD7,#513996);box-shadow:0 4px 10px rgba(81,57,150,.25)}
 .stepper button:disabled{opacity:.35;cursor:default}
 .stepper .val{min-width:78px;white-space:nowrap;text-align:center;font:700 22px 'Tamlil',sans-serif;color:var(--ink)}
 .stepper .val input{width:40px;border:0;background:transparent;text-align:center;font:inherit;color:inherit;
@@ -141,50 +165,68 @@ body:before{
 .stepper .val input::-webkit-inner-spin-button{-webkit-appearance:none}
 .chips{display:flex;flex-wrap:wrap;gap:5px;justify-content:center}
 .chips button{border:0;border-radius:999px;padding:4px 10px;cursor:pointer;font:500 14px 'Tamlil',sans-serif;
-  color:var(--indigo);background:#EFEBFA;transition:.15s}
+  color:var(--indigo);background:#EDE7FA;transition:.15s}
 .chips button.on{background:var(--g-brand);color:#fff}
 body.present .dur{display:none}
 
 /* ---------- stations ---------- */
-.stations{display:grid;grid-template-columns:repeat(4,1fr);gap:clamp(12px,1.4vw,20px)}
-.st-card{
-  --g:linear-gradient(135deg,#4F3795,#AA479A);--tint:#FBFAFF;--glow:rgba(79,55,149,.55);--ln:#E4DDF6;--acc:#4F3795;
-  padding:clamp(12px,1.5vh,16px);display:flex;flex-direction:column;gap:8px;
-  min-height:clamp(250px,36vh,380px);transition:transform .2s;
+.stations{display:grid;grid-template-columns:repeat(var(--cols,4),minmax(0,1fr)) 74px;gap:clamp(14px,1.5vw,22px)}
+body.present .stations{grid-template-columns:repeat(var(--cols,4),minmax(0,1fr))}
+.st{
+  display:flex;flex-direction:column;gap:6px;min-width:0;min-height:clamp(260px,38vh,400px);
+  padding:calc(var(--cornerH) + 4px) 12px 12px;
+  --cornerH:clamp(76px,10.5vh,106px);
+  background:linear-gradient(180deg,var(--c) 0%,color-mix(in srgb,var(--c) 70%,var(--l)) 40%,var(--l) 92%);
 }
-.st-card:hover{transform:translateY(-3px)}
-.st-card:nth-child(2){--g:linear-gradient(135deg,#08B7D5,#4F3795);--tint:#F6FCFE;--glow:rgba(8,183,213,.55);--ln:#CDEFF6;--acc:#0B8FB0}
-.st-card:nth-child(3){--g:linear-gradient(135deg,#BCCB33,#0DA6B9);--tint:#FAFDF3;--glow:rgba(13,166,185,.5);--ln:#DCEBC2;--acc:#5E8E2A}
-.st-card:nth-child(4){--g:linear-gradient(135deg,#F36F28,#EE3461);--tint:#FFF8F6;--glow:rgba(238,52,97,.5);--ln:#FBD6D6;--acc:#D8323F}
-.st-head{display:flex;flex-direction:column;align-items:center;gap:10px}
-.st-head .pill{font-size:clamp(22px,3vh,32px);padding:5px 26px 6px}
+.st .ttl{font-size:clamp(24px,3.6vh,40px);min-height:1em;word-break:break-word}
+.st .hint{text-align:center;margin-top:2px}
+.st .lines{flex:1;padding-left:38%}
+.st .char{--ch:min(clamp(130px,23vh,250px),56%);--cx:-20px;--cy:-14px;max-width:66%;object-fit:contain;object-position:left bottom}
+.st .spark{top:clamp(50px,6.5vh,64px);left:14px}
+.st .corner{width:clamp(84px,12vh,120px);height:var(--cornerH);padding:6px 6px 0 0}
 .intel{
-  width:clamp(76px,11vh,108px);aspect-ratio:1;border:0;background:none;cursor:pointer;
-  border-radius:22px;position:relative;transition:transform .2s;
+  width:clamp(62px,9vh,92px);aspect-ratio:1;border:0;background:none;cursor:pointer;
+  border-radius:18px;position:relative;transition:transform .2s;
 }
-.intel:hover{transform:scale(1.05) rotate(-2deg)}
-.intel img{width:100%;height:100%;object-fit:contain;display:block;transform:scale(1.3)}
-/* default state: "choose an icon" */
+.intel:hover{transform:scale(1.06) rotate(-2deg)}
+.intel img{width:100%;height:100%;object-fit:contain;display:block;transform:scale(1.28)}
 .intel.none{
   display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;
-  border:2.5px dashed var(--acc);background:rgba(255,255,255,.7);
-  color:var(--acc);font:700 clamp(13px,1.6vh,15px)/1.15 'Tamlil',sans-serif;padding:6px;
+  border:2.5px dashed var(--c);background:#fff;color:var(--c);
+  font:700 clamp(12px,1.5vh,14px)/1.1 'Tamlil',sans-serif;padding:4px;
 }
 .intel.none .plus{
-  width:clamp(28px,4vh,38px);height:clamp(28px,4vh,38px);border-radius:50%;background:var(--g);color:#fff;
-  display:flex;align-items:center;justify-content:center;font:700 clamp(20px,3vh,28px)/1 'Tamlil',sans-serif;
-  box-shadow:0 6px 14px -6px var(--glow);animation:bob 2.2s ease-in-out infinite;
+  width:clamp(24px,3.4vh,32px);height:clamp(24px,3.4vh,32px);border-radius:50%;background:var(--c);color:#fff;
+  display:flex;align-items:center;justify-content:center;font:700 clamp(18px,2.6vh,24px)/1 'Tamlil',sans-serif;
+  animation:bob 2.2s ease-in-out infinite;
 }
 @keyframes bob{50%{transform:translateY(-3px)}}
 body.present .intel.none{visibility:hidden}
-.st-sub{font-weight:700;font-size:clamp(17px,2.1vh,21px);text-align:center;min-height:1.4em;color:var(--acc)}
-.lines{
-  flex:1;font-size:clamp(17px,2.2vh,22px);line-height:2em;padding:0 6px;min-height:6em;
-  background-image:repeating-linear-gradient(to bottom,transparent 0,transparent calc(2em - 2px),var(--ln) calc(2em - 2px),var(--ln) 2em);
-  background-attachment:local;
+.del{position:absolute;bottom:10px;right:10px;z-index:5;width:30px;height:30px;border-radius:50%;border:0;cursor:pointer;
+  background:#fff;color:var(--c);font:700 19px/1 'Tamlil',sans-serif;
+  box-shadow:0 2px 8px rgba(27,21,51,.18);opacity:0;transition:.15s}
+.st:hover .del,.del:focus{opacity:1}
+.del:hover{background:var(--c);color:#fff}
+@media (hover:none){.del{opacity:1}}
+.add-st{
+  grid-column:-2/-1;border:2.5px dashed #C9B8F2;border-radius:22px;background:#FBF9FF;cursor:pointer;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;padding:8px 4px;
+  font:700 14px 'Tamlil',sans-serif;color:var(--indigo);transition:.2s;text-align:center;
 }
-.exit{text-align:center}
-.exit .lines{--ln:#F3D3E4;min-height:4em;text-align:right;margin-top:6px}
+.add-st:hover{background:#fff;border-color:var(--magenta);transform:translateY(-3px)}
+.add-st .plus{width:40px;height:40px;border-radius:50%;background:var(--g-brand);color:#fff;
+  display:flex;align-items:center;justify-content:center;font:700 28px/1 'Tamlil',sans-serif}
+body.present .del,body.present .add-st{display:none}
+
+/* ---------- exit ---------- */
+.exit{display:flex;align-items:center;gap:18px;
+  padding:clamp(12px,1.8vh,18px) clamp(110px,12vw,150px) clamp(12px,1.8vh,18px) clamp(150px,16vw,220px)}
+.exit .ttl{flex:none;font-size:clamp(26px,3.8vh,44px)}
+.exit .lines{flex:1;min-height:3.8em;background-color:rgba(255,255,255,.55);border-radius:12px;padding:0 10px}
+.exit .char{--ch:175%;--cx:-6px;--cy:-4px}
+.exit .corner{width:clamp(100px,11vw,140px);height:100%;border-radius:0 22px 22px 100% / 0 22px 22px 100%;
+  align-items:center;padding:0 12px 0 0}
+.exit .spark{bottom:10px;right:clamp(112px,12vw,150px)}
 
 /* ---------- intelligence picker ---------- */
 .pick{position:fixed;inset:0;background:rgba(27,21,51,.45);backdrop-filter:blur(4px);display:none;
@@ -194,8 +236,7 @@ body.present .intel.none{visibility:hidden}
   border:3px solid transparent;background:linear-gradient(#fff,#fff) padding-box,var(--g-brand) border-box;
   box-shadow:0 24px 60px rgba(27,21,51,.35);animation:pop .3s cubic-bezier(.2,1.2,.4,1)}
 @keyframes pop{from{transform:scale(.9);opacity:0}}
-.pick h3{text-align:center;font:900 30px 'TamlilCond',sans-serif;margin-bottom:14px;
-  background:var(--g-brand);-webkit-background-clip:text;background-clip:text;color:transparent}
+.pick h3{text-align:center;font:900 30px 'TamlilCond',sans-serif;margin-bottom:14px;color:var(--indigo)}
 .pick .grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
 .pick .grid button{border:2px solid transparent;background:#F8F6FE;border-radius:18px;padding:4px;cursor:pointer;transition:.15s}
 .pick .grid button:hover{transform:translateY(-2px);border-color:#C9B8F2}
@@ -206,27 +247,47 @@ body.present .intel.none{visibility:hidden}
 .foot-note{text-align:center;color:#8A83A6;font-size:15px}
 body.present .tools .btns .edit-only,body.present .foot-note{display:none}
 
-@media (max-width:900px){ .stations{grid-template-columns:repeat(2,1fr)} }
+/* ---------- desktop: everything fits one screen, no scrolling ---------- */
+@media (min-width:901px) and (min-height:560px){
+  html,body{height:100%}
+  body{height:100dvh;overflow:hidden;display:flex;flex-direction:column}
+  .page{flex:1;min-height:0;width:100%;grid-template-rows:auto auto minmax(0,1fr) auto;gap:clamp(10px,1.8vh,20px)}
+  .foot-note{display:none}
+  .stations{min-height:0;grid-auto-rows:minmax(0,1fr)}
+  .st{min-height:0}
+  .st .lines{min-height:1.9em;overflow-y:auto}
+  .exit .lines{max-height:3.8em;overflow-y:auto}
+}
+
+@media (max-width:900px){
+  .stations,body.present .stations{grid-template-columns:repeat(2,1fr)}
+  .add-st{grid-column:auto!important;grid-row:auto!important;min-height:90px}
+  .exit{flex-direction:column;align-items:stretch;padding-right:20px}
+  .exit .corner{display:none}
+}
 @media (max-width:620px){
   .top{grid-template-columns:1fr}
-  .timer{margin:0 auto}
-  .stations{grid-template-columns:1fr}
-  .row{flex-wrap:wrap}
+  .timer{margin:0 auto;flex-direction:column}
+  .stations,body.present .stations{grid-template-columns:1fr}
+  .entry{padding-left:20px}.entry .char{--ch:70%;opacity:.25}
+  .goal{flex-wrap:wrap;padding:14px 18px}.goal .fill{flex-basis:100%}.goal .char{display:none}
+  .exit{padding-left:20px}.exit .char{display:none}
   .pick .grid{grid-template-columns:repeat(2,1fr)}
 }
 @media print{
-  body{background:#fff;padding:0}
-  body:before{display:none}
-  .tools .btns,.tctl,.dur,.foot-note,.toast{display:none!important}
+  body{padding:0}
+  .tools .btns,.tctl,.dur,.foot-note,.toast,.del,.add-st{display:none!important}
   .intel.none{visibility:hidden}
   .page{max-width:none}
-  .box,.st-card,.timer{box-shadow:none}
   *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
   @page{size:A4 landscape;margin:8mm}
 }
 </style>
 </head>
 <body class="editing">
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="spark" viewBox="0 0 40 40"><path d="M20 2c1.6 9.5 5.5 14.4 18 18-12.5 3.6-16.4 8.5-18 18-1.6-9.5-5.5-14.4-18-18C14.5 16.4 18.4 11.5 20 2z"/></symbol>
+</svg>
 <div class="page">
 
   <div class="tools">
@@ -245,11 +306,11 @@ body.present .tools .btns .edit-only,body.present .foot-note{display:none}
         <svg viewBox="0 0 200 200" aria-hidden="true">
           <defs>
             <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
-              <stop offset="0" stop-color="#08B7D5"/><stop offset=".45" stop-color="#4F3795"/>
-              <stop offset=".72" stop-color="#AA479A"/><stop offset="1" stop-color="#EE3461"/>
+              <stop offset="0" stop-color="#1EBCD7"/><stop offset=".45" stop-color="#513996"/>
+              <stop offset=".72" stop-color="#AA479A"/><stop offset="1" stop-color="#EE2F62"/>
             </linearGradient>
             <linearGradient id="gw" x1="0" y1="0" x2="1" y2="1">
-              <stop offset="0" stop-color="#F36F28"/><stop offset="1" stop-color="#EE3461"/>
+              <stop offset="0" stop-color="#F36F29"/><stop offset="1" stop-color="#EE2F62"/>
             </linearGradient>
             <radialGradient id="fc" cx=".5" cy=".38" r=".7">
               <stop offset="0" stop-color="#fff"/><stop offset="1" stop-color="#F3EFFC"/>
@@ -265,43 +326,44 @@ body.present .tools .btns .edit-only,body.present .foot-note{display:none}
         <div class="face">
           <div class="t1">טיימר</div>
           <div class="time" id="time">15:00</div>
-          <div class="st" id="tstate">לחצו להפעלה</div>
+          <div class="tst" id="tstate">לחצו להפעלה</div>
         </div>
       </div>
-      <div class="tctl">
-        <button class="go" id="goBtn">▶ הפעלה</button>
-        <button id="resetBtn">↺ איפוס</button>
-      </div>
-      <div class="dur">
-        <span class="h">כמה זמן?</span>
-        <div class="stepper">
-          <button id="plus" aria-label="עוד דקה">+</button>
-          <span class="val"><input id="customMin" type="number" min="1" max="120" aria-label="דקות"> דק׳</span>
-          <button id="minus" aria-label="פחות דקה">−</button>
+      <div class="tside">
+        <div class="tctl">
+          <button class="go" id="goBtn">▶ הפעלה</button>
+          <button id="resetBtn">↺ איפוס</button>
         </div>
-        <div class="chips" id="chips">
-          <button data-min="5">5</button><button data-min="10">10</button><button data-min="15">15</button>
-          <button data-min="20">20</button><button data-min="30">30</button><button data-min="45">45</button>
+        <div class="dur">
+          <span class="h">כמה זמן?</span>
+          <div class="stepper">
+            <button id="plus" aria-label="עוד דקה">+</button>
+            <span class="val"><input id="customMin" type="number" min="1" max="120" aria-label="דקות"> דק׳</span>
+            <button id="minus" aria-label="פחות דקה">−</button>
+          </div>
+          <div class="chips" id="chips">
+            <button data-min="5">5</button><button data-min="10">10</button><button data-min="15">15</button>
+            <button data-min="20">20</button><button data-min="30">30</button><button data-min="45">45</button>
+          </div>
         </div>
       </div>
     </div>
 
     <div class="heads">
-      <div class="box goal">
-        <div class="row">
-          <svg class="ico" viewBox="0 0 64 64" aria-hidden="true"><defs><linearGradient id="tg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FCB918"/><stop offset="1" stop-color="#F36F28"/></linearGradient></defs><circle cx="30" cy="34" r="24" fill="url(#tg)"/><circle cx="30" cy="34" r="16" fill="#fff"/><circle cx="30" cy="34" r="9" fill="url(#tg)"/><circle cx="30" cy="34" r="3.5" fill="#fff"/><path d="M30 34 54 10" stroke="#4F3795" stroke-width="4" stroke-linecap="round"/><path d="M48 5l7 4 4-1-2 8-8 2 1-4z" fill="#4F3795"/></svg>
-          <span class="lbl">מטרת השיעור:</span>
-          <div class="fill" contenteditable="true" data-k="goal" data-ph="מה התלמידים ידעו / ירגישו / יעשו בסוף השיעור?"></div>
-        </div>
+      <div class="card c-yellow goal">
+        <img class="char" src="img/char7.webp" alt="">
+        <span class="lbl">מטרת השיעור:</span>
+        <div class="fill" contenteditable="true" data-k="goal" data-ph="מה התלמידים ידעו / ירגישו / יעשו בסוף השיעור?"></div>
       </div>
 
-      <div class="box entry">
-        <div class="body">
-          <span class="pill"><svg viewBox="0 0 40 28" aria-hidden="true"><path d="M3 4h34v6a4 4 0 0 0 0 8v6H3v-6a4 4 0 0 0 0-8z" fill="none" stroke="#fff" stroke-width="2.6" stroke-linejoin="round"/><path d="M13 5v18" stroke="#fff" stroke-width="2" stroke-dasharray="2.5 2.5"/><path d="m25 8 1.8 3.7 4 .6-2.9 2.8.7 4-3.6-1.9-3.6 1.9.7-4-2.9-2.8 4-.6z" fill="#FCB918"/></svg>כרטיס כניסה לשיעור</span>
-          <div class="q" contenteditable="true" data-k="entry" data-ph="כתבו כאן את שאלת הפתיחה / המשימה של כרטיס הכניסה"></div>
-        </div>
+      <div class="card c-indigo entry">
+        <div class="corner"><img class="lg" src="../canva/assets/shalhevet-logo.png" alt=""></div>
+        <svg class="spark" style="fill:#EE2F62"><use href="#spark"/></svg>
+        <img class="char" src="img/char3.webp" alt="">
+        <span class="ttl">כרטיס כניסה לשיעור</span>
+        <div class="q" contenteditable="true" data-k="entry" data-ph="כתבו כאן את שאלת הפתיחה / המשימה של כרטיס הכניסה"></div>
         <div class="row">
-          <span class="lbl sm">מסר השיעור:</span>
+          <span class="lbl">מסר השיעור:</span>
           <div class="fill" contenteditable="true" data-k="message" data-ph="המסר המרכזי שנרצה שיישאר"></div>
         </div>
       </div>
@@ -310,8 +372,11 @@ body.present .tools .btns .edit-only,body.present .foot-note{display:none}
 
   <section class="stations" id="stations"></section>
 
-  <div class="box exit">
-    <span class="pill"><svg viewBox="0 0 40 28" aria-hidden="true"><path d="M3 4h34v6a4 4 0 0 0 0 8v6H3v-6a4 4 0 0 0 0-8z" fill="none" stroke="#fff" stroke-width="2.6" stroke-linejoin="round"/><path d="M13 5v18" stroke="#fff" stroke-width="2" stroke-dasharray="2.5 2.5"/><path d="m25 8 1.8 3.7 4 .6-2.9 2.8.7 4-3.6-1.9-3.6 1.9.7-4-2.9-2.8 4-.6z" fill="#FCB918"/></svg>כרטיס יציאה מהשיעור</span>
+  <div class="card c-orange exit">
+    <div class="corner"><img class="lg" src="../canva/assets/shalhevet-logo.png" alt=""></div>
+    <svg class="spark" style="fill:#1EBCD7"><use href="#spark"/></svg>
+    <img class="char" src="img/char6.webp" alt="">
+    <span class="ttl">כרטיס יציאה מהשיעור</span>
     <div class="lines" contenteditable="true" data-k="exit" data-ph="שאלת סיכום / רפלקציה לסוף השיעור"></div>
   </div>
 
@@ -332,6 +397,13 @@ const INTEL = [
   ['linguistic','לשונית'],['logical','לוגית מתמטית'],['spatial','מרחבית'],['bodily','גופנית תנועתית'],
   ['musical','מוזיקלית'],['interpersonal','בין אישית'],['intrapersonal','תוך אישית'],['naturalist','נטורליסטית']
 ];
+// look of each station card, in order (repeats after 4)
+const ST_LOOK = [
+  {c:'c-magenta', ch:'char1', sp:'#BDCC32'},
+  {c:'c-pink',    ch:'char2', sp:'#FDB916'},
+  {c:'c-cyan',    ch:'char4', sp:'#EE2F62'},
+  {c:'c-lime',    ch:'char5', sp:'#EE2F62'}
+];
 const KEY = 'shalhevet-entry-card-v2';
 const blank = () => ({goal:'',entry:'',message:'',exit:'',minutes:15,
   stations:[0,1,2,3].map(() => ({intel:'',sub:'',text:''}))});
@@ -347,28 +419,53 @@ function save(){ try { localStorage.setItem(KEY, JSON.stringify(state)) } catch(
 
 // ---------- stations ----------
 const wrap = document.getElementById('stations');
+const MIN_ST = 1, MAX_ST = 8;
 function renderStations(){
   wrap.innerHTML = '';
+  const n = state.stations.length, rows = n > 5 ? 2 : 1;
+  wrap.style.setProperty('--cols', Math.ceil(n / rows));
+  const present = document.body.classList.contains('present');
   state.stations.forEach((s,i) => {
+    const look = ST_LOOK[i % ST_LOOK.length];
     const el = document.createElement('div');
-    el.className = 'st-card';
+    el.className = `card st ${look.c}`;
     const it = INTEL.find(x => x[0] === s.intel);
     el.innerHTML = `
-      <div class="st-head">
-        <span class="pill">תחנה ${i+1}</span>
+      <span class="tab">תחנה ${i+1}</span>
+      <div class="corner">
         <button class="intel ${it?'':'none'}" data-i="${i}" title="${it?it[1]+' – לחצו להחלפה':'בחירת אינטליגנציה'}">
           ${it ? `<img src="img/${it[0]}.png" alt="${it[1]}">` : '<span class="plus">+</span>בחירת<br>אייקון'}
         </button>
       </div>
-      <div class="st-sub" contenteditable="true" data-s="${i}" data-f="sub" data-ph="שם התחנה"></div>
-      <div class="lines" contenteditable="true" data-s="${i}" data-f="text" data-ph="מה עושים בתחנה?"></div>`;
+      <svg class="spark" style="fill:${look.sp}"><use href="#spark"/></svg>
+      <img class="char" src="img/${look.ch}.webp" alt="">
+      ${n > MIN_ST ? `<button class="del" data-del="${i}" title="מחיקת תחנה ${i+1}" aria-label="מחיקת תחנה">×</button>` : ''}
+      <span class="ttl" contenteditable="${!present}" data-s="${i}" data-f="sub" data-ph="שם התחנה"></span>
+      <span class="hint">מה עושים בתחנה:</span>
+      <div class="lines" contenteditable="${!present}" data-s="${i}" data-f="text" data-ph="כתבו כאן את המשימה"></div>`;
     wrap.appendChild(el);
     el.querySelector('[data-f=sub]').innerText = s.sub || '';
     el.querySelector('[data-f=text]').innerText = s.text || '';
-    if (document.body.classList.contains('present')) el.querySelectorAll('[contenteditable]').forEach(c => c.contentEditable = 'false');
   });
+  if (n < MAX_ST) {
+    const add = document.createElement('button');
+    add.className = 'add-st'; add.title = 'הוספת תחנה';
+    add.style.gridRow = `1 / span ${rows}`;
+    add.innerHTML = '<span class="plus">+</span>הוספת<br>תחנה';
+    wrap.appendChild(add);
+  }
 }
 renderStations();
+wrap.addEventListener('click', e => {
+  if (e.target.closest('.add-st')) {
+    state.stations.push({intel:'',sub:'',text:''}); save(); renderStations();
+    return;
+  }
+  const d = e.target.closest('[data-del]'); if (!d) return;
+  const i = +d.dataset.del, s = state.stations[i];
+  if ((s.sub || s.text || s.intel) && !confirm(`למחוק את תחנה ${i+1} ואת מה שכתוב בה?`)) return;
+  state.stations.splice(i, 1); save(); renderStations();
+});
 
 // ---------- editable fields ----------
 document.querySelectorAll('[data-k]').forEach(el => { el.innerText = state[el.dataset.k] || '' });
@@ -383,6 +480,10 @@ document.addEventListener('paste', e => {
   if (!e.target.closest('[contenteditable]')) return;
   e.preventDefault();
   document.execCommand('insertText', false, (e.clipboardData || window.clipboardData).getData('text'));
+});
+// the station title is one line – Enter moves on to the task lines
+document.addEventListener('keydown', e => {
+  if (e.key === 'Enter' && e.target.matches('.st .ttl')) { e.preventDefault(); e.target.parentElement.querySelector('.lines').focus(); }
 });
 
 // ---------- intelligence picker ----------
