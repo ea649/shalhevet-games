@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>כרטיס כניסה לשיעור – שלהבות חב"ד</title>
-<link rel="preload" href="img/char3.webp" as="image">
+
 <style>
 @font-face{font-family:'Tamlil';src:url(../fonts/FbTamlil-Regular.otf) format('opentype');font-weight:400;font-display:swap}
 @font-face{font-family:'Tamlil';src:url(../fonts/FbTamlil-Medium.otf) format('opentype');font-weight:500;font-display:swap}
@@ -16,16 +16,20 @@
   --yellow:#FDB916; --lime:#BDCC32; --orange:#F36F29; --ink:#1B1533; --muted:#6B6486;
   --page:#FFFFFF;
   --g-brand:linear-gradient(120deg,#1EBCD7 0%,#513996 45%,#AA479A 72%,#EE2F62 100%);
+  --gut:clamp(14px,2.4vw,32px);
 }
+/* wide screens: side gutters hold the two characters */
+@media (min-width:1100px){ :root{--gut:clamp(190px,17vw,330px)} }
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 html,body{min-height:100%}
 body{
   font-family:'Tamlil','Segoe UI',Arial,sans-serif;font-weight:500;color:var(--ink);
   background:var(--page);
-  padding:clamp(10px,1.8vh,20px) clamp(14px,2.4vw,32px) 28px;
+  padding:clamp(10px,1.8vh,20px) var(--gut) 28px;
   -webkit-font-smoothing:antialiased;overflow-x:hidden;
 }
-.page{max-width:1320px;margin:0 auto;display:grid;gap:clamp(14px,2vh,22px)}
+.page{margin:0 auto;display:grid;gap:clamp(14px,2vh,22px);position:relative;z-index:2}
+@media (max-width:1099px){ .side-char{display:none} }
 
 /* ---------- toolbar ---------- */
 .tools{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between}
@@ -45,8 +49,7 @@ body{
 /* ======================================================================
    CARD – the look of the Canva work-cards:
    strong colour on top fading to a pale tint, big white title,
-   a small tab, a white "cut-out" corner, and a character that
-   steps out of the card.
+   and a small tab.
    ====================================================================== */
 .card{
   --c:var(--magenta); --l:#FFF1FD; --tab:var(--cyan);
@@ -74,23 +77,17 @@ body{
   text-shadow:0 2px 12px color-mix(in srgb,var(--c) 70%,#000 30%);
   padding:0 8px;
 }
-/* white corner "cut-out" (top right), like the logo corner in the Canva cards */
-.corner{
-  position:absolute;top:-2px;right:-2px;z-index:2;
-  width:clamp(88px,13vh,140px);height:clamp(70px,10vh,110px);
-  background:var(--page);border-radius:0 22px 0 100% / 0 22px 0 100%;
-  display:flex;align-items:flex-start;justify-content:flex-end;padding:8px 10px 0 0;
+/* the two big characters that stand beside the cards (outside them) */
+.side-char{
+  position:fixed;bottom:0;z-index:1;pointer-events:none;height:auto;
+  width:calc(var(--gut) + 6px);max-height:72vh;object-fit:contain;object-position:bottom;
+  filter:drop-shadow(0 12px 18px rgba(27,21,51,.18));
 }
-.corner img.lg{width:88%;height:auto}
-/* decorative sparkle */
-.spark{position:absolute;z-index:3;width:clamp(22px,3.4vh,34px);height:auto;pointer-events:none}
-/* the character */
-.char{
-  position:absolute;z-index:4;pointer-events:none;height:var(--ch,60%);width:auto;
-  left:var(--cx,-16px);bottom:var(--cy,-12px);
-  filter:drop-shadow(0 10px 14px rgba(27,21,51,.22));
-}
-.char.flip{transform:scaleX(-1)}
+.side-char.r{right:-6px}
+.side-char.l{left:-6px}
+
+/* one text size for everything written inside the cards */
+:root{--fs:clamp(15px,2vh,20px)}
 
 /* editable text */
 [contenteditable]{outline:none;border-radius:10px;transition:background .15s}
@@ -98,35 +95,26 @@ body{
 .editing [contenteditable]:focus{background:rgba(255,255,255,.55)}
 [contenteditable]:empty:before{content:attr(data-ph);color:color-mix(in srgb,var(--c) 45%,#8E88A6);font-weight:400}
 .ttl[contenteditable]:empty:before{color:rgba(255,255,255,.72)}
-.hint{display:block;font:italic 500 clamp(13px,1.6vh,16px) 'Tamlil',sans-serif;color:color-mix(in srgb,var(--c) 55%,#3A3350)}
-.lines{
-  font-size:clamp(16px,2.1vh,22px);line-height:1.9em;padding:0 6px;min-height:3.8em;color:var(--ink);
-  background-image:repeating-linear-gradient(to bottom,transparent 0,transparent calc(1.9em - 2px),
-    color-mix(in srgb,var(--c) 30%,transparent) calc(1.9em - 2px),color-mix(in srgb,var(--c) 30%,transparent) 1.9em);
-  background-attachment:local;
-}
+.hint{display:block;font:italic 500 clamp(12px,1.5vh,15px) 'Tamlil',sans-serif;color:color-mix(in srgb,var(--c) 55%,#3A3350)}
+.lines{font-size:var(--fs);line-height:1.55;padding:2px 6px;min-height:3em;color:var(--ink)}
 
 /* ---------- top: timer + goal + entry ---------- */
 .top{display:grid;grid-template-columns:auto 1fr;gap:clamp(14px,1.8vw,24px);align-items:stretch}
 .heads{display:grid;grid-template-rows:auto 1fr;gap:clamp(12px,1.8vh,18px)}
 
-.goal{display:flex;align-items:center;gap:12px;padding:clamp(10px,1.5vh,14px) clamp(120px,10vw,150px) clamp(10px,1.5vh,14px) 20px}
-.goal .lbl{font:900 clamp(22px,3vh,32px)/1 'TamlilCond','Tamlil',sans-serif;color:#fff;white-space:nowrap;
+.goal{display:flex;align-items:center;gap:12px;padding:clamp(10px,1.5vh,14px) 20px}
+.goal .lbl{font:900 clamp(20px,2.7vh,28px)/1 'TamlilCond','Tamlil',sans-serif;color:#fff;white-space:nowrap;
   text-shadow:0 2px 10px rgba(160,90,0,.45)}
-.goal .fill{flex:1;min-width:0;font-size:clamp(18px,2.4vh,25px);line-height:1.45;padding:2px 10px;min-height:1.5em;
+.goal .fill{flex:1;min-width:0;font-size:var(--fs);line-height:1.5;padding:3px 10px;min-height:1.6em;
   background:rgba(255,255,255,.7);border-radius:12px}
-.goal .char{--ch:230%;left:auto;right:10px;bottom:-8px}
 
-.entry{padding:clamp(14px,2.2vh,24px) clamp(16px,2vw,28px) clamp(12px,1.8vh,18px) clamp(150px,17vw,230px);
+.entry{padding:clamp(12px,2vh,22px) clamp(16px,2vw,28px) clamp(12px,1.8vh,18px);
   display:flex;flex-direction:column;justify-content:center;gap:clamp(6px,1vh,10px)}
-.entry .ttl{padding-left:0}
-.entry .q{font-size:clamp(20px,2.9vh,30px);font-weight:700;line-height:1.4;min-height:1.4em;padding:4px 10px;text-align:center}
+.entry .q{font-size:var(--fs);font-weight:500;line-height:1.5;min-height:1.5em;padding:4px 10px;text-align:center}
 .entry .row{display:flex;align-items:center;gap:10px}
-.entry .row .lbl{font:700 clamp(15px,1.9vh,19px) 'Tamlil',sans-serif;color:var(--c);white-space:nowrap}
-.entry .fill{flex:1;min-width:0;font-size:clamp(17px,2.2vh,23px);line-height:1.45;padding:2px 8px;min-height:1.5em;
+.entry .row .lbl{font:700 var(--fs) 'Tamlil',sans-serif;color:var(--c);white-space:nowrap}
+.entry .fill{flex:1;min-width:0;font-size:var(--fs);line-height:1.5;padding:2px 8px;min-height:1.5em;
   border-bottom:2px dashed color-mix(in srgb,var(--c) 45%,transparent)}
-.entry .char{--ch:104%;--cx:-18px;--cy:-10px}
-.entry .spark{top:clamp(72px,10.5vh,115px);right:8px}
 
 /* ---------- timer ---------- */
 .timer{
@@ -173,23 +161,37 @@ body.present .dur{display:none}
 .stations{display:grid;grid-template-columns:repeat(var(--cols,4),minmax(0,1fr)) 74px;gap:clamp(14px,1.5vw,22px)}
 body.present .stations{grid-template-columns:repeat(var(--cols,4),minmax(0,1fr))}
 .st{
-  display:flex;flex-direction:column;gap:6px;min-width:0;min-height:clamp(260px,38vh,400px);
-  padding:calc(var(--cornerH) + 4px) 12px 12px;
-  --cornerH:clamp(76px,10.5vh,106px);
+  --icon:clamp(60px,8.6vh,88px);
+  display:flex;flex-direction:column;gap:6px;min-width:0;min-height:clamp(240px,36vh,380px);
+  padding:calc(var(--icon) + 14px) 12px 12px;
   background:linear-gradient(180deg,var(--c) 0%,color-mix(in srgb,var(--c) 70%,var(--l)) 40%,var(--l) 92%);
 }
-.st .ttl{font-size:clamp(24px,3.6vh,40px);min-height:1em;word-break:break-word}
+.st .tab{background:#513996}            /* station tab is always purple */
+.st .ttl{font-size:clamp(22px,3.2vh,36px);min-height:1em;word-break:break-word}
 .st .hint{text-align:center;margin-top:2px}
-.st .lines{flex:1;padding-left:38%}
-.st .char{--ch:min(clamp(130px,23vh,250px),56%);--cx:-20px;--cy:-14px;max-width:66%;object-fit:contain;object-position:left bottom}
-.st .spark{top:clamp(50px,6.5vh,64px);left:14px}
-.st .corner{width:clamp(84px,12vh,120px);height:var(--cornerH);padding:6px 6px 0 0}
+.st .lines{flex:1}
+/* intelligence icon: top-right, sitting on a white square the size of its frame */
 .intel{
-  width:clamp(62px,9vh,92px);aspect-ratio:1;border:0;background:none;cursor:pointer;
-  border-radius:18px;position:relative;transition:transform .2s;
+  position:absolute;top:8px;right:8px;z-index:3;
+  width:var(--icon);aspect-ratio:1;border:0;background:none;cursor:pointer;
+  border-radius:18px;transition:transform .2s;isolation:isolate;
 }
 .intel:hover{transform:scale(1.06) rotate(-2deg)}
 .intel img{width:100%;height:100%;object-fit:contain;display:block;transform:scale(1.28)}
+.intel:not(.none):before{content:"";position:absolute;inset:14% 16% 16% 16%;background:#fff;border-radius:20%;z-index:-1}
+/* optional link */
+.link{display:flex;align-items:center;gap:6px;margin-top:2px}
+.link input{flex:1;min-width:0;border:1.5px dashed color-mix(in srgb,var(--c) 45%,transparent);border-radius:10px;
+  background:rgba(255,255,255,.7);padding:4px 8px;font:500 clamp(12px,1.5vh,14px) 'Tamlil',sans-serif;color:var(--ink);direction:ltr;text-align:right}
+.link input::placeholder{color:#9A93B3;direction:rtl}
+.link input:focus{outline:none;border-style:solid;background:#fff}
+.open{flex:none;display:inline-flex;align-items:center;gap:5px;text-decoration:none;
+  background:#513996;color:#fff;border-radius:999px;padding:5px 12px;font:700 clamp(13px,1.6vh,15px) 'Tamlil',sans-serif;
+  box-shadow:0 4px 10px -4px rgba(81,57,150,.6);transition:.15s}
+.open:hover{transform:translateY(-1px);background:#AA479A}
+.open[hidden]{display:none}
+body.present .link input{display:none}
+body.present .link:not(:has(.open:not([hidden]))){display:none}
 .intel.none{
   display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;
   border:2.5px dashed var(--c);background:#fff;color:var(--c);
@@ -219,14 +221,9 @@ body.present .intel.none{visibility:hidden}
 body.present .del,body.present .add-st{display:none}
 
 /* ---------- exit ---------- */
-.exit{display:flex;align-items:center;gap:18px;
-  padding:clamp(12px,1.8vh,18px) clamp(110px,12vw,150px) clamp(12px,1.8vh,18px) clamp(150px,16vw,220px)}
-.exit .ttl{flex:none;font-size:clamp(26px,3.8vh,44px)}
-.exit .lines{flex:1;min-height:3.8em;background-color:rgba(255,255,255,.55);border-radius:12px;padding:0 10px}
-.exit .char{--ch:175%;--cx:-6px;--cy:-4px}
-.exit .corner{width:clamp(100px,11vw,140px);height:100%;border-radius:0 22px 22px 100% / 0 22px 22px 100%;
-  align-items:center;padding:0 12px 0 0}
-.exit .spark{bottom:10px;right:clamp(112px,12vw,150px)}
+.exit{display:flex;align-items:center;gap:18px;padding:clamp(12px,1.8vh,18px) 22px}
+.exit .ttl{flex:none;font-size:clamp(24px,3.4vh,40px)}
+.exit .lines{flex:1;min-height:3.1em;background-color:rgba(255,255,255,.55);border-radius:12px;padding:4px 10px}
 
 /* ---------- intelligence picker ---------- */
 .pick{position:fixed;inset:0;background:rgba(27,21,51,.45);backdrop-filter:blur(4px);display:none;
@@ -255,28 +252,25 @@ body.present .tools .btns .edit-only,body.present .foot-note{display:none}
   .foot-note{display:none}
   .stations{min-height:0;grid-auto-rows:minmax(0,1fr)}
   .st{min-height:0}
-  .st .lines{min-height:1.9em;overflow-y:auto}
-  .exit .lines{max-height:3.8em;overflow-y:auto}
+  .st .lines{min-height:1.6em;overflow-y:auto}
+  .exit .lines{max-height:3.1em;overflow-y:auto}
 }
 
 @media (max-width:900px){
   .stations,body.present .stations{grid-template-columns:repeat(2,1fr)}
   .add-st{grid-column:auto!important;grid-row:auto!important;min-height:90px}
-  .exit{flex-direction:column;align-items:stretch;padding-right:20px}
-  .exit .corner{display:none}
+  .exit{flex-direction:column;align-items:stretch}
 }
 @media (max-width:620px){
   .top{grid-template-columns:1fr}
   .timer{margin:0 auto;flex-direction:column}
   .stations,body.present .stations{grid-template-columns:1fr}
-  .entry{padding-left:20px}.entry .char{--ch:70%;opacity:.25}
-  .goal{flex-wrap:wrap;padding:14px 18px}.goal .fill{flex-basis:100%}.goal .char{display:none}
-  .exit{padding-left:20px}.exit .char{display:none}
+  .goal{flex-wrap:wrap;padding:14px 18px}.goal .fill{flex-basis:100%}
   .pick .grid{grid-template-columns:repeat(2,1fr)}
 }
 @media print{
   body{padding:0}
-  .tools .btns,.tctl,.dur,.foot-note,.toast,.del,.add-st{display:none!important}
+  .tools .btns,.tctl,.dur,.foot-note,.toast,.del,.add-st,.link input,.side-char{display:none!important}
   .intel.none{visibility:hidden}
   .page{max-width:none}
   *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
@@ -285,9 +279,8 @@ body.present .tools .btns .edit-only,body.present .foot-note{display:none}
 </style>
 </head>
 <body class="editing">
-<svg width="0" height="0" style="position:absolute" aria-hidden="true">
-  <symbol id="spark" viewBox="0 0 40 40"><path d="M20 2c1.6 9.5 5.5 14.4 18 18-12.5 3.6-16.4 8.5-18 18-1.6-9.5-5.5-14.4-18-18C14.5 16.4 18.4 11.5 20 2z"/></symbol>
-</svg>
+<img class="side-char r" src="img/char1.webp" alt="">
+<img class="side-char l" src="img/char3.webp" alt="">
 <div class="page">
 
   <div class="tools">
@@ -351,15 +344,11 @@ body.present .tools .btns .edit-only,body.present .foot-note{display:none}
 
     <div class="heads">
       <div class="card c-yellow goal">
-        <img class="char" src="img/char7.webp" alt="">
         <span class="lbl">מטרת השיעור:</span>
         <div class="fill" contenteditable="true" data-k="goal" data-ph="מה התלמידים ידעו / ירגישו / יעשו בסוף השיעור?"></div>
       </div>
 
       <div class="card c-indigo entry">
-        <div class="corner"><img class="lg" src="../canva/assets/shalhevet-logo.png" alt=""></div>
-        <svg class="spark" style="fill:#EE2F62"><use href="#spark"/></svg>
-        <img class="char" src="img/char3.webp" alt="">
         <span class="ttl">כרטיס כניסה לשיעור</span>
         <div class="q" contenteditable="true" data-k="entry" data-ph="כתבו כאן את שאלת הפתיחה / המשימה של כרטיס הכניסה"></div>
         <div class="row">
@@ -373,9 +362,6 @@ body.present .tools .btns .edit-only,body.present .foot-note{display:none}
   <section class="stations" id="stations"></section>
 
   <div class="card c-orange exit">
-    <div class="corner"><img class="lg" src="../canva/assets/shalhevet-logo.png" alt=""></div>
-    <svg class="spark" style="fill:#1EBCD7"><use href="#spark"/></svg>
-    <img class="char" src="img/char6.webp" alt="">
     <span class="ttl">כרטיס יציאה מהשיעור</span>
     <div class="lines" contenteditable="true" data-k="exit" data-ph="שאלת סיכום / רפלקציה לסוף השיעור"></div>
   </div>
@@ -398,12 +384,14 @@ const INTEL = [
   ['musical','מוזיקלית'],['interpersonal','בין אישית'],['intrapersonal','תוך אישית'],['naturalist','נטורליסטית']
 ];
 // look of each station card, in order (repeats after 4)
-const ST_LOOK = [
-  {c:'c-magenta', ch:'char1', sp:'#BDCC32'},
-  {c:'c-pink',    ch:'char2', sp:'#FDB916'},
-  {c:'c-cyan',    ch:'char4', sp:'#EE2F62'},
-  {c:'c-lime',    ch:'char5', sp:'#EE2F62'}
-];
+const ST_LOOK = ['c-magenta', 'c-pink', 'c-cyan', 'c-lime'];
+// accept "www.x.com" or "x.com/y" as well as full addresses
+function linkUrl(v){
+  v = (v || '').trim(); if (!v) return '';
+  if (!/^https?:\/\//i.test(v)) v = 'https://' + v;
+  try { const u = new URL(v); return /\./.test(u.hostname) ? u.href : ''; } catch(e) { return ''; }
+}
+function escAttr(v){ return String(v || '').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;'); }
 const KEY = 'shalhevet-entry-card-v2';
 const blank = () => ({goal:'',entry:'',message:'',exit:'',minutes:15,
   stations:[0,1,2,3].map(() => ({intel:'',sub:'',text:''}))});
@@ -426,23 +414,22 @@ function renderStations(){
   wrap.style.setProperty('--cols', Math.ceil(n / rows));
   const present = document.body.classList.contains('present');
   state.stations.forEach((s,i) => {
-    const look = ST_LOOK[i % ST_LOOK.length];
     const el = document.createElement('div');
-    el.className = `card st ${look.c}`;
-    const it = INTEL.find(x => x[0] === s.intel);
+    el.className = `card st ${ST_LOOK[i % ST_LOOK.length]}`;
+    const it = INTEL.find(x => x[0] === s.intel), url = linkUrl(s.link);
     el.innerHTML = `
       <span class="tab">תחנה ${i+1}</span>
-      <div class="corner">
-        <button class="intel ${it?'':'none'}" data-i="${i}" title="${it?it[1]+' – לחצו להחלפה':'בחירת אינטליגנציה'}">
-          ${it ? `<img src="img/${it[0]}.png" alt="${it[1]}">` : '<span class="plus">+</span>בחירת<br>אייקון'}
-        </button>
-      </div>
-      <svg class="spark" style="fill:${look.sp}"><use href="#spark"/></svg>
-      <img class="char" src="img/${look.ch}.webp" alt="">
+      <button class="intel ${it?'':'none'}" data-i="${i}" title="${it?it[1]+' – לחצו להחלפה':'בחירת אינטליגנציה'}">
+        ${it ? `<img src="img/${it[0]}.png" alt="${it[1]}">` : '<span class="plus">+</span>בחירת<br>אייקון'}
+      </button>
       ${n > MIN_ST ? `<button class="del" data-del="${i}" title="מחיקת תחנה ${i+1}" aria-label="מחיקת תחנה">×</button>` : ''}
       <span class="ttl" contenteditable="${!present}" data-s="${i}" data-f="sub" data-ph="שם התחנה"></span>
       <span class="hint">מה עושים בתחנה:</span>
-      <div class="lines" contenteditable="${!present}" data-s="${i}" data-f="text" data-ph="כתבו כאן את המשימה"></div>`;
+      <div class="lines" contenteditable="${!present}" data-s="${i}" data-f="text" data-ph="כתבו כאן את המשימה"></div>
+      <div class="link">
+        <input type="url" data-link="${i}" value="${escAttr(s.link)}" placeholder="🔗 קישור לתחנה (לא חובה)" aria-label="קישור לתחנה ${i+1}">
+        <a class="open" href="${escAttr(url)}" target="_blank" rel="noopener" ${url?'':'hidden'}>פתיחה ↗</a>
+      </div>`;
     wrap.appendChild(el);
     el.querySelector('[data-f=sub]').innerText = s.sub || '';
     el.querySelector('[data-f=text]').innerText = s.text || '';
@@ -458,12 +445,12 @@ function renderStations(){
 renderStations();
 wrap.addEventListener('click', e => {
   if (e.target.closest('.add-st')) {
-    state.stations.push({intel:'',sub:'',text:''}); save(); renderStations();
+    state.stations.push({intel:'',sub:'',text:'',link:''}); save(); renderStations();
     return;
   }
   const d = e.target.closest('[data-del]'); if (!d) return;
   const i = +d.dataset.del, s = state.stations[i];
-  if ((s.sub || s.text || s.intel) && !confirm(`למחוק את תחנה ${i+1} ואת מה שכתוב בה?`)) return;
+  if ((s.sub || s.text || s.intel || s.link) && !confirm(`למחוק את תחנה ${i+1} ואת מה שכתוב בה?`)) return;
   state.stations.splice(i, 1); save(); renderStations();
 });
 
@@ -471,6 +458,12 @@ wrap.addEventListener('click', e => {
 document.querySelectorAll('[data-k]').forEach(el => { el.innerText = state[el.dataset.k] || '' });
 document.addEventListener('input', e => {
   const t = e.target;
+  if (t.dataset.link) {
+    const i = +t.dataset.link, url = linkUrl(t.value), a = t.parentElement.querySelector('.open');
+    state.stations[i].link = t.value.trim();
+    a.hidden = !url; a.href = url || '#';
+    save(); return;
+  }
   if (t.dataset.k) state[t.dataset.k] = t.innerText.trim();
   else if (t.dataset.s) state.stations[+t.dataset.s][t.dataset.f] = t.innerText.trim();
   else return;
