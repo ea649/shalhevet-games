@@ -116,29 +116,36 @@ body{
   background:rgba(255,255,255,.55);border-radius:14px;white-space:pre-wrap}
 .entry .q:empty:before{display:block}
 
-/* ---------- noise meter ---------- */
+/* ---------- noise meter: a traffic light, only the current colour is lit ---------- */
 .noise{
   display:flex;flex-direction:column;align-items:center;gap:6px;padding:10px 12px;border-radius:26px;
-  width:clamp(118px,9.5vw,150px);
+  width:clamp(118px,9vw,150px);
   background:linear-gradient(180deg,#F6F2FF,#fff);
   box-shadow:0 18px 34px -24px rgba(81,57,150,.7), inset 0 0 0 2px #E6DEF8;
 }
 .noise .h{font:900 clamp(18px,2.4vh,23px)/1 'TamlilCond','Tamlil',sans-serif;color:var(--indigo)}
-.noise .now{font:700 clamp(13px,1.7vh,16px)/1.15 'Tamlil',sans-serif;text-align:center;min-height:2.3em;
-  display:flex;align-items:center;color:var(--lc,var(--ink));transition:color .2s}
-.ntrack{flex:1;width:100%;display:flex;flex-direction:column;gap:4px;touch-action:none;cursor:pointer;outline:none;border-radius:14px}
-.ntrack:focus-visible{box-shadow:0 0 0 3px #C9B8F2}
-.nl{flex:1;display:flex;align-items:center;gap:6px;min-height:22px}
-.nl .e{flex:none;width:1.4em;text-align:center;font-size:clamp(15px,2.1vh,21px);line-height:1;opacity:.45;
-  filter:grayscale(.7);transition:.2s}
-.nl .bar{flex:1;height:100%;max-height:30px;border-radius:9px;
-  background:color-mix(in srgb,var(--lc) 22%,#fff);box-shadow:inset 0 0 0 1.5px color-mix(in srgb,var(--lc) 35%,transparent);
-  transition:.2s}
-.nl.lit .bar{background:var(--lc)}
-.nl.on .bar{box-shadow:0 0 0 3px #fff,0 0 0 5px var(--lc),0 6px 14px -4px var(--lc)}
-.nl.on .e{opacity:1;filter:none;transform:scale(1.35)}
-.noise.pop .nl.on .e{animation:npop .45s ease}
-@keyframes npop{40%{transform:scale(1.7)}}
+.tlight{
+  --d:clamp(34px,5.4vh,56px);
+  display:flex;flex-direction:column;align-items:center;justify-content:space-evenly;gap:6px;
+  padding:8px;border-radius:calc(var(--d) / 2 + 8px);background:linear-gradient(180deg,#2E2747,#1B1533);
+  box-shadow:inset 0 2px 0 rgba(255,255,255,.08),0 8px 18px -8px rgba(27,21,51,.6);outline:none;
+}
+.tlight:focus-visible{box-shadow:0 0 0 3px #C9B8F2}
+.lamp{
+  width:var(--d);aspect-ratio:1;border-radius:50%;border:0;cursor:pointer;padding:0;
+  background:color-mix(in srgb,var(--lc) 22%,#14101F);
+  box-shadow:inset 0 3px 8px rgba(0,0,0,.6);transition:background .25s,box-shadow .25s,transform .2s;
+}
+.lamp:hover{transform:scale(1.06)}
+.lamp.on{
+  background:radial-gradient(circle at 38% 32%,#fff 0 8%,color-mix(in srgb,var(--lc) 70%,#fff) 22%,var(--lc) 62%);
+  box-shadow:0 0 0 3px color-mix(in srgb,var(--lc) 45%,transparent),0 0 22px 6px var(--lc);
+}
+.noise.pop .lamp.on{animation:npop .45s ease}
+@keyframes npop{40%{transform:scale(1.18)}}
+.noise .now{text-align:center;line-height:1.15;color:var(--lc,var(--ink));transition:color .2s;min-height:2.4em}
+.noise .now b{display:block;font:900 clamp(16px,2.2vh,21px)/1.05 'TamlilCond','Tamlil',sans-serif}
+.noise .now small{font:500 clamp(12px,1.5vh,14px) 'Tamlil',sans-serif;color:var(--muted)}
 
 /* ---------- timer ---------- */
 .timer{
@@ -146,19 +153,19 @@ body{
   background:linear-gradient(180deg,#F6F2FF,#fff);
   box-shadow:0 18px 34px -24px rgba(81,57,150,.7), inset 0 0 0 2px #E6DEF8;
 }
-.dial{position:relative;flex:none;width:clamp(140px,21vh,220px);aspect-ratio:1;cursor:pointer}
+.dial{position:relative;flex:none;width:clamp(112px,16vh,168px);aspect-ratio:1;cursor:pointer}
 .dial svg{width:100%;height:100%;display:block;overflow:visible}
 .dial .face{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
-.dial .t1{font:900 clamp(18px,2.6vh,24px) 'TamlilCond',sans-serif;color:var(--indigo)}
-.dial .time{font:700 clamp(32px,5.4vh,54px)/1.05 'Tamlil',sans-serif;font-variant-numeric:tabular-nums;color:var(--ink);direction:ltr}
-.dial .tst{font-size:clamp(13px,1.7vh,16px);color:var(--muted)}
+.dial .t1{font:900 clamp(15px,2vh,20px) 'TamlilCond',sans-serif;color:var(--indigo)}
+.dial .time{font:700 clamp(26px,4.2vh,42px)/1.05 'Tamlil',sans-serif;font-variant-numeric:tabular-nums;color:var(--ink);direction:ltr}
+.dial .tst{font-size:clamp(11px,1.4vh,14px);color:var(--muted)}
 #ring{transition:stroke-dashoffset .95s linear}
 .timer.run #glow{animation:pulse 2s ease-in-out infinite}
 @keyframes pulse{50%{opacity:.35}}
 .timer.end .dial{animation:shake .6s ease 3}
 .timer.end .time{color:var(--pink)}
 @keyframes shake{0%,100%{transform:rotate(0)}25%{transform:rotate(-4deg)}75%{transform:rotate(4deg)}}
-.tside{display:flex;flex-direction:column;align-items:center;gap:8px;width:clamp(150px,15vw,190px)}
+.tside{display:flex;flex-direction:column;align-items:center;gap:6px;width:clamp(140px,12vw,170px)}
 .tctl{display:flex;gap:6px;flex-wrap:wrap;justify-content:center;max-width:100%}
 .tctl button{
   border:0;border-radius:999px;padding:7px 14px;cursor:pointer;font:700 16px 'Tamlil',sans-serif;white-space:nowrap;
@@ -183,7 +190,7 @@ body.present .dur{display:none}
 /* medium screens: controls go under the dial so the entry card keeps its width */
 @media (min-width:621px) and (max-width:1450px){
   .timer{flex-direction:column;justify-content:center;gap:8px;padding:10px}
-  .dial{width:clamp(120px,17vh,180px)}
+  .dial{width:clamp(104px,14vh,150px)}
   .tside{width:auto}
   .dur{grid-template-columns:auto auto;align-items:center;column-gap:8px}
   .dur .h{display:none}
@@ -212,19 +219,12 @@ body.present .stations{grid-template-columns:repeat(var(--cols,4),minmax(0,1fr))
 .intel:hover{transform:scale(1.06) rotate(-2deg)}
 .intel img{width:100%;height:100%;object-fit:contain;display:block;transform:scale(1.28)}
 .intel:not(.none):before{content:"";position:absolute;inset:14% 16% 16% 16%;background:#fff;border-radius:20%;z-index:-1}
-/* optional link */
-.link{display:flex;align-items:center;gap:6px;margin-top:2px}
-.link input{flex:1;min-width:0;border:1.5px dashed color-mix(in srgb,var(--c) 45%,transparent);border-radius:10px;
-  background:rgba(255,255,255,.7);padding:4px 8px;font:500 clamp(12px,1.5vh,14px) 'Tamlil',sans-serif;color:var(--ink);direction:ltr;text-align:right}
-.link input::placeholder{color:#9A93B3;direction:rtl}
-.link input:focus{outline:none;border-style:solid;background:#fff}
-.open{flex:none;display:inline-flex;align-items:center;gap:5px;text-decoration:none;
-  background:#513996;color:#fff;border-radius:999px;padding:5px 12px;font:700 clamp(13px,1.6vh,15px) 'Tamlil',sans-serif;
-  box-shadow:0 4px 10px -4px rgba(81,57,150,.6);transition:.15s}
-.open:hover{transform:translateY(-1px);background:#AA479A}
-.open[hidden]{display:none}
-body.present .link input{display:none}
-body.present .link:not(:has(.open:not([hidden]))){display:none}
+/* what to bring to the station */
+.bring{display:flex;flex-direction:column;gap:2px;margin-top:2px;padding-top:6px;
+  border-top:1.5px dashed color-mix(in srgb,var(--c) 40%,transparent)}
+.bring .bl{flex:none;font:700 clamp(13px,1.7vh,16px) 'Tamlil',sans-serif;color:color-mix(in srgb,var(--c) 75%,#1B1533)}
+.bring .bf{min-width:0;background:rgba(255,255,255,.6);border-radius:10px;font-size:clamp(13px,1.7vh,16px);line-height:1.4;padding:1px 6px;min-height:1.4em;color:var(--ink)}
+body.present .bring:has(.bf:empty){display:none}
 .intel.none{
   display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;
   border:2.5px dashed var(--c);background:#fff;color:var(--c);
@@ -274,6 +274,27 @@ body.present .del,body.present .add-st{display:none}
 .pick .grid img{width:100%;display:block}
 .pick .foot{display:flex;justify-content:center;gap:10px;margin-top:16px}
 
+/* ---------- my lessons ---------- */
+.lessons-btn b{font-weight:700;color:var(--magenta);display:inline-block;max-width:16ch;overflow:hidden;text-overflow:ellipsis;
+  white-space:nowrap;vertical-align:bottom}
+.lessons .panel{max-width:780px}
+.lnote{text-align:center;color:var(--muted);font-size:15px;line-height:1.45;margin:-6px 0 14px}
+.llist{display:grid;gap:8px;max-height:min(58vh,520px);overflow-y:auto;padding:2px}
+.lrow{display:grid;grid-template-columns:minmax(0,1fr) auto auto auto auto;gap:8px;align-items:center;
+  background:#F8F6FE;border-radius:16px;padding:8px 10px;border:2px solid transparent}
+.lrow.cur{border-color:var(--magenta);background:#FFF5FD}
+.lrow input{font:500 16px 'Tamlil',sans-serif;color:var(--ink);border:1.5px solid #E1D9F5;border-radius:10px;padding:6px 10px;background:#fff;min-width:0}
+.lrow input:focus{outline:none;border-color:var(--magenta)}
+.lrow input[type=date]{width:150px}
+.lrow .tb{padding:6px 12px;font-size:15px}
+.lrow .now-tag{font:700 14px 'Tamlil',sans-serif;color:var(--magenta);padding:0 6px;white-space:nowrap}
+.lrow .x{width:34px;height:34px;padding:0;border-radius:50%;color:var(--pink)}
+@media (max-width:620px){
+  .lrow{grid-template-columns:1fr 1fr}
+  .lrow .name{grid-column:1/-1}
+  .lrow input[type=date]{width:100%;grid-column:1/-1}
+}
+
 .foot-note{text-align:center;color:#8A83A6;font-size:15px}
 body.present .tools .btns .edit-only,body.present .foot-note{display:none}
 
@@ -304,7 +325,7 @@ body.present .tools .btns .edit-only,body.present .foot-note{display:none}
 }
 @media print{
   body{padding:0}
-  .tools .btns,.tctl,.dur,.foot-note,.toast,.del,.add-st,.link input,.side-char{display:none!important}
+  .tools .btns,.tctl,.dur,.foot-note,.toast,.del,.add-st,.side-char{display:none!important}
   .intel.none{visibility:hidden}
   .page{max-width:none}
   *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
@@ -321,9 +342,10 @@ body.present .tools .btns .edit-only,body.present .foot-note{display:none}
     <img class="logo" src="../canva/assets/shalhevet-logo.png" alt="שלהבות חב&quot;ד">
     <div class="btns">
       <button class="tb main" id="presentBtn">מצב הקרנה</button>
+      <button class="tb edit-only lessons-btn" id="lessonsBtn">📚 השיעורים שלי · <b id="curName"></b></button>
+      <button class="tb edit-only" id="newBtn">+ שיעור חדש</button>
       <button class="tb edit-only" id="shareBtn">העתקת קישור לשיעור</button>
       <button class="tb edit-only" id="printBtn">הדפסה</button>
-      <button class="tb edit-only" id="clearBtn">תבנית ריקה</button>
     </div>
   </div>
 
@@ -342,8 +364,7 @@ body.present .tools .btns .edit-only,body.present .foot-note{display:none}
 
     <div class="noise" id="noise">
       <span class="h">מד רעש</span>
-      <div class="ntrack" id="ntrack" role="slider" tabindex="0" aria-label="מד רעש" aria-valuemin="0" aria-valuemax="4"
-           title="לחיצה או גרירה: בחירת רמת הרעש"></div>
+      <div class="tlight" id="tlight" role="radiogroup" tabindex="0" aria-label="מד רעש"></div>
       <span class="now" id="nnow"></span>
     </div>
 
@@ -413,6 +434,15 @@ body.present .tools .btns .edit-only,body.present .foot-note{display:none}
     <div class="foot"><button class="tb" id="noIntel">בלי אייקון</button><button class="tb main" id="pickClose">סגירה</button></div>
   </div>
 </div>
+<div class="pick lessons" id="lessons">
+  <div class="panel">
+    <h3>השיעורים שלי</h3>
+    <p class="lnote">אפשר להכין כמה שיעורים מראש – לכל שיעור שם ותאריך. הכול נשמר בדפדפן שבמחשב הזה.
+      כדי לפתוח שיעור במחשב אחר (למשל בכיתה) – "העתקת קישור לשיעור" ושולחים לעצמך.</p>
+    <div class="llist" id="llist"></div>
+    <div class="foot"><button class="tb" id="lNew">+ שיעור חדש</button><button class="tb main" id="lClose">סגירה</button></div>
+  </div>
+</div>
 <div class="toast" id="toast"></div>
 
 <script>
@@ -422,25 +452,38 @@ const INTEL = [
 ];
 // look of each station card, in order (repeats after 4)
 const ST_LOOK = ['c-magenta', 'c-pink', 'c-cyan', 'c-lime'];
-// accept "www.x.com" or "x.com/y" as well as full addresses
-function linkUrl(v){
-  v = (v || '').trim(); if (!v) return '';
-  if (!/^https?:\/\//i.test(v)) v = 'https://' + v;
-  try { const u = new URL(v); return /\./.test(u.hostname) ? u.href : ''; } catch(e) { return ''; }
-}
-function escAttr(v){ return String(v || '').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;'); }
-const KEY = 'shalhevet-entry-card-v2';
-const blank = () => ({goal:'',entry:'',exit:'',minutes:15,noise:1,
-  stations:[0,1,2,3].map(() => ({intel:'',sub:'',text:''}))});
+function esc(v){ return String(v || '').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;'); }
+const OLD_KEY = 'shalhevet-entry-card-v2', LIB_KEY = 'shalhevet-entry-card-lessons';
+const blank = () => ({goal:'',entry:'',exit:'',minutes:15,noise:'green',
+  stations:[0,1,2,3].map(() => ({intel:'',sub:'',text:'',bring:''}))});
 
-// ---------- state: link hash > local storage > blank ----------
+// ---------- lessons library: several lessons prepared ahead, each with a name + date ----------
 function decode(s){try{return JSON.parse(decodeURIComponent(escape(atob(s))))}catch(e){return null}}
 function encode(o){return btoa(unescape(encodeURIComponent(JSON.stringify(o))))}
-let state = null;
-if (location.hash.length > 2) state = decode(location.hash.slice(1));
-if (!state) { try { state = JSON.parse(localStorage.getItem(KEY)) } catch(e) {} }
-if (!state || !state.stations) state = blank();
-function save(){ try { localStorage.setItem(KEY, JSON.stringify(state)) } catch(e) {} }
+const newId = () => Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
+let lib = null;
+try { lib = JSON.parse(localStorage.getItem(LIB_KEY)) } catch(e) {}
+if (!lib || !lib.items || !Object.keys(lib.items).length) {
+  // first visit with the library: the lesson saved by the old version becomes lesson #1
+  let old = null; try { old = JSON.parse(localStorage.getItem(OLD_KEY)) } catch(e) {}
+  const id = newId();
+  lib = {cur:id, items:{[id]:{name:'השיעור שלי', date:'', data:(old && old.stations) ? old : blank(), updated:Date.now()}}};
+}
+// a shared link opens as a new lesson in the library (never overwrites one)
+if (location.hash.length > 2) {
+  const got = decode(location.hash.slice(1));
+  if (got && got.stations) {
+    const id = newId(), name = got._name || 'שיעור מקישור', date = got._date || '';
+    delete got._name; delete got._date;
+    lib.items[id] = {name, date, data:got, updated:Date.now()}; lib.cur = id;
+  }
+  history.replaceState(null, '', location.pathname);
+}
+if (!lib.items[lib.cur]) lib.cur = Object.keys(lib.items)[0];
+let state = lib.items[lib.cur].data;
+function saveLib(){ try { localStorage.setItem(LIB_KEY, JSON.stringify(lib)) } catch(e) {} }
+function save(){ lib.items[lib.cur].data = state; lib.items[lib.cur].updated = Date.now(); saveLib(); }
+saveLib();
 
 // ---------- stations ----------
 const wrap = document.getElementById('stations');
@@ -453,7 +496,7 @@ function renderStations(){
   state.stations.forEach((s,i) => {
     const el = document.createElement('div');
     el.className = `card st ${ST_LOOK[i % ST_LOOK.length]}`;
-    const it = INTEL.find(x => x[0] === s.intel), url = linkUrl(s.link);
+    const it = INTEL.find(x => x[0] === s.intel);
     el.innerHTML = `
       <span class="tab">תחנה ${i+1}</span>
       <button class="intel ${it?'':'none'}" data-i="${i}" title="${it?it[1]+' – לחצו להחלפה':'בחירת אינטליגנציה'}">
@@ -463,13 +506,14 @@ function renderStations(){
       <span class="ttl" contenteditable="${!present}" data-s="${i}" data-f="sub" data-ph="שם התחנה"></span>
       <span class="hint">מה עושים בתחנה:</span>
       <div class="lines" contenteditable="${!present}" data-s="${i}" data-f="text" data-ph="כתבו כאן את המשימה"></div>
-      <div class="link">
-        <input type="url" data-link="${i}" value="${escAttr(s.link)}" placeholder="🔗 קישור לתחנה (לא חובה)" aria-label="קישור לתחנה ${i+1}">
-        <a class="open" href="${escAttr(url)}" target="_blank" rel="noopener" ${url?'':'hidden'}>פתיחה ↗</a>
+      <div class="bring">
+        <span class="bl">🎒 מה צריך להביא:</span>
+        <div class="bf" contenteditable="${!present}" data-s="${i}" data-f="bring" data-ph="ציוד / חומרים לתחנה"></div>
       </div>`;
     wrap.appendChild(el);
     el.querySelector('[data-f=sub]').innerText = s.sub || '';
     el.querySelector('[data-f=text]').innerText = s.text || '';
+    el.querySelector('[data-f=bring]').innerText = s.bring || '';
   });
   if (n < MAX_ST) {
     const add = document.createElement('button');
@@ -482,25 +526,20 @@ function renderStations(){
 renderStations();
 wrap.addEventListener('click', e => {
   if (e.target.closest('.add-st')) {
-    state.stations.push({intel:'',sub:'',text:'',link:''}); save(); renderStations();
+    state.stations.push({intel:'',sub:'',text:'',bring:''}); save(); renderStations();
     return;
   }
   const d = e.target.closest('[data-del]'); if (!d) return;
   const i = +d.dataset.del, s = state.stations[i];
-  if ((s.sub || s.text || s.intel || s.link) && !confirm(`למחוק את תחנה ${i+1} ואת מה שכתוב בה?`)) return;
+  if ((s.sub || s.text || s.intel || s.bring) && !confirm(`למחוק את תחנה ${i+1} ואת מה שכתוב בה?`)) return;
   state.stations.splice(i, 1); save(); renderStations();
 });
 
 // ---------- editable fields ----------
-document.querySelectorAll('[data-k]').forEach(el => { el.innerText = state[el.dataset.k] || '' });
+function fillFields(){ document.querySelectorAll('[data-k]').forEach(el => { el.innerText = state[el.dataset.k] || '' }); }
+fillFields();
 document.addEventListener('input', e => {
   const t = e.target;
-  if (t.dataset.link) {
-    const i = +t.dataset.link, url = linkUrl(t.value), a = t.parentElement.querySelector('.open');
-    state.stations[i].link = t.value.trim();
-    a.hidden = !url; a.href = url || '#';
-    save(); return;
-  }
   if (t.dataset.k) state[t.dataset.k] = t.innerText.trim();
   else if (t.dataset.s) state.stations[+t.dataset.s][t.dataset.f] = t.innerText.trim();
   else return;
@@ -605,42 +644,34 @@ document.querySelectorAll('[data-min]').forEach(b => b.onclick = () => setMinute
 customMin.addEventListener('change', () => setMinutes(+customMin.value));
 setMinutes(state.minutes || 15);
 
-// ---------- noise meter (teacher sets it; works in present mode too) ----------
-const NOISE = [            // quiet (bottom) → loud (top)
-  ['🤐','שקט מוחלט','#1EBCD7'],
-  ['🤫','לחישה','#A9BA1E'],
-  ['👥','דיבור בזוגות','#FDB916'],
-  ['🗣️','דיבור בקבוצה','#F36F29'],
-  ['📢','קול רם','#EE2F62']
-];
-const noiseEl = document.getElementById('noise'), ntrack = document.getElementById('ntrack'), nnow = document.getElementById('nnow');
-ntrack.innerHTML = NOISE.map((n, i) => `<div class="nl" data-n="${i}" style="--lc:${n[2]}" title="${n[1]}">
-  <span class="e">${n[0]}</span><span class="bar"></span></div>`).reverse().join('');
-function setNoise(v, anim){
-  v = Math.max(0, Math.min(NOISE.length - 1, v | 0));
-  const changed = v !== state.noise;
-  state.noise = v; save();
-  ntrack.querySelectorAll('.nl').forEach(el => {
-    const i = +el.dataset.n; el.classList.toggle('on', i === v); el.classList.toggle('lit', i <= v);
+// ---------- noise meter: traffic light (teacher sets it; works in present mode too) ----------
+const NOISE = {            // top → bottom, like a real traffic light
+  red:   ['#EE2F62', 'זמן שקט',    'המורה מקנה'],
+  orange:['#F36F29', 'רעש בינוני',  'זמן קבוצות'],
+  green: ['#3DBB4E', 'רעש רגיל',   'עבודה רגילה']
+};
+const NKEYS = Object.keys(NOISE);
+const noiseEl = document.getElementById('noise'), tlight = document.getElementById('tlight'), nnow = document.getElementById('nnow');
+tlight.innerHTML = NKEYS.map(k => `<button class="lamp" data-n="${k}" style="--lc:${NOISE[k][0]}" role="radio"
+  title="${NOISE[k][1]} – ${NOISE[k][2]}" aria-label="${NOISE[k][1]}"></button>`).join('');
+function setNoise(k, anim){
+  if (!NOISE[k]) k = 'green';
+  const changed = k !== state.noise;
+  state.noise = k; save();
+  tlight.querySelectorAll('.lamp').forEach(b => {
+    const on = b.dataset.n === k; b.classList.toggle('on', on); b.setAttribute('aria-checked', on);
   });
-  nnow.textContent = NOISE[v][1]; noiseEl.style.setProperty('--lc', NOISE[v][2]);
-  ntrack.setAttribute('aria-valuenow', v); ntrack.setAttribute('aria-valuetext', NOISE[v][1]);
+  nnow.innerHTML = `<b>${NOISE[k][1]}</b><small>${NOISE[k][2]}</small>`;
+  noiseEl.style.setProperty('--lc', NOISE[k][0]);
   if (anim && changed) { noiseEl.classList.remove('pop'); void noiseEl.offsetWidth; noiseEl.classList.add('pop'); }
 }
-function noiseAt(y){
-  const r = ntrack.getBoundingClientRect();
-  return Math.floor((1 - (y - r.top) / r.height) * NOISE.length);
-}
-let nDrag = false;
-ntrack.addEventListener('pointerdown', e => { nDrag = true; ntrack.setPointerCapture(e.pointerId); setNoise(noiseAt(e.clientY), true); });
-ntrack.addEventListener('pointermove', e => { if (nDrag) setNoise(noiseAt(e.clientY), true); });
-ntrack.addEventListener('pointerup', () => nDrag = false);
-ntrack.addEventListener('pointercancel', () => nDrag = false);
-ntrack.addEventListener('keydown', e => {
-  if (e.key === 'ArrowUp' || e.key === 'ArrowRight') { e.preventDefault(); setNoise(state.noise + 1, true); }
-  if (e.key === 'ArrowDown' || e.key === 'ArrowLeft') { e.preventDefault(); setNoise(state.noise - 1, true); }
+tlight.addEventListener('click', e => { const b = e.target.closest('.lamp'); if (b) setNoise(b.dataset.n, true); });
+tlight.addEventListener('keydown', e => {
+  const i = NKEYS.indexOf(state.noise);
+  if (e.key === 'ArrowUp') { e.preventDefault(); setNoise(NKEYS[Math.max(0, i - 1)], true); }
+  if (e.key === 'ArrowDown') { e.preventDefault(); setNoise(NKEYS[Math.min(NKEYS.length - 1, i + 1)], true); }
 });
-setNoise(state.noise ?? 1);
+setNoise(state.noise);
 
 // ---------- toolbar ----------
 const toast = document.getElementById('toast');
@@ -658,16 +689,69 @@ presentBtn.onclick = () => setPresent(!document.body.classList.contains('present
 document.addEventListener('fullscreenchange', () => { if (!document.fullscreenElement && document.body.classList.contains('present')) setPresent(false); });
 document.getElementById('printBtn').onclick = () => window.print();
 document.getElementById('shareBtn').onclick = async () => {
-  const url = location.href.split('#')[0] + '#' + encode(state);
-  try { await navigator.clipboard.writeText(url); say('הקישור הועתק – מי שיפתח אותו יראה את השיעור הזה'); }
+  const L = lib.items[lib.cur];
+  const url = location.href.split('#')[0] + '#' + encode({...state, _name:L.name, _date:L.date});
+  try { await navigator.clipboard.writeText(url); say('הקישור הועתק – מי שיפתח אותו יקבל את השיעור הזה'); }
   catch(e) { prompt('העתיקו את הקישור:', url); }
 };
-document.getElementById('clearBtn').onclick = () => {
-  if (!confirm('לנקות את כל השדות ולהתחיל תבנית חדשה?')) return;
-  state = blank(); save(); history.replaceState(null, '', location.pathname);
-  document.querySelectorAll('[data-k]').forEach(el => el.innerText = '');
-  renderStations(); setMinutes(15); setNoise(1);
-};
+
+// ---------- my lessons ----------
+const lessonsEl = document.getElementById('lessons'), llist = document.getElementById('llist'), curName = document.getElementById('curName');
+function showCur(){ curName.textContent = lib.items[lib.cur].name || 'ללא שם'; }
+function openLesson(id){
+  lib.cur = id; state = lib.items[id].data; saveLib();
+  fillFields(); renderStations(); setMinutes(state.minutes || 15); setNoise(state.noise); showCur();
+}
+function addLesson(data, name){
+  const id = newId();
+  lib.items[id] = {name, date:'', data, updated:Date.now()};
+  openLesson(id); return id;
+}
+const fmtDate = d => d ? d.split('-').reverse().join('.') : '';
+function renderLessons(){
+  const ids = Object.keys(lib.items).sort((a, b) => {
+    const A = lib.items[a], B = lib.items[b];
+    if (A.date && B.date) return A.date.localeCompare(B.date);
+    if (A.date || B.date) return A.date ? -1 : 1;
+    return B.updated - A.updated;
+  });
+  llist.innerHTML = ids.map(id => {
+    const L = lib.items[id], cur = id === lib.cur;
+    return `<div class="lrow ${cur ? 'cur' : ''}" data-id="${id}">
+      <input class="name" data-ln="name" value="${esc(L.name)}" placeholder="שם השיעור" aria-label="שם השיעור">
+      <input type="date" data-ln="date" value="${esc(L.date)}" aria-label="תאריך השיעור" title="לאיזה יום השיעור">
+      ${cur ? '<span class="now-tag">פתוח עכשיו</span>' : '<button class="tb main" data-la="open">פתיחה</button>'}
+      <button class="tb" data-la="dup" title="שכפול – עותק של השיעור הזה">שכפול</button>
+      <button class="tb x" data-la="del" title="מחיקת השיעור" aria-label="מחיקת השיעור">🗑</button>
+    </div>`;
+  }).join('');
+}
+llist.addEventListener('input', e => {
+  const t = e.target, row = t.closest('.lrow'); if (!t.dataset.ln || !row) return;
+  lib.items[row.dataset.id][t.dataset.ln] = t.value.trim(); saveLib(); showCur();
+});
+llist.addEventListener('change', e => { if (e.target.dataset.ln === 'date') renderLessons(); });
+llist.addEventListener('click', e => {
+  const b = e.target.closest('[data-la]'); if (!b) return;
+  const id = b.closest('.lrow').dataset.id, L = lib.items[id];
+  if (b.dataset.la === 'open') { openLesson(id); lessonsEl.classList.remove('show'); say(`נפתח: ${L.name || 'ללא שם'}`); return; }
+  if (b.dataset.la === 'dup') { addLesson(JSON.parse(JSON.stringify(L.data)), (L.name || 'שיעור') + ' (עותק)'); renderLessons(); return; }
+  if (b.dataset.la === 'del') {
+    if (!confirm(`למחוק את השיעור "${L.name || 'ללא שם'}"? אי אפשר לשחזר.`)) return;
+    delete lib.items[id];
+    if (!Object.keys(lib.items).length) addLesson(blank(), 'שיעור חדש');
+    else if (id === lib.cur) openLesson(Object.keys(lib.items)[0]);
+    saveLib(); renderLessons();
+  }
+});
+function newLesson(){ addLesson(blank(), 'שיעור חדש'); }
+document.getElementById('lessonsBtn').onclick = () => { renderLessons(); lessonsEl.classList.add('show'); };
+document.getElementById('newBtn').onclick = () => { newLesson(); say('נפתח שיעור חדש – השיעור הקודם שמור ב"השיעורים שלי"'); };
+document.getElementById('lNew').onclick = () => { newLesson(); renderLessons(); llist.querySelector('.cur .name').select(); };
+document.getElementById('lClose').onclick = () => lessonsEl.classList.remove('show');
+lessonsEl.addEventListener('click', e => { if (e.target === lessonsEl) lessonsEl.classList.remove('show'); });
+document.addEventListener('keydown', e => { if (e.key === 'Escape') lessonsEl.classList.remove('show'); });
+showCur();
 </script>
 </body>
 </html>
