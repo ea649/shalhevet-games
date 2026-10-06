@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>פאזל שבת – וּבַיּוֹם הַשְּׁבִיעִי שָׁבַת וַיִּנָּפַשׁ</title>
+<style>
+  @font-face{font-family:"Tamlil";src:url("fonts/FbTamlil-Bold.otf") format("opentype");font-weight:700}
+  @font-face{font-family:"TamlilR";src:url("fonts/FbTamlil-Regular.otf") format("opentype")}
+  :root{--indigo:#4F3795;--magenta:#AA479A;--pink:#EE3461;--cyan:#08B7D5;--yellow:#FCB918;--ink:#1B1533}
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+  html,body{height:100%}
+  body{height:100dvh;overflow:hidden;display:flex;flex-direction:column;align-items:center;
+    background:radial-gradient(1200px 600px at 80% -10%,#DCEFFC 0%,transparent 60%),linear-gradient(165deg,#F6F4FF 0%,#FFFFFF 55%,#FFF3F7 100%);
+    font-family:"TamlilR","Segoe UI",Arial,sans-serif;color:var(--ink);padding:10px 14px;gap:8px;position:relative}
+  .logo-m{position:absolute;top:10px;left:14px;height:clamp(26px,5vh,48px)}
+  .logo-s{position:absolute;bottom:10px;right:14px;height:clamp(30px,6vh,60px)}
+  h1{font-family:"Tamlil",Arial,sans-serif;font-size:clamp(20px,3.6vh,38px);text-align:center;
+    background:linear-gradient(135deg,#4F3795 0%,#AA479A 55%,#EE3461 100%);-webkit-background-clip:text;background-clip:text;color:transparent}
+  .bar{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;align-items:center}
+  .btn{border:0;border-radius:14px;color:#fff;cursor:pointer;padding:7px 16px;font-size:clamp(13px,1.8vh,17px);font-family:inherit;
+    background:linear-gradient(135deg,#4F3795 0%,#AA479A 100%);box-shadow:0 6px 16px rgba(79,55,149,.22)}
+  .btn.sel{background:linear-gradient(135deg,#EE3461 0%,#FCB918 100%)}
+  .stat{background:#fff;border:2px solid #E7E2F6;border-radius:14px;padding:5px 12px;font-size:clamp(12px,1.7vh,16px)}
+  #wrap{flex:1;min-height:0;width:100%;display:flex;align-items:center;justify-content:center;padding-bottom:4vh}
+  #board{position:relative;border-radius:16px;overflow:hidden;box-shadow:0 12px 34px rgba(79,55,149,.25);background:#fff;touch-action:none}
+  .tile{position:absolute;background-repeat:no-repeat;cursor:grab;transition:left .18s,top .18s;outline:1px solid rgba(255,255,255,.7)}
+  .tile.drag{transition:none;z-index:10;cursor:grabbing;box-shadow:0 10px 25px rgba(0,0,0,.35);outline:3px solid var(--yellow)}
+  .tile.ok{outline:none}
+  #win{position:absolute;inset:0;display:none;align-items:center;justify-content:center;background:rgba(27,21,51,.25);z-index:30}
+  #win div{background:#fff;border-radius:22px;padding:22px 34px;text-align:center;box-shadow:0 18px 40px rgba(0,0,0,.25)}
+  #win b{display:block;font-family:"Tamlil";font-size:clamp(24px,4.5vh,44px);color:var(--magenta)}
+  .peek{opacity:0;position:absolute;inset:0;pointer-events:none;transition:opacity .25s;z-index:20}
+  .peek.on{opacity:1}
+</style>
+</head>
+<body>
+<img class="logo-m" src="canva/kislev/img/logo-moreshet.png" alt="אוצרות המורשת">
+<h1>פָּאזֶל שַׁבָּת</h1>
+<div class="bar">
+  <button class="btn lv" data-n="3">קַל</button>
+  <button class="btn lv" data-n="4">בֵּינוֹנִי</button>
+  <button class="btn lv" data-n="5">קָשֶׁה</button>
+  <button class="btn" id="peekBtn">הצצה בתמונה</button>
+  <span class="stat">מהלכים: <b id="moves">0</b></span>
+</div>
+<div id="wrap"><div id="board"><canvas class="peek" id="peek"></canvas><div id="win"><div><b>כָּל הַכָּבוֹד!</b><span id="verse2"></span></div></div></div></div>
+<img class="logo-s" src="canva/kislev/img/shalhevet-logo.png" alt="שלהבות חב״ד">
+<script>
+const VERSE="וּבַיּוֹם הַשְּׁבִיעִי שָׁבַת וַיִּנָּפַשׁ";
+const img=new Image(); img.src="canva/kislev/img/puzzle-shabbat.png";
+const src=document.createElement('canvas'); let N=3, tiles=[], moves=0, W=0, H=0, url='';
+function compose(){
+  const w=img.naturalWidth,h=img.naturalHeight; src.width=w; src.height=h; const g=src.getContext('2d');
+  const gr=g.createLinearGradient(0,0,0,h*0.3); gr.addColorStop(0,'#3B2E7E'); gr.addColorStop(1,'#B98BC9');
+  g.fillStyle=gr; g.fillRect(0,0,w,h*0.3); g.drawImage(img,0,0);
+  g.fillStyle='#fff'; g.textAlign='center'; g.textBaseline='middle'; g.direction='rtl';
+  let fs=Math.round(h*0.095); g.font='700 '+fs+'px Tamlil, Arial';
+  while(g.measureText(VERSE).width>w*0.92){fs-=2; g.font='700 '+fs+'px Tamlil, Arial';}
+  g.shadowColor='rgba(0,0,0,.45)'; g.shadowBlur=fs*0.25; g.fillText(VERSE,w/2,h*0.11);
+  url=src.toDataURL('image/jpeg',0.9);
+}
+function size(){
+  const wr=document.getElementById('wrap').getBoundingClientRect(); const ar=src.width/src.height;
+  W=Math.min(wr.width*0.98,wr.height*0.94*ar); H=W/ar; const b=document.getElementById('board'); b.style.width=W+'px'; b.style.height=H+'px';
+  const p=document.getElementById('peek'); p.width=W; p.height=H; p.style.width=W+'px'; p.style.height=H+'px'; p.getContext('2d').drawImage(src,0,0,W,H);
+  tiles.forEach(t=>place(t));
+}
+function place(t){ const tw=W/N, th=H/N; Object.assign(t.el.style,{width:tw+'px',height:th+'px',left:(t.pos%N)*tw+'px',top:Math.floor(t.pos/N)*th+'px',backgroundImage:'url('+url+')',backgroundSize:W+'px '+H+'px',backgroundPosition:(-(t.id%N)*tw)+'px '+(-Math.floor(t.id/N)*th)+'px'}); t.el.classList.toggle('ok',t.id===t.pos); }
+function start(n){
+  N=n; moves=0; document.getElementById('moves').textContent=0; document.getElementById('win').style.display='none';
+  document.querySelectorAll('.lv').forEach(b=>b.classList.toggle('sel',+b.dataset.n===n));
+  const b=document.getElementById('board'); tiles.forEach(t=>t.el.remove()); tiles=[];
+  let order=[...Array(N*N).keys()]; do{ for(let i=order.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[order[i],order[j]]=[order[j],order[i]];} }while(order.some((v,i)=>v===i));
+  order.forEach((id,pos)=>{const el=document.createElement('div'); el.className='tile'; b.insertBefore(el,document.getElementById('win')); const t={id,pos,el}; tiles.push(t); drag(t);});
+  size();
+}
+function drag(t){
+  t.el.addEventListener('pointerdown',e=>{ e.preventDefault(); t.el.setPointerCapture(e.pointerId); t.el.classList.add('drag');
+    const r=document.getElementById('board').getBoundingClientRect(); const ox=e.clientX-t.el.offsetLeft-r.left, oy=e.clientY-t.el.offsetTop-r.top;
+    const mv=ev=>{ t.el.style.left=(ev.clientX-r.left-ox)+'px'; t.el.style.top=(ev.clientY-r.top-oy)+'px'; };
+    const up=ev=>{ t.el.removeEventListener('pointermove',mv); t.el.removeEventListener('pointerup',up); t.el.classList.remove('drag');
+      const tw=W/N, th=H/N; const cx=Math.min(N-1,Math.max(0,Math.floor((ev.clientX-r.left)/tw))), cy=Math.min(N-1,Math.max(0,Math.floor((ev.clientY-r.top)/th)));
+      const np=cy*N+cx; if(np!==t.pos){ const o=tiles.find(x=>x.pos===np); o.pos=t.pos; t.pos=np; place(o); moves++; document.getElementById('moves').textContent=moves; }
+      place(t); if(tiles.every(x=>x.id===x.pos)) setTimeout(()=>{document.getElementById('win').style.display='flex'},300); };
+    t.el.addEventListener('pointermove',mv); t.el.addEventListener('pointerup',up); });
+}
+document.querySelectorAll('.lv').forEach(b=>b.onclick=()=>start(+b.dataset.n));
+const pk=document.getElementById('peekBtn'); const peek=document.getElementById('peek');
+pk.addEventListener('pointerdown',()=>peek.classList.add('on')); ['pointerup','pointerleave'].forEach(ev=>pk.addEventListener(ev,()=>peek.classList.remove('on')));
+document.getElementById('verse2').textContent=VERSE;
+window.addEventListener('resize',size);
+Promise.all([new Promise(r=>img.complete?r():img.onload=r),document.fonts.load('700 40px Tamlil')]).then(()=>{compose();start(3);});
+</script>
+</body>
+</html>
