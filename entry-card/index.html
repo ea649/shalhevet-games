@@ -223,7 +223,10 @@ body.present .stations{grid-template-columns:repeat(var(--cols,4),minmax(0,1fr))
 .bring{display:flex;flex-direction:column;gap:2px;margin-top:2px;padding-top:6px;
   border-top:1.5px dashed color-mix(in srgb,var(--c) 40%,transparent)}
 .bring .bl{flex:none;font:700 clamp(13px,1.7vh,16px) 'Tamlil',sans-serif;color:color-mix(in srgb,var(--c) 75%,#1B1533)}
-.bring .bf{min-width:0;background:rgba(255,255,255,.6);border-radius:10px;font-size:clamp(13px,1.7vh,16px);line-height:1.4;padding:1px 6px;min-height:1.4em;color:var(--ink)}
+.bring .bf{min-width:0;background:rgba(255,255,255,.7);border-radius:10px;cursor:text;
+  border:1.5px dashed color-mix(in srgb,var(--c) 45%,transparent);font-size:clamp(13px,1.7vh,16px);line-height:1.4;padding:5px 8px;min-height:2.2em;color:var(--ink)}
+.bring .bf:focus{border-style:solid;background:#fff}
+body.present .bring .bf{border:0;background:rgba(255,255,255,.55)}
 body.present .bring:has(.bf:empty){display:none}
 .intel.none{
   display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;
@@ -237,7 +240,7 @@ body.present .bring:has(.bf:empty){display:none}
 }
 @keyframes bob{50%{transform:translateY(-3px)}}
 body.present .intel.none{visibility:hidden}
-.del{position:absolute;bottom:10px;right:10px;z-index:5;width:30px;height:30px;border-radius:50%;border:0;cursor:pointer;
+.del{position:absolute;top:12px;right:calc(var(--icon) + 16px);z-index:5;width:30px;height:30px;border-radius:50%;border:0;cursor:pointer;
   background:#fff;color:var(--c);font:700 19px/1 'Tamlil',sans-serif;
   box-shadow:0 2px 8px rgba(27,21,51,.18);opacity:0;transition:.15s}
 .st:hover .del,.del:focus{opacity:1}
@@ -507,7 +510,7 @@ function renderStations(){
       <span class="hint">מה עושים בתחנה:</span>
       <div class="lines" contenteditable="${!present}" data-s="${i}" data-f="text" data-ph="כתבו כאן את המשימה"></div>
       <div class="bring">
-        <span class="bl">🎒 מה צריך להביא:</span>
+        <label class="bl">🎒 מה צריך להביא:</label>
         <div class="bf" contenteditable="${!present}" data-s="${i}" data-f="bring" data-ph="ציוד / חומרים לתחנה"></div>
       </div>`;
     wrap.appendChild(el);
@@ -525,6 +528,7 @@ function renderStations(){
 }
 renderStations();
 wrap.addEventListener('click', e => {
+  const bl = e.target.closest('.bring .bl'); if (bl) { bl.nextElementSibling.focus(); return; }
   if (e.target.closest('.add-st')) {
     state.stations.push({intel:'',sub:'',text:'',bring:''}); save(); renderStations();
     return;
