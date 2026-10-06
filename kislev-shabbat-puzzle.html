@@ -13,7 +13,7 @@
   body{height:100dvh;overflow:hidden;display:flex;flex-direction:column;align-items:center;
     background:radial-gradient(1200px 600px at 80% -10%,#DCEFFC 0%,transparent 60%),linear-gradient(165deg,#F6F4FF 0%,#FFFFFF 55%,#FFF3F7 100%);
     font-family:"TamlilR","Segoe UI",Arial,sans-serif;color:var(--ink);padding:10px 14px;gap:8px;position:relative}
-  .logo-m{position:absolute;top:10px;left:14px;height:clamp(26px,5vh,48px)}
+  .logo-m{position:absolute;top:10px;left:14px;height:clamp(34px,7vh,70px)}
   .logo-s{position:absolute;bottom:10px;right:14px;height:clamp(30px,6vh,60px)}
   h1{font-family:"Tamlil",Arial,sans-serif;font-size:clamp(20px,3.6vh,38px);text-align:center;
     background:linear-gradient(135deg,#4F3795 0%,#AA479A 55%,#EE3461 100%);-webkit-background-clip:text;background-clip:text;color:transparent}
@@ -53,7 +53,7 @@ const src=document.createElement('canvas'); let N=3, tiles=[], moves=0, W=0, H=0
 function compose(){
   const w=img.naturalWidth,h=img.naturalHeight; src.width=w; src.height=h; const g=src.getContext('2d');
   const gr=g.createLinearGradient(0,0,0,h*0.3); gr.addColorStop(0,'#3B2E7E'); gr.addColorStop(1,'#B98BC9');
-  g.fillStyle=gr; g.fillRect(0,0,w,h*0.3); g.drawImage(img,0,0);
+  g.fillStyle='#f3ece4'; g.fillRect(0,0,w,h); g.fillStyle=gr; g.fillRect(0,0,w,h*0.3); g.drawImage(img,0,0);
   g.fillStyle='#fff'; g.textAlign='center'; g.textBaseline='middle'; g.direction='rtl';
   let fs=Math.round(h*0.095); g.font='700 '+fs+'px Tamlil, Arial';
   while(g.measureText(VERSE).width>w*0.92){fs-=2; g.font='700 '+fs+'px Tamlil, Arial';}
