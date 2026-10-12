@@ -14,9 +14,9 @@
 :root{
   --indigo:#513996; --magenta:#AA479A; --pink:#EE2F62; --cyan:#1EBCD7;
   --yellow:#FDB916; --lime:#BDCC32; --orange:#F36F29; --ink:#1B1533; --muted:#6B6486;
-  --page:#8FD6F5;
+  --page:#FFFFFF;
   --g-brand:linear-gradient(120deg,#00C6FF 0%,#6A3BFF 50%,#F107A3 100%);
-  --shadow:0 18px 40px -20px rgba(8,58,110,.55),0 2px 8px rgba(8,58,110,.10);
+  --shadow:0 14px 34px -18px rgba(40,50,110,.40),0 0 0 1px rgba(40,50,110,.06);
   --field:#F1F8FD;
   --gut:clamp(14px,2.4vw,32px);
 }
@@ -24,11 +24,7 @@
 html,body{min-height:100%}
 body{
   font-family:'Tamlil','Segoe UI',Arial,sans-serif;font-weight:500;color:var(--ink);
-  background:
-    radial-gradient(900px 520px at 100% -10%,#C9F0FF 0,transparent 60%),
-    radial-gradient(800px 600px at -10% 110%,#A9C4FF 0,transparent 60%),
-    var(--page);
-  background-attachment:fixed;
+  background:var(--page);
   padding:clamp(10px,1.8vh,20px) var(--gut) 28px;
   -webkit-font-smoothing:antialiased;overflow-x:hidden;
 }
@@ -59,10 +55,10 @@ body{
   border:0;box-shadow:var(--shadow);
 }
 /* each station: one vivid two-tone gradient */
-.card.c-magenta{--c:#8A2BE2;--g:linear-gradient(120deg,#6A3BFF,#F107A3)}
-.card.c-pink   {--c:#F0306B;--g:linear-gradient(120deg,#FF0F7B,#FF9A2E)}
-.card.c-cyan   {--c:#0A84FF;--g:linear-gradient(120deg,#00C6FF,#0057FF)}
-.card.c-lime   {--c:#0FA968;--g:linear-gradient(120deg,#00C9A7,#8BE04E)}
+.card.c-magenta{--c:#7C4DDB;--g:linear-gradient(120deg,#B9A2FF,#F7A6DA);--gt:linear-gradient(120deg,#6A3BFF,#D6339A)}
+.card.c-pink   {--c:#E0466F;--g:linear-gradient(120deg,#FF9EBB,#FFC98F);--gt:linear-gradient(120deg,#F0306B,#F07B1E)}
+.card.c-cyan   {--c:#1E7FE0;--g:linear-gradient(120deg,#8FE1FF,#9CBDFF);--gt:linear-gradient(120deg,#0AA6E0,#2F5FE8)}
+.card.c-lime   {--c:#159E6A;--g:linear-gradient(120deg,#8BEBD3,#C9EFA2);--gt:linear-gradient(120deg,#0FA98A,#5BAE22)}
 
 .tab{
   position:absolute;top:12px;left:14px;z-index:3;
@@ -83,6 +79,8 @@ body{
 [contenteditable]{outline:none;border-radius:10px;transition:background .15s}
 .editing [contenteditable]:hover{background:rgba(81,57,150,.05)}
 .editing [contenteditable]:focus{background:rgba(81,57,150,.08)}
+.editing .st .ttl:hover,.editing .st .ttl:focus{background:var(--gt);-webkit-background-clip:text;background-clip:text}
+.editing .st .ttl:focus{outline:2px dashed color-mix(in srgb,var(--c) 35%,transparent);outline-offset:2px}
 [contenteditable]:empty:before{content:attr(data-ph);color:#A9A3BF;font-weight:400}
 .hint{display:block;font:italic 500 clamp(12px,1.5vh,15px) 'Tamlil',sans-serif;color:var(--muted)}
 .lines{line-height:1.45;padding:2px 6px;min-height:2.6em;color:var(--ink)}
@@ -91,7 +89,7 @@ body{
 .hide-x{position:absolute;top:6px;left:6px;z-index:4;width:26px;height:26px;border-radius:50%;border:0;cursor:pointer;
   background:#EEF3FA;color:var(--muted);font:700 16px/1 'Tamlil',sans-serif;transition:.15s}
 .hide-x:hover{background:var(--pink);color:#fff}
-.tb.ghost{background:rgba(255,255,255,.75);color:#2B1F66}
+.tb.ghost{background:#F7FAFE;color:#2B1F66}
 .tb[hidden]{display:none}
 
 /* ---------- top row: entry card (right) · noise meter · timer (left) – kept low ---------- */
@@ -175,16 +173,16 @@ body.present .dur{display:none}
 .stations{display:grid;grid-template-columns:repeat(var(--cols,4),minmax(0,1fr)) 64px;gap:clamp(12px,1.4vw,20px)}
 body.present .stations{grid-template-columns:repeat(var(--cols,4),minmax(0,1fr))}
 .st{
-  --icon:clamp(52px,7.4vh,76px);
+  --icon:clamp(64px,10vh,104px);
   display:flex;flex-direction:column;gap:6px;min-width:0;min-height:clamp(300px,48vh,560px);
   padding:22px 14px 14px;overflow:hidden;
 }
 /* colour bar: the station's gradient */
 .st::before{content:"";position:absolute;top:0;left:0;right:0;height:10px;background:var(--g)}
-.st .tab{top:22px;background:var(--g);border-radius:999px;padding:4px 14px 5px;
+.st .tab{top:22px;background:var(--gt);border-radius:999px;padding:4px 14px 5px;
   box-shadow:0 6px 14px -6px var(--c)}
 .st-head{display:flex;align-items:center;gap:8px;min-height:var(--icon)}
-.st .ttl{background:var(--g);-webkit-background-clip:text;background-clip:text;color:transparent;caret-color:var(--c);
+.st .ttl{background:var(--gt);-webkit-background-clip:text;background-clip:text;color:transparent;caret-color:var(--c);
   font-size:clamp(24px,3.8vh,44px);
   flex:1;min-width:0;display:block;text-align:center;
   padding:0 4px 0 84px;word-break:break-word}
@@ -197,13 +195,14 @@ body.present .st .hint{display:none}
   flex:none;display:flex;align-items:center;gap:6px;height:var(--icon);
   border:0;background:none;cursor:pointer;border-radius:18px;transition:transform .2s;padding:0;
 }
-.intel[data-n="2"],.intel[data-n="3"]{--isz:calc(var(--icon) * .8)}
+.intel[data-n="2"]{--isz:calc(var(--icon) * .8)}
+.intel[data-n="3"]{--isz:calc(var(--icon) * .68)}
 .intel:hover{transform:scale(1.05)}
 .intel img{width:var(--isz);height:var(--isz);object-fit:contain;display:block;transform:scale(1.2)}
 /* what to bring to the station */
 .bring{display:flex;flex-direction:column;gap:5px;padding:9px 11px 11px;border-radius:18px;background:var(--g);
-  box-shadow:0 10px 22px -12px var(--c)}
-.bring .bl{flex:none;font:700 clamp(13px,1.7vh,16px) 'Tamlil',sans-serif;color:#fff}
+  box-shadow:0 10px 22px -14px var(--c)}
+.bring .bl{flex:none;font:700 clamp(13px,1.7vh,16px) 'Tamlil',sans-serif;color:color-mix(in srgb,var(--c) 70%,#1B1533)}
 .bring .bf{min-width:0;background:rgba(255,255,255,.92);border-radius:12px;cursor:text;border:1.5px dashed transparent;
   font-size:clamp(15px,2.1vh,22px);line-height:1.35;padding:5px 8px;min-height:2.1em;color:var(--ink)}
 .bring .bf:focus{border-color:#fff;background:#fff}
@@ -225,11 +224,11 @@ body.present .intel.none{visibility:hidden}
 .del:hover{background:var(--pink);color:#fff}
 @media (hover:none){.del{opacity:1}}
 .add-st{
-  grid-column:-2/-1;border:2px dashed rgba(255,255,255,.9);border-radius:24px;background:rgba(255,255,255,.4);cursor:pointer;
+  grid-column:-2/-1;border:2px dashed #CFDDF0;border-radius:24px;background:#F7FAFE;cursor:pointer;
   display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;padding:8px 4px;
   font:700 13px 'Tamlil',sans-serif;color:#2B1F66;transition:.2s;text-align:center;
 }
-.add-st:hover{background:rgba(255,255,255,.75)}
+.add-st:hover{background:#fff;border-color:#9DB6E8}
 .add-st .plus{width:36px;height:36px;border-radius:50%;background:var(--g-brand);color:#fff;
   display:flex;align-items:center;justify-content:center;font:700 26px/1 'Tamlil',sans-serif}
 body.present .del,body.present .add-st{display:none}
@@ -297,6 +296,8 @@ body.present .tools .btns .edit-only,body.present .foot-note{display:none}
   .stations,body.present .stations{grid-template-columns:repeat(2,1fr)}
   .add-st{grid-column:auto!important;grid-row:auto!important;min-height:90px}
   .exit{flex-direction:column;align-items:stretch}
+  .top{flex-wrap:wrap}
+  .entry{flex-basis:100%}
 }
 @media (max-width:620px){
   .top{flex-direction:column}
