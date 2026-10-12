@@ -18,8 +18,6 @@
   --g-brand:linear-gradient(120deg,#1EBCD7 0%,#513996 45%,#AA479A 72%,#EE2F62 100%);
   --gut:clamp(14px,2.4vw,32px);
 }
-/* wide screens: side gutters hold the two characters */
-@media (min-width:1100px){ :root{--gut:clamp(190px,17vw,330px)} }
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 html,body{min-height:100%}
 body{
@@ -29,7 +27,6 @@ body{
   -webkit-font-smoothing:antialiased;overflow-x:hidden;
 }
 .page{margin:0 auto;display:grid;gap:clamp(14px,2vh,22px);position:relative;z-index:2}
-@media (max-width:1099px){ .side-char{display:none} }
 
 /* ---------- toolbar ---------- */
 .tools{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between}
@@ -47,88 +44,66 @@ body{
 .toast.show{opacity:1;transform:translate(-50%,0)}
 
 /* ======================================================================
-   CARD – the look of the Canva work-cards:
-   strong colour on top fading to a pale tint, big white title,
-   and a small tab.
+   CARD – clean look: white cards, thin border; stations get one
+   colour accent (top bar + tab + title) so the board stays calm.
    ====================================================================== */
 .card{
-  --c:var(--magenta); --l:#FFF1FD; --tab:var(--cyan);
-  position:relative;border-radius:22px;isolation:isolate;
-  background:linear-gradient(180deg,var(--c) 0%,color-mix(in srgb,var(--c) 62%,var(--l)) 30%,var(--l) 86%);
-  box-shadow:0 18px 34px -24px color-mix(in srgb,var(--c) 80%,#000);
+  --c:var(--indigo);
+  position:relative;border-radius:20px;isolation:isolate;background:#fff;
+  border:2px solid #E7E3F0;box-shadow:0 10px 24px -18px rgba(27,21,51,.35);
 }
-.card.c-magenta{--c:#AA479A;--l:#FFF1FD;--tab:#1EBCD7}
-.card.c-pink   {--c:#EE2F62;--l:#FFE8EE;--tab:#FDB916}
-.card.c-indigo {--c:#513996;--l:#F6F2FF;--tab:#F36F29}
-.card.c-cyan   {--c:#1EBCD7;--l:#F1FDFF;--tab:#FDB916}
-.card.c-lime   {--c:#A9BA1E;--l:#FEFFF0;--tab:#513996}
-.card.c-orange {--c:#F36F29;--l:#FFECE3;--tab:#513996}
-.card.c-yellow {--c:#FDB916;--l:#FFF2D1;--tab:#EE2F62}
+.card.c-magenta{--c:#AA479A}
+.card.c-pink   {--c:#E2295A}
+.card.c-cyan   {--c:#14A5C0}
+.card.c-lime   {--c:#93A315}
 
 .tab{
   position:absolute;top:12px;left:14px;z-index:3;
-  background:var(--tab);color:#fff;border-radius:9px;padding:3px 12px 4px;
+  background:var(--c);color:#fff;border-radius:9px;padding:3px 12px 4px;
   font:900 clamp(14px,1.9vh,19px)/1.1 'TamlilCond','Tamlil',sans-serif;white-space:nowrap;
-  box-shadow:0 4px 10px -4px rgba(0,0,0,.35);
 }
 .ttl{
-  display:block;text-align:center;color:#fff;
-  font:900 clamp(26px,4.4vh,50px)/1 'TamlilCond','Tamlil',sans-serif;
-  text-shadow:0 2px 12px color-mix(in srgb,var(--c) 70%,#000 30%);
-  padding:0 8px;
+  display:block;text-align:center;color:var(--ink);
+  font:900 clamp(22px,3.2vh,36px)/1.05 'TamlilCond','Tamlil',sans-serif;padding:0 8px;
 }
-/* the two big characters that stand beside the cards (outside them) */
-.side-char{
-  position:fixed;bottom:0;z-index:1;pointer-events:none;height:auto;
-  width:calc(var(--gut) + 6px);max-height:72vh;object-fit:contain;object-position:bottom;
-  filter:drop-shadow(0 12px 18px rgba(27,21,51,.18));
-}
-.side-char.r{right:-6px}
-.side-char.l{left:-6px}
-
-/* one text size for everything written inside the cards */
-:root{--fs:clamp(15px,2vh,20px)}
 
 /* editable text */
 [contenteditable]{outline:none;border-radius:10px;transition:background .15s}
-.editing [contenteditable]:hover{background:rgba(255,255,255,.35)}
-.editing [contenteditable]:focus{background:rgba(255,255,255,.55)}
-[contenteditable]:empty:before{content:attr(data-ph);color:color-mix(in srgb,var(--c) 45%,#8E88A6);font-weight:400}
-.ttl[contenteditable]:empty:before{color:rgba(255,255,255,.72)}
-.hint{display:block;font:italic 500 clamp(12px,1.5vh,15px) 'Tamlil',sans-serif;color:color-mix(in srgb,var(--c) 55%,#3A3350)}
-.lines{font-size:var(--fs);line-height:1.55;padding:2px 6px;min-height:3em;color:var(--ink)}
+.editing [contenteditable]:hover{background:rgba(81,57,150,.05)}
+.editing [contenteditable]:focus{background:rgba(81,57,150,.08)}
+[contenteditable]:empty:before{content:attr(data-ph);color:#A9A3BF;font-weight:400}
+.hint{display:block;font:italic 500 clamp(12px,1.5vh,15px) 'Tamlil',sans-serif;color:var(--muted)}
+.lines{line-height:1.45;padding:2px 6px;min-height:2.6em;color:var(--ink)}
 
-/* ---------- top: timer + goal + entry ---------- */
-/* RTL: goal + entry on the right, noise meter in the middle, timer on the left */
-.top{display:grid;grid-template-columns:1fr auto auto;gap:clamp(14px,1.8vw,24px);align-items:stretch}
-.heads{display:grid;grid-template-rows:auto 1fr;gap:clamp(12px,1.8vh,18px)}
+/* small round × that hides a part (entry card / noise meter) */
+.hide-x{position:absolute;top:6px;left:6px;z-index:4;width:26px;height:26px;border-radius:50%;border:0;cursor:pointer;
+  background:#F1EEF8;color:var(--muted);font:700 16px/1 'Tamlil',sans-serif;transition:.15s}
+.hide-x:hover{background:var(--pink);color:#fff}
+.tb.ghost{background:#FBFAFE;box-shadow:inset 0 0 0 1.5px #CFC6EA;color:var(--indigo)}
+.tb[hidden]{display:none}
 
-.goal{display:flex;align-items:center;gap:12px;padding:clamp(10px,1.5vh,14px) 20px}
-.goal .lbl{font:900 clamp(20px,2.7vh,28px)/1 'TamlilCond','Tamlil',sans-serif;color:#fff;white-space:nowrap;
-  text-shadow:0 2px 10px rgba(160,90,0,.45)}
-.goal .fill{flex:1;min-width:0;font-size:var(--fs);line-height:1.5;padding:3px 10px;min-height:1.6em;
-  background:rgba(255,255,255,.7);border-radius:12px}
+/* ---------- top row: entry card (right) · noise meter · timer (left) – kept low ---------- */
+.top{display:flex;gap:clamp(10px,1.4vw,18px);align-items:stretch}
+.top > *{flex:none}
+.top [hidden]{display:none!important}
 
-.entry{padding:clamp(12px,2vh,22px) clamp(16px,2vw,28px) clamp(12px,1.8vh,18px);
-  display:flex;flex-direction:column;justify-content:center;gap:clamp(6px,1vh,10px)}
-.entry .q{flex:1;display:flex;align-items:center;justify-content:center;
-  font-size:clamp(18px,2.7vh,30px);font-weight:500;line-height:1.5;min-height:2.6em;padding:8px 14px;text-align:center;
-  background:rgba(255,255,255,.55);border-radius:14px;white-space:pre-wrap}
-.entry .q:empty:before{display:block}
+.entry{flex:1 1 auto;min-width:0;display:flex;align-items:center;gap:14px;padding:8px 40px 8px 16px}
+.entry .ttl{flex:none;font-size:clamp(20px,2.8vh,30px);padding:0}
+.entry .q{flex:1;min-width:0;font-size:clamp(18px,2.6vh,28px);font-weight:500;line-height:1.4;min-height:1.6em;
+  padding:6px 12px;background:#F8F7FC;border-radius:12px;white-space:pre-wrap}
 
 /* ---------- noise meter: a traffic light, only the current colour is lit ---------- */
 .noise{
-  display:flex;flex-direction:column;align-items:center;gap:6px;padding:10px 12px;border-radius:26px;
-  width:clamp(118px,9vw,150px);
-  background:linear-gradient(180deg,#F6F2FF,#fff);
-  box-shadow:0 18px 34px -24px rgba(81,57,150,.7), inset 0 0 0 2px #E6DEF8;
+  margin-inline-start:auto;           /* when the entry card is hidden, stay on the left side */
+  position:relative;display:flex;align-items:center;gap:10px;padding:8px 38px 8px 14px;border-radius:20px;
+  background:#fff;border:2px solid #E7E3F0;
 }
-.noise .h{font:900 clamp(18px,2.4vh,23px)/1 'TamlilCond','Tamlil',sans-serif;color:var(--indigo)}
+.ntext{display:flex;flex-direction:column;align-items:center;gap:2px;min-width:6.5em}
+.noise .h{font:900 clamp(15px,2vh,19px)/1 'TamlilCond','Tamlil',sans-serif;color:var(--muted)}
 .tlight{
-  --d:clamp(34px,5.4vh,56px);
-  display:flex;flex-direction:column;align-items:center;justify-content:space-evenly;gap:6px;
-  padding:8px;border-radius:calc(var(--d) / 2 + 8px);background:linear-gradient(180deg,#2E2747,#1B1533);
-  box-shadow:inset 0 2px 0 rgba(255,255,255,.08),0 8px 18px -8px rgba(27,21,51,.6);outline:none;
+  --d:clamp(28px,4.4vh,44px);
+  display:flex;align-items:center;gap:6px;
+  padding:6px;border-radius:calc(var(--d) / 2 + 6px);background:linear-gradient(180deg,#2E2747,#1B1533);outline:none;
 }
 .tlight:focus-visible{box-shadow:0 0 0 3px #C9B8F2}
 .lamp{
@@ -139,127 +114,110 @@ body{
 .lamp:hover{transform:scale(1.06)}
 .lamp.on{
   background:radial-gradient(circle at 38% 32%,#fff 0 8%,color-mix(in srgb,var(--lc) 70%,#fff) 22%,var(--lc) 62%);
-  box-shadow:0 0 0 3px color-mix(in srgb,var(--lc) 45%,transparent),0 0 22px 6px var(--lc);
+  box-shadow:0 0 0 3px color-mix(in srgb,var(--lc) 45%,transparent),0 0 18px 5px var(--lc);
 }
 .noise.pop .lamp.on{animation:npop .45s ease}
 @keyframes npop{40%{transform:scale(1.18)}}
-.noise .now{text-align:center;line-height:1.15;color:var(--lc,var(--ink));transition:color .2s;min-height:2.4em}
-.noise .now b{display:block;font:900 clamp(16px,2.2vh,21px)/1.05 'TamlilCond','Tamlil',sans-serif}
-.noise .now small{font:500 clamp(12px,1.5vh,14px) 'Tamlil',sans-serif;color:var(--muted)}
+.noise .now{text-align:center;line-height:1.1;color:var(--lc,var(--ink));transition:color .2s}
+.noise .now b{display:block;font:900 clamp(16px,2.3vh,22px)/1.05 'TamlilCond','Tamlil',sans-serif}
+.noise .now small{font:500 clamp(11px,1.4vh,13px) 'Tamlil',sans-serif;color:var(--muted)}
 
-/* ---------- timer ---------- */
+/* ---------- timer (compact) ---------- */
 .timer{
-  display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:26px;
-  background:linear-gradient(180deg,#F6F2FF,#fff);
-  box-shadow:0 18px 34px -24px rgba(81,57,150,.7), inset 0 0 0 2px #E6DEF8;
+  display:flex;align-items:center;gap:10px;padding:6px 12px 6px 8px;border-radius:20px;
+  background:#fff;border:2px solid #E7E3F0;
 }
-.dial{position:relative;flex:none;width:clamp(112px,16vh,168px);aspect-ratio:1;cursor:pointer}
+.dial{position:relative;flex:none;width:clamp(72px,10.5vh,104px);aspect-ratio:1;cursor:pointer}
 .dial svg{width:100%;height:100%;display:block;overflow:visible}
 .dial .face{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
-.dial .t1{font:900 clamp(15px,2vh,20px) 'TamlilCond',sans-serif;color:var(--indigo)}
-.dial .time{font:700 clamp(26px,4.2vh,42px)/1.05 'Tamlil',sans-serif;font-variant-numeric:tabular-nums;color:var(--ink);direction:ltr}
-.dial .tst{font-size:clamp(11px,1.4vh,14px);color:var(--muted)}
+.dial .t1{display:none}
+.dial .time{font:700 clamp(17px,2.7vh,26px)/1.05 'Tamlil',sans-serif;font-variant-numeric:tabular-nums;color:var(--ink);direction:ltr}
+.dial .tst{font-size:clamp(9px,1.15vh,12px);color:var(--muted)}
 #ring{transition:stroke-dashoffset .95s linear}
 .timer.run #glow{animation:pulse 2s ease-in-out infinite}
 @keyframes pulse{50%{opacity:.35}}
 .timer.end .dial{animation:shake .6s ease 3}
 .timer.end .time{color:var(--pink)}
 @keyframes shake{0%,100%{transform:rotate(0)}25%{transform:rotate(-4deg)}75%{transform:rotate(4deg)}}
-.tside{display:flex;flex-direction:column;align-items:center;gap:6px;width:clamp(140px,12vw,170px)}
-.tctl{display:flex;gap:6px;flex-wrap:wrap;justify-content:center;max-width:100%}
+.tside{display:flex;flex-direction:column;align-items:center;gap:5px}
+.tctl{display:flex;gap:5px;justify-content:center}
 .tctl button{
-  border:0;border-radius:999px;padding:7px 14px;cursor:pointer;font:700 16px 'Tamlil',sans-serif;white-space:nowrap;
-  background:#fff;color:var(--indigo);box-shadow:0 3px 10px rgba(81,57,150,.14), inset 0 0 0 1.5px rgba(81,57,150,.12);
+  border:0;border-radius:999px;padding:5px 11px;cursor:pointer;font:700 14px 'Tamlil',sans-serif;white-space:nowrap;
+  background:#fff;color:var(--indigo);box-shadow:inset 0 0 0 1.5px rgba(81,57,150,.18);
 }
-.tctl button.go{background:var(--g-brand);color:#fff;min-width:88px}
-.dur{width:100%;border-top:1.5px dashed rgba(81,57,150,.2);padding-top:8px;display:grid;gap:6px;justify-items:center}
-.dur .h{font:700 15px 'Tamlil',sans-serif;color:var(--muted)}
-.stepper{display:flex;align-items:center;gap:8px}
-.stepper button{width:34px;height:34px;border-radius:50%;border:0;cursor:pointer;
-  font:700 22px/1 'Tamlil',sans-serif;color:#fff;background:linear-gradient(135deg,#1EBCD7,#513996);box-shadow:0 4px 10px rgba(81,57,150,.25)}
+.tctl button.go{background:var(--g-brand);color:#fff;min-width:74px;box-shadow:none}
+.dur{display:flex;justify-content:center}
+.dur .h,.chips{display:none}
+.stepper{display:flex;align-items:center;gap:6px}
+.stepper button{width:26px;height:26px;border-radius:50%;border:0;cursor:pointer;
+  font:700 18px/1 'Tamlil',sans-serif;color:var(--indigo);background:#EDE7FA}
 .stepper button:disabled{opacity:.35;cursor:default}
-.stepper .val{min-width:78px;white-space:nowrap;text-align:center;font:700 22px 'Tamlil',sans-serif;color:var(--ink)}
-.stepper .val input{width:40px;border:0;background:transparent;text-align:center;font:inherit;color:inherit;
+.stepper .val{white-space:nowrap;text-align:center;font:700 16px 'Tamlil',sans-serif;color:var(--ink)}
+.stepper .val input{width:32px;border:0;background:transparent;text-align:center;font:inherit;color:inherit;
   border-bottom:2px solid #D8D1EE;-moz-appearance:textfield}
 .stepper .val input::-webkit-inner-spin-button{-webkit-appearance:none}
-.chips{display:flex;flex-wrap:wrap;gap:5px;justify-content:center}
-.chips button{border:0;border-radius:999px;padding:4px 10px;cursor:pointer;font:500 14px 'Tamlil',sans-serif;
-  color:var(--indigo);background:#EDE7FA;transition:.15s}
-.chips button.on{background:var(--g-brand);color:#fff}
 body.present .dur{display:none}
-/* medium screens: controls go under the dial so the entry card keeps its width */
-@media (min-width:621px) and (max-width:1450px){
-  .timer{flex-direction:column;justify-content:center;gap:8px;padding:10px}
-  .dial{width:clamp(104px,14vh,150px)}
-  .tside{width:auto}
-  .dur{grid-template-columns:auto auto;align-items:center;column-gap:8px}
-  .dur .h{display:none}
-  .chips{display:none}
-}
 
-/* ---------- stations ---------- */
-.stations{display:grid;grid-template-columns:repeat(var(--cols,4),minmax(0,1fr)) 74px;gap:clamp(14px,1.5vw,22px)}
+/* ---------- stations: the heart of the board ---------- */
+.stations{display:grid;grid-template-columns:repeat(var(--cols,4),minmax(0,1fr)) 64px;gap:clamp(12px,1.4vw,20px)}
 body.present .stations{grid-template-columns:repeat(var(--cols,4),minmax(0,1fr))}
 .st{
-  --icon:clamp(60px,8.6vh,88px);
-  display:flex;flex-direction:column;gap:6px;min-width:0;min-height:clamp(240px,36vh,380px);
-  padding:calc(var(--icon) + 14px) 12px 12px;
-  background:linear-gradient(180deg,var(--c) 0%,color-mix(in srgb,var(--c) 70%,var(--l)) 40%,var(--l) 92%);
+  --icon:clamp(52px,7.4vh,76px);
+  display:flex;flex-direction:column;gap:6px;min-width:0;min-height:clamp(300px,48vh,560px);
+  padding:10px 14px 14px;border-top:7px solid var(--c);
 }
-.st .tab{background:#513996}            /* station tab is always purple */
-.st .ttl{font-size:clamp(22px,3.2vh,36px);min-height:1em;word-break:break-word}
-.st .hint{text-align:center;margin-top:2px}
-.st .lines{flex:1}
-/* intelligence icon: top-right, sitting on a white square the size of its frame */
+.st .tab{top:10px}
+.st .ttl{color:color-mix(in srgb,var(--c) 82%,#1B1533);font-size:clamp(24px,3.8vh,44px);
+  min-height:var(--icon);display:flex;align-items:center;justify-content:center;
+  padding:0 calc(var(--icon) - 4px);word-break:break-word}
+.st .hint{text-align:center}
+body.present .st .hint{display:none}
+.st .lines{flex:1;font-size:clamp(20px,3.2vh,36px)}
+/* intelligence icon: top-right */
 .intel{
-  position:absolute;top:8px;right:8px;z-index:3;
+  position:absolute;top:6px;right:6px;z-index:3;
   width:var(--icon);aspect-ratio:1;border:0;background:none;cursor:pointer;
   border-radius:18px;transition:transform .2s;isolation:isolate;
 }
 .intel:hover{transform:scale(1.06) rotate(-2deg)}
 .intel img{width:100%;height:100%;object-fit:contain;display:block;transform:scale(1.28)}
-.intel:not(.none):before{content:"";position:absolute;inset:14% 16% 16% 16%;background:#fff;border-radius:20%;z-index:-1}
 /* what to bring to the station */
-.bring{display:flex;flex-direction:column;gap:2px;margin-top:2px;padding-top:6px;
-  border-top:1.5px dashed color-mix(in srgb,var(--c) 40%,transparent)}
-.bring .bl{flex:none;font:700 clamp(13px,1.7vh,16px) 'Tamlil',sans-serif;color:color-mix(in srgb,var(--c) 75%,#1B1533)}
-.bring .bf{min-width:0;background:rgba(255,255,255,.7);border-radius:10px;cursor:text;
-  border:1.5px dashed color-mix(in srgb,var(--c) 45%,transparent);font-size:clamp(13px,1.7vh,16px);line-height:1.4;padding:5px 8px;min-height:2.2em;color:var(--ink)}
+.bring{display:flex;flex-direction:column;gap:2px;padding-top:6px;border-top:1.5px dashed #E1DCEC}
+.bring .bl{flex:none;font:700 clamp(13px,1.7vh,16px) 'Tamlil',sans-serif;color:var(--muted)}
+.bring .bf{min-width:0;background:#F8F7FC;border-radius:10px;cursor:text;border:1.5px dashed #DCD5EC;
+  font-size:clamp(15px,2.1vh,22px);line-height:1.35;padding:5px 8px;min-height:2.1em;color:var(--ink)}
 .bring .bf:focus{border-style:solid;background:#fff}
-body.present .bring .bf{border:0;background:rgba(255,255,255,.55)}
+body.present .bring .bf{border:0}
 body.present .bring:has(.bf:empty){display:none}
 .intel.none{
   display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;
-  border:2.5px dashed var(--c);background:#fff;color:var(--c);
-  font:700 clamp(12px,1.5vh,14px)/1.1 'Tamlil',sans-serif;padding:4px;
+  border:2px dashed color-mix(in srgb,var(--c) 60%,#fff);background:#fff;color:var(--c);
+  font:700 clamp(11px,1.4vh,13px)/1.1 'Tamlil',sans-serif;padding:4px;
 }
 .intel.none .plus{
-  width:clamp(24px,3.4vh,32px);height:clamp(24px,3.4vh,32px);border-radius:50%;background:var(--c);color:#fff;
-  display:flex;align-items:center;justify-content:center;font:700 clamp(18px,2.6vh,24px)/1 'Tamlil',sans-serif;
-  animation:bob 2.2s ease-in-out infinite;
+  width:clamp(22px,3vh,28px);height:clamp(22px,3vh,28px);border-radius:50%;background:var(--c);color:#fff;
+  display:flex;align-items:center;justify-content:center;font:700 clamp(16px,2.3vh,22px)/1 'Tamlil',sans-serif;
 }
-@keyframes bob{50%{transform:translateY(-3px)}}
 body.present .intel.none{visibility:hidden}
-.del{position:absolute;top:12px;right:calc(var(--icon) + 16px);z-index:5;width:30px;height:30px;border-radius:50%;border:0;cursor:pointer;
-  background:#fff;color:var(--c);font:700 19px/1 'Tamlil',sans-serif;
-  box-shadow:0 2px 8px rgba(27,21,51,.18);opacity:0;transition:.15s}
+.del{position:absolute;top:44px;left:14px;z-index:5;width:28px;height:28px;border-radius:50%;border:0;cursor:pointer;
+  background:#F1EEF8;color:var(--muted);font:700 18px/1 'Tamlil',sans-serif;opacity:0;transition:.15s}
 .st:hover .del,.del:focus{opacity:1}
-.del:hover{background:var(--c);color:#fff}
+.del:hover{background:var(--pink);color:#fff}
 @media (hover:none){.del{opacity:1}}
 .add-st{
-  grid-column:-2/-1;border:2.5px dashed #C9B8F2;border-radius:22px;background:#FBF9FF;cursor:pointer;
+  grid-column:-2/-1;border:2px dashed #D3CAEC;border-radius:20px;background:#FBFAFE;cursor:pointer;
   display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;padding:8px 4px;
-  font:700 14px 'Tamlil',sans-serif;color:var(--indigo);transition:.2s;text-align:center;
+  font:700 13px 'Tamlil',sans-serif;color:var(--indigo);transition:.2s;text-align:center;
 }
-.add-st:hover{background:#fff;border-color:var(--magenta);transform:translateY(-3px)}
-.add-st .plus{width:40px;height:40px;border-radius:50%;background:var(--g-brand);color:#fff;
-  display:flex;align-items:center;justify-content:center;font:700 28px/1 'Tamlil',sans-serif}
+.add-st:hover{background:#fff;border-color:var(--magenta)}
+.add-st .plus{width:36px;height:36px;border-radius:50%;background:var(--g-brand);color:#fff;
+  display:flex;align-items:center;justify-content:center;font:700 26px/1 'Tamlil',sans-serif}
 body.present .del,body.present .add-st{display:none}
 
 /* ---------- exit ---------- */
-.exit{display:flex;align-items:center;gap:18px;padding:clamp(12px,1.8vh,18px) 22px}
-.exit .ttl{flex:none;font-size:clamp(24px,3.4vh,40px)}
-.exit .lines{flex:1;min-height:3.1em;background-color:rgba(255,255,255,.55);border-radius:12px;padding:4px 10px}
+.exit{display:flex;align-items:center;gap:16px;padding:8px 18px}
+.exit .ttl{flex:none;font-size:clamp(20px,2.8vh,30px);padding:0}
+.exit .lines{flex:1;min-height:1.6em;font-size:clamp(18px,2.6vh,28px);background:#F8F7FC;border-radius:12px;padding:6px 12px}
 
 /* ---------- intelligence picker ---------- */
 .pick{position:fixed;inset:0;background:rgba(27,21,51,.45);backdrop-filter:blur(4px);display:none;
@@ -311,6 +269,7 @@ body.present .tools .btns .edit-only,body.present .foot-note{display:none}
   .st{min-height:0}
   .st .lines{min-height:1.6em;overflow-y:auto}
   .exit .lines{max-height:3.1em;overflow-y:auto}
+  .entry .q{max-height:3em;overflow-y:auto}
 }
 
 @media (max-width:900px){
@@ -319,16 +278,15 @@ body.present .tools .btns .edit-only,body.present .foot-note{display:none}
   .exit{flex-direction:column;align-items:stretch}
 }
 @media (max-width:620px){
-  .top{grid-template-columns:1fr}
-  .timer{margin:0 auto;flex-direction:column}
-  .noise{margin:0 auto;width:min(260px,100%);min-height:250px}
+  .top{flex-direction:column}
+  .entry{flex-direction:column;align-items:stretch}
+  .noise,.timer{margin:0 auto}
   .stations,body.present .stations{grid-template-columns:1fr}
-  .goal{flex-wrap:wrap;padding:14px 18px}.goal .fill{flex-basis:100%}
   .pick .grid{grid-template-columns:repeat(2,1fr)}
 }
 @media print{
   body{padding:0}
-  .tools .btns,.tctl,.dur,.foot-note,.toast,.del,.add-st,.side-char{display:none!important}
+  .tools .btns,.tctl,.dur,.foot-note,.toast,.del,.add-st{display:none!important}
   .intel.none{visibility:hidden}
   .page{max-width:none}
   *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
@@ -337,8 +295,6 @@ body.present .tools .btns .edit-only,body.present .foot-note{display:none}
 </style>
 </head>
 <body class="editing">
-<img class="side-char r" src="img/char1.webp" alt="">
-<img class="side-char l" src="img/char3.webp" alt="">
 <div class="page">
 
   <div class="tools">
@@ -349,26 +305,22 @@ body.present .tools .btns .edit-only,body.present .foot-note{display:none}
       <button class="tb edit-only" id="newBtn">+ שיעור חדש</button>
       <button class="tb edit-only" id="shareBtn">העתקת קישור לשיעור</button>
       <button class="tb edit-only" id="printBtn">הדפסה</button>
+      <button class="tb ghost" id="showEntry" hidden>+ כרטיס כניסה</button>
+      <button class="tb ghost" id="showNoise" hidden>+ מד רעש</button>
     </div>
   </div>
 
   <section class="top">
-    <div class="heads">
-      <div class="card c-yellow goal">
-        <span class="lbl">מטרת השיעור:</span>
-        <div class="fill" contenteditable="true" data-k="goal" data-ph="מה התלמידים ידעו / ירגישו / יעשו בסוף השיעור?"></div>
-      </div>
-
-      <div class="card c-indigo entry">
-        <span class="ttl">כרטיס כניסה לשיעור</span>
-        <div class="q" contenteditable="true" data-k="entry" data-ph="כתבו כאן את שאלת הפתיחה / המשימה של כרטיס הכניסה"></div>
-      </div>
+    <div class="card entry" id="entryCard">
+      <button class="hide-x" id="hideEntry" title="הסתרת כרטיס הכניסה" aria-label="הסתרת כרטיס הכניסה">×</button>
+      <span class="ttl">כרטיס כניסה</span>
+      <div class="q" contenteditable="true" data-k="entry" data-ph="כתבו כאן את שאלת הפתיחה / המשימה של כרטיס הכניסה"></div>
     </div>
 
     <div class="noise" id="noise">
-      <span class="h">מד רעש</span>
+      <button class="hide-x" id="hideNoise" title="הסתרת מד הרעש" aria-label="הסתרת מד הרעש">×</button>
+      <div class="ntext"><span class="h">מד רעש</span><span class="now" id="nnow"></span></div>
       <div class="tlight" id="tlight" role="radiogroup" tabindex="0" aria-label="מד רעש"></div>
-      <span class="now" id="nnow"></span>
     </div>
 
     <div class="timer" id="timer">
@@ -422,8 +374,8 @@ body.present .tools .btns .edit-only,body.present .foot-note{display:none}
 
   <section class="stations" id="stations"></section>
 
-  <div class="card c-orange exit">
-    <span class="ttl">כרטיס יציאה מהשיעור</span>
+  <div class="card exit">
+    <span class="ttl">כרטיס יציאה</span>
     <div class="lines" contenteditable="true" data-k="exit" data-ph="שאלת סיכום / רפלקציה לסוף השיעור"></div>
   </div>
 
@@ -457,7 +409,7 @@ const INTEL = [
 const ST_LOOK = ['c-magenta', 'c-pink', 'c-cyan', 'c-lime'];
 function esc(v){ return String(v || '').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;'); }
 const OLD_KEY = 'shalhevet-entry-card-v2', LIB_KEY = 'shalhevet-entry-card-lessons';
-const blank = () => ({goal:'',entry:'',exit:'',minutes:15,noise:'green',
+const blank = () => ({entry:'',exit:'',minutes:15,noise:'green',
   stations:[0,1,2,3].map(() => ({intel:'',sub:'',text:'',bring:''}))});
 
 // ---------- lessons library: several lessons prepared ahead, each with a name + date ----------
@@ -704,7 +656,7 @@ const lessonsEl = document.getElementById('lessons'), llist = document.getElemen
 function showCur(){ curName.textContent = lib.items[lib.cur].name || 'ללא שם'; }
 function openLesson(id){
   lib.cur = id; state = lib.items[id].data; saveLib();
-  fillFields(); renderStations(); setMinutes(state.minutes || 15); setNoise(state.noise); showCur();
+  fillFields(); renderStations(); setMinutes(state.minutes || 15); setNoise(state.noise); showCur(); applyHide();
 }
 function addLesson(data, name){
   const id = newId();
@@ -756,6 +708,20 @@ document.getElementById('lClose').onclick = () => lessonsEl.classList.remove('sh
 lessonsEl.addEventListener('click', e => { if (e.target === lessonsEl) lessonsEl.classList.remove('show'); });
 document.addEventListener('keydown', e => { if (e.key === 'Escape') lessonsEl.classList.remove('show'); });
 showCur();
+
+// ---------- hide / show: entry card (per lesson) and noise meter (teacher's choice, all lessons) ----------
+function applyHide(){
+  const hideE = !!state.hideEntry, hideN = !!lib.hideNoise;
+  document.getElementById('entryCard').hidden = hideE;
+  document.getElementById('showEntry').hidden = !hideE;
+  noiseEl.hidden = hideN;
+  document.getElementById('showNoise').hidden = !hideN;
+}
+document.getElementById('hideEntry').onclick = () => { state.hideEntry = true; save(); applyHide(); };
+document.getElementById('showEntry').onclick = () => { state.hideEntry = false; save(); applyHide(); };
+document.getElementById('hideNoise').onclick = () => { lib.hideNoise = true; saveLib(); applyHide(); };
+document.getElementById('showNoise').onclick = () => { lib.hideNoise = false; saveLib(); applyHide(); };
+applyHide();
 </script>
 </body>
 </html>
