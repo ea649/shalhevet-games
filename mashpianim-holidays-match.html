@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>חגים מהתורה וחגים מחז"ל – משחק התאמה</title>
+<style>
+  @font-face{font-family:"Tamlil";src:url("fonts/FbTamlil-Bold.otf") format("opentype");font-weight:700}
+  @font-face{font-family:"TamlilR";src:url("fonts/FbTamlil-Regular.otf") format("opentype")}
+  :root{--indigo:#513996;--magenta:#b95c9f;--pink:#eddce0;--ink:#1B1533;--ok:#2e9e6b;--bad:#e0405f}
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+  body{min-height:100dvh;background:linear-gradient(165deg,#F3EEFB 0%,#FFFFFF 55%,#FBEFF4 100%);
+    font-family:"TamlilR","Segoe UI",Arial,sans-serif;color:var(--ink);padding:14px 14px 80px;position:relative}
+  .logo-m{position:absolute;top:10px;left:14px;height:clamp(34px,7vw,64px)}
+  .logo-s{position:fixed;bottom:10px;right:14px;height:clamp(30px,6vw,56px)}
+  .bh{position:absolute;top:12px;right:16px;font-size:14px;color:var(--indigo)}
+  header{text-align:center;margin:26px auto 10px;max-width:760px;padding:0 70px}
+  h1{font-family:"Tamlil",Arial,sans-serif;font-size:clamp(22px,4.4vw,40px);color:var(--indigo)}
+  .pill{display:inline-block;margin-top:8px;background:var(--magenta);color:#fff;border-radius:999px;padding:6px 20px;
+    font-family:"Tamlil",Arial,sans-serif;font-size:clamp(14px,2.6vw,20px)}
+  .stat{margin:10px auto 0;text-align:center;font-size:15px}
+  #game{max-width:960px;margin:14px auto 0;display:grid;grid-template-columns:minmax(110px,1fr) 2.6fr;gap:12px 16px;align-items:start}
+  .col{display:flex;flex-direction:column;gap:10px}
+  .card{border:3px solid #d9cdf0;background:#fff;border-radius:16px;padding:12px 14px;cursor:pointer;font-size:clamp(15px,2.6vw,20px);
+    line-height:1.4;box-shadow:0 5px 14px rgba(81,57,150,.12);transition:transform .12s,border-color .12s,background .12s;user-select:none}
+  .card.hol{font-family:"Tamlil",Arial,sans-serif;font-size:clamp(17px,3vw,24px);text-align:center;color:var(--indigo);background:#F6F1FD}
+  .card:active{transform:scale(.98)}
+  .card.sel{border-color:var(--magenta);background:var(--pink);transform:scale(1.02)}
+  .card.done{border-color:var(--ok);background:#E6F6EE;cursor:default;opacity:.9}
+  .card.wrong{border-color:var(--bad);background:#FDE7EC;animation:sh .35s}
+  @keyframes sh{25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+  .hint{margin:8px auto 0;text-align:center;font-size:14px;color:#6b6190}
+  #win{display:none;position:fixed;inset:0;align-items:center;justify-content:center;background:rgba(27,21,51,.35);z-index:30}
+  #win div{background:#fff;border-radius:22px;padding:26px 36px;text-align:center;box-shadow:0 18px 40px rgba(0,0,0,.25)}
+  #win b{display:block;font-family:"Tamlil";font-size:clamp(26px,5vw,44px);color:var(--magenta);margin-bottom:12px}
+  .btn{border:0;border-radius:14px;color:#fff;cursor:pointer;padding:8px 20px;font-size:17px;font-family:inherit;
+    background:linear-gradient(135deg,#513996 0%,#b95c9f 100%)}
+  @media (max-width:520px){#game{grid-template-columns:1fr 1.9fr;gap:10px}header{padding:0 56px}.card{padding:9px 10px}}
+</style>
+</head>
+<body>
+<span class="bh">ב"ה</span>
+<img class="logo-m" src="canva/kislev/img/logo-moreshet.png" alt="מורשת">
+<header>
+  <h1>חגים מהתורה וחגים מחז"ל</h1>
+  <div class="pill">התאימו בין החג לבין המקור שבו הוא מופיע</div>
+</header>
+<p class="stat">התאמות נכונות: <b id="good">0</b> / 7 &nbsp;|&nbsp; טעויות: <b id="errs">0</b></p>
+<main id="game"><div class="col" id="cH"></div><div class="col" id="cS"></div></main>
+<p class="hint">לוחצים על חג ואחר כך על המקור שלו</p>
+<div id="win"><div><b>כל הכבוד!</b><button class="btn" id="again">שוב</button></div></div>
+<img class="logo-s" src="canva/kislev/img/shalhevet-logo.png" alt="שלהבות חב&quot;ד">
+<script>
+const DATA=[
+ ["פסח","\"שבעת ימים מצות תאכלו\" (שמות יב, טו)"],
+ ["שבועות","\"ועשית חג שבועות לה' אלהיך\" (דברים טז, י)"],
+ ["ראש השנה","\"בחודש השביעי באחד לחודש... זכרון תרועה\" (ויקרא כג, כד)"],
+ ["יום הכיפורים","\"אך בעשור לחודש השביעי הזה יום הכיפורים הוא\" (ויקרא כג, כז)"],
+ ["סוכות","\"בחמישה עשר יום לחודש השביעי הזה חג הסוכות\" (ויקרא כג, לד)"],
+ ["חנוכה","\"לשנה אחרת קבעום ועשאום ימים טובים בהלל והודאה\" (תלמוד בבלי, שבת כא ע\"ב)"],
+ ["פורים","\"עַל כֵּן קָרְאוּ לַיָּמִים הָאֵלֶּה פּוּרִים עַל שֵׁם הַפּוּר\" (אסתר ט, כו)"]
+];
+const $=s=>document.querySelector(s);
+let selH=null,selS=null,good=0,errs=0;
+function shuffle(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]]}return a}
+function build(){
+  good=0;errs=0;selH=selS=null;$("#good").textContent=0;$("#errs").textContent=0;$("#win").style.display="none";
+  const cH=$("#cH"),cS=$("#cS");cH.innerHTML="";cS.innerHTML="";
+  shuffle(DATA.map((d,i)=>i)).forEach(i=>{const e=document.createElement("div");e.className="card hol";e.textContent=DATA[i][0];e.dataset.i=i;e.onclick=()=>pick(e,"H");cH.appendChild(e)});
+  shuffle(DATA.map((d,i)=>i)).forEach(i=>{const e=document.createElement("div");e.className="card";e.textContent=DATA[i][1];e.dataset.i=i;e.onclick=()=>pick(e,"S");cS.appendChild(e)});
+}
+function pick(e,k){
+  if(e.classList.contains("done"))return;
+  if(k==="H"){if(selH)selH.classList.remove("sel");selH=e}else{if(selS)selS.classList.remove("sel");selS=e}
+  e.classList.add("sel");
+  if(selH&&selS)check();
+}
+function check(){
+  const a=selH,b=selS;selH=selS=null;
+  if(a.dataset.i===b.dataset.i){
+    [a,b].forEach(x=>{x.classList.remove("sel");x.classList.add("done")});
+    $("#good").textContent=++good;
+    if(good===DATA.length)setTimeout(()=>$("#win").style.display="flex",500);
+  }else{
+    $("#errs").textContent=++errs;
+    [a,b].forEach(x=>{x.classList.remove("sel");x.classList.add("wrong")});
+    setTimeout(()=>[a,b].forEach(x=>x.classList.remove("wrong")),600);
+  }
+}
+$("#again").onclick=build;build();
+</script>
+</body>
+</html>
