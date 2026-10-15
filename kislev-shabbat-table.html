@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>עורכים שולחן שבת</title>
+<style>
+  @font-face{font-family:"Tamlil";src:url("fonts/FbTamlil-Bold.otf") format("opentype");font-weight:700}
+  @font-face{font-family:"TamlilR";src:url("fonts/FbTamlil-Regular.otf") format("opentype")}
+  :root{--indigo:#4F3795;--magenta:#AA479A;--pink:#EE3461;--cyan:#08B7D5;--yellow:#FCB918;--ink:#1B1533}
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+  html,body{height:100%}
+  body{height:100dvh;overflow:hidden;display:flex;flex-direction:column;align-items:center;
+    background:radial-gradient(1200px 600px at 80% -10%,#DCEFFC 0%,transparent 60%),linear-gradient(165deg,#F6F4FF 0%,#FFFFFF 55%,#FFF3F7 100%);
+    font-family:"TamlilR","Segoe UI",Arial,sans-serif;color:var(--ink);padding:8px 14px;gap:6px;position:relative}
+  .logo-m{position:absolute;top:8px;left:14px;height:clamp(36px,7vh,70px)}
+  .logo-s{position:absolute;bottom:8px;right:14px;height:clamp(28px,5vh,52px)}
+  h1{font-family:"Tamlil",Arial,sans-serif;font-size:clamp(20px,3.6vh,38px);text-align:center;
+    background:linear-gradient(135deg,#4F3795 0%,#AA479A 55%,#EE3461 100%);-webkit-background-clip:text;background-clip:text;color:transparent}
+  #wrap{flex:1;min-height:0;width:100%;display:flex;align-items:center;justify-content:center}
+  #scene{position:relative;border-radius:16px;overflow:hidden;box-shadow:0 12px 34px rgba(79,55,149,.25);background:#f3ece4}
+  #scene>img.bg{position:absolute;inset:0;width:100%;height:100%}
+  .it{position:absolute;transform:translate(-50%,-100%) scale(0);transition:transform .45s cubic-bezier(.3,1.5,.5,1);filter:drop-shadow(0 6px 6px rgba(0,0,0,.28));pointer-events:none}
+  .it.on{transform:translate(-50%,-100%) scale(1)}
+  .it img{width:100%;display:block}
+  .it b{position:absolute;left:50%;top:100%;transform:translateX(-50%);white-space:nowrap;background:#fff;border-radius:10px;padding:1px 8px;margin-top:-4px;
+    font-family:"Tamlil";font-size:clamp(11px,1.9vh,19px);color:var(--indigo);box-shadow:0 2px 6px rgba(0,0,0,.2)}
+  #cards{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;width:100%}
+  .card{width:clamp(48px,8.5vh,84px);aspect-ratio:1;border:0;border-radius:14px;cursor:pointer;font-family:"Tamlil";font-size:clamp(22px,4vh,40px);color:#fff;
+    background:linear-gradient(135deg,#4F3795 0%,#AA479A 100%);box-shadow:0 5px 12px rgba(79,55,149,.25);display:flex;align-items:center;justify-content:center;transition:transform .25s}
+  .card img{width:88%}
+  .card.open{background:#fff;border:3px solid var(--yellow);transform:scale(1.12)}
+  .card.done{background:#E7F8EE;border:3px solid #35b36b;opacity:.55}
+  .card.done::after{content:"✓";color:#1f8f4f;font-size:clamp(22px,4vh,40px)}
+  .card.done img{display:none}
+  .bar{display:flex;gap:8px;align-items:center;justify-content:center;flex-wrap:wrap;width:100%}
+  #inp{font-family:"Tamlil",Arial;font-size:clamp(20px,3.6vh,34px);width:min(60vw,420px);padding:6px 14px;border:3px solid #CFC4EE;border-radius:16px;text-align:center;outline:none;background:#fff;color:var(--ink)}
+  #inp:focus{border-color:var(--magenta)}
+  #inp.bad{border-color:var(--pink);animation:sh .35s}
+  @keyframes sh{25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}
+  .btn{border:0;border-radius:16px;color:#fff;cursor:pointer;padding:8px 20px;font-size:clamp(16px,2.6vh,26px);font-family:"Tamlil",inherit;
+    background:linear-gradient(135deg,#4F3795 0%,#AA479A 100%);box-shadow:0 6px 16px rgba(79,55,149,.22)}
+  .btn.hint{background:linear-gradient(135deg,#EE3461 0%,#FCB918 100%)}
+  .btn.mic.rec{background:#EE3461}
+  .stat{background:#fff;border:2px solid #E7E2F6;border-radius:14px;padding:5px 14px;font-size:clamp(14px,2.2vh,22px)}
+  #msg{min-height:1.4em;font-family:"Tamlil";font-size:clamp(15px,2.4vh,24px);color:var(--magenta);text-align:center}
+  #win{position:absolute;inset:0;display:none;align-items:center;justify-content:center;background:rgba(27,21,51,.25);z-index:30}
+  #win div{background:#fff;border-radius:22px;padding:22px 34px;text-align:center;box-shadow:0 18px 40px rgba(0,0,0,.25)}
+  #win b{display:block;font-family:"Tamlil";font-size:clamp(24px,4.5vh,44px);color:var(--magenta)}
+  #win span{font-family:"Tamlil";font-size:clamp(18px,3vh,30px);color:var(--indigo)}
+</style>
+</head>
+<body>
+<img class="logo-m" src="canva/kislev/img/logo-otzarot-hamoreshet.png" alt="אוצרות המורשת">
+<h1>עוֹרְכִים שֻׁלְחַן שַׁבָּת</h1>
+<div id="wrap"><div id="scene"><img class="bg" src="canva/kislev/img/table-bg.png" alt=""><div id="win"><div><b>הַשֻּׁלְחָן עָרוּךְ!</b><span>שַׁבָּת שָׁלוֹם</span><br><br><button class="btn" id="again">שׁוּב</button></div></div></div></div>
+<div id="cards"></div>
+<div id="msg"></div>
+<div class="bar">
+  <input id="inp" type="text" dir="rtl" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="כותבים כאן מילה" aria-label="מילה">
+  <button class="btn" id="go">הוֹסֵף</button>
+  <button class="btn mic" id="mic" title="הקלטה">🎤</button>
+  <button class="btn hint" id="hint">רֶמֶז</button>
+  <span class="stat">עַל הַשֻּׁלְחָן: <b id="cnt">0</b>/8</span>
+</div>
+<img class="logo-s" src="canva/kislev/img/shalhevet-logo.png" alt="שלהבות חב״ד">
+<script>
+// slots: x,y = bottom-centre as % of scene; w = width % of scene width
+const ITEMS=[
+ {id:'candles',label:'נֵרוֹת שַׁבָּת',x:17,y:68,w:17,alias:['נרות שבת','נרות','נר שבת','נר','נרות של שבת','שני נרות']},
+ {id:'cup',label:'גְּבִיעַ קִדּוּשׁ',x:40,y:70,w:13,alias:['גביע קידוש','גביע','כוס קידוש','כוס','גביע של קידוש']},
+ {id:'challot',label:'שְׁתֵּי חַלּוֹת',x:63,y:74,w:22,alias:['חלות','חלה','שתי חלות','2 חלות','שני חלות','לחם','לחמים','חלות שבת']},
+ {id:'wine',label:'יַיִן',x:85,y:70,w:13,alias:['יין','בקבוק יין','יין לקידוש','מיץ ענבים','מיץ']},
+ {id:'salt',label:'מֶלַח',x:12,y:96,w:11,alias:['מלח','מלחייה','מלחיה']},
+ {id:'knife',label:'סַכִּין',x:30,y:94,w:17,alias:['סכין','סכין לחלה','סכין חלה']},
+ {id:'tableware',label:'כְּלֵי שֻׁלְחָן',x:54,y:97,w:19,alias:['כלי שולחן','כלי שלחן','צלחת','צלחות','כלים','כלי אוכל','מזלג','כף','צלחת ומזלג']},
+ {id:'food',label:'אֹכֶל לִסְעוּדַת שַׁבָּת',x:82,y:98,w:21,alias:['אוכל לסעודת שבת','אוכל','אוכל לשבת','אוכל של שבת','מאכלים','מאכל','סעודה','סעודת שבת','עוף','אוכל לסעודה','מאכלי שבת']}
+];
+const FIN={'ך':'כ','ם':'מ','ן':'נ','ף':'פ','ץ':'צ'};
+function norm(s){
+  return (s||'').normalize('NFC').replace(/[֑-ׇ]/g,'').replace(/[ךםןףץ]/g,c=>FIN[c]).replace(/["'׳״.,!?\-_]/g,'').replace(/\s+/g,' ').trim();
+}
+// ktiv-male variants: drop vav and yod so נרות = נרת, סכין = סכן, שולחן = שלחן
+function loose(s){return norm(s).replace(/[וי]/g,'');}
+function lev(a,b){const m=a.length,n=b.length;if(!m)return n;if(!n)return m;let p=[...Array(n+1).keys()];for(let i=1;i<=m;i++){let c=[i];for(let j=1;j<=n;j++)c[j]=Math.min(p[j]+1,c[j-1]+1,p[j-1]+(a[i-1]===b[j-1]?0:1));p=c;}return p[n];}
+const AL=ITEMS.map(it=>({it,list:it.alias.map(a=>({n:norm(a),l:loose(a)}))}));
+function match(text){
+  const n=norm(text); if(!n) return null; const l=loose(text);
+  for(const {it,list} of AL) for(const a of list) if(a.n===n||a.l===l) return it;
+  for(const {it,list} of AL) for(const a of list) if(a.l.length>=4 && lev(a.l,l)<=1) return it;
+  const words=n.split(' ').map(w=>w.replace(/^ה/,'')).filter(w=>w&&!['של','שתי','שני','עם','ו'].includes(w)&&!/^\d+$/.test(w));
+  for(const w of words){const lw=loose(w);if(lw.length<2)continue;for(const {it,list} of AL)for(const a of list)if(a.n===w||a.l===lw)return it;}
+  return null;
+}
+const placed=new Set(); let open=null;
+const scene=document.getElementById('scene'), cards=document.getElementById('cards'), inp=document.getElementById('inp'), msg=document.getElementById('msg');
+const START='כִּתְבוּ מִלָּה, אוֹ הַפְכוּ קֶלֶף, וְהַפָּרִיט יַעֲלֶה עַל הַשֻּׁלְחָן';
+function say(t){msg.textContent=t;}
+function build(){
+  placed.clear();open=null;document.getElementById('cnt').textContent=0;document.getElementById('win').style.display='none';
+  scene.querySelectorAll('.it').forEach(e=>e.remove()); cards.innerHTML='';
+  ITEMS.forEach(it=>{const d=document.createElement('div');d.className='it';d.id='it_'+it.id;d.style.left=it.x+'%';d.style.top=it.y+'%';d.style.width=it.w+'%';
+    d.innerHTML='<img src="canva/kislev/img/table-'+it.id+'.png" alt=""><b>'+it.label+'</b>';scene.insertBefore(d,document.getElementById('win'));});
+  ITEMS.map(i=>i.id).sort(()=>Math.random()-.5).forEach(id=>{const b=document.createElement('button');b.className='card';b.id='card_'+id;b.textContent='?';b.onclick=()=>flip(id);cards.appendChild(b);});
+  say(START); inp.value='';
+}
+function flip(id){
+  if(placed.has(id))return;
+  document.querySelectorAll('.card.open').forEach(c=>{c.classList.remove('open');if(!placed.has(c.id.slice(5)))c.textContent='?';});
+  const c=document.getElementById('card_'+id);c.classList.add('open');c.innerHTML='<img src="canva/kislev/img/table-'+id+'.png" alt="">';open=id;
+  say('מָה רוֹאִים בַּקֶּלֶף? כִּתְבוּ אֶת הַמִּלָּה');inp.focus();
+}
+function put(it){
+  if(placed.has(it.id)){say('כְּבָר יֵשׁ אֶת זֶה עַל הַשֻּׁלְחָן');return;}
+  placed.add(it.id);document.getElementById('it_'+it.id).classList.add('on');
+  const c=document.getElementById('card_'+it.id);c.className='card done';c.textContent='';
+  if(open===it.id)open=null;
+  document.getElementById('cnt').textContent=placed.size;say('כָּל הַכָּבוֹד! '+it.label);inp.value='';
+  if(placed.size===ITEMS.length)setTimeout(()=>document.getElementById('win').style.display='flex',900);
+}
+function submit(text){
+  const it=match(text);
+  if(it){put(it);return true;}
+  inp.classList.remove('bad');void inp.offsetWidth;inp.classList.add('bad');say('לֹא מָצָאנוּ, נַסּוּ שׁוּב');return false;
+}
+document.getElementById('go').onclick=()=>submit(inp.value);
+inp.addEventListener('keydown',e=>{if(e.key==='Enter')submit(inp.value);});
+document.getElementById('hint').onclick=()=>{const left=ITEMS.filter(i=>!placed.has(i.id));if(left.length)flip(left[Math.floor(Math.random()*left.length)].id);};
+document.getElementById('again').onclick=build;
+const SR=window.SpeechRecognition||window.webkitSpeechRecognition; const mic=document.getElementById('mic');
+if(!SR){mic.style.display='none';}else{
+  const rec=new SR();rec.lang='he-IL';rec.interimResults=false;rec.maxAlternatives=5;rec.continuous=false;
+  rec.onresult=e=>{const alts=[...e.results[0]].map(a=>a.transcript);inp.value=alts[0];let ok=false;for(const a of alts){const it=match(a);if(it){put(it);ok=true;break;}}if(!ok)submit(alts[0]);};
+  rec.onend=()=>mic.classList.remove('rec');rec.onerror=()=>{mic.classList.remove('rec');say('לֹא שָׁמַעְנוּ, נַסּוּ שׁוּב');};
+  mic.onclick=()=>{try{mic.classList.add('rec');rec.start();say('אֲנִי מַקְשִׁיב…');}catch(_){}};
+}
+function size(){const wr=document.getElementById('wrap').getBoundingClientRect();const w=Math.min(wr.width*0.98,wr.height*0.98*1.5);scene.style.width=w+'px';scene.style.height=(w/1.5)+'px';}
+window.addEventListener('resize',size);
+document.fonts.load('700 30px Tamlil');size();build();
+</script>
+</body>
+</html>
