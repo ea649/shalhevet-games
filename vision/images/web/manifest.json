@@ -456,10 +456,20 @@
   "h": 284,
   "src": "logo.png (חלק)"
  },
+ "logos/bidenu": {
+  "w": 600,
+  "h": 246,
+  "src": "logos/bidenu.png"
+ },
  "logos/chayalei": {
   "w": 600,
   "h": 526,
   "src": "logos/chayalei.png"
+ },
+ "logos/english": {
+  "w": 554,
+  "h": 199,
+  "src": "logos/english.png"
  },
  "logos/moreshet": {
   "w": 600,
