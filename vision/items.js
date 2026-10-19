@@ -521,11 +521,11 @@ export const GROUPS = [
       K('family-mom', 'אמא ובנותיה', ['הורים', 'משפחה', 'משפחות', 'מעורבות הורים', 'שותפות', '^אמא', '^אמהות'],
       'A modern Israeli mother in a modest trendy style — a long denim skirt, a top with long sleeves down to the wrists, a fashionable head scarf — walking with her TWO DAUGHTERS — both are girls in straight knee-length denim skirts, opaque tights and long-sleeved tops (only girls, no boys at all) — who carry school backpacks, all waving and smiling.', { sz: 'sq', h: 0.29, v: 3, uniform: 1 }),
       K('family-dad', 'אבא ובניו', ['הורים', 'משפחה', 'משפחות', 'מעורבות הורים', 'שותפות', '^אבא', '^אבות'],
-      'A modern Israeli father with a short trimmed beard, a black kippah, a casual button shirt and jeans, walking with his two sons who carry school backpacks, all waving and smiling.', { sz: 'sq', h: 0.29, v: 2, uniform: 1 }),
+      'A modern Israeli father with a short trimmed beard, a black kippah, a casual button shirt and jeans, walking with his two sons who carry school backpacks, all waving and smiling.', { sz: 'sq', h: 0.29, v: 3, uniform: 1 }),
       O('house-heart', 'בית עם לב', ['קשר עם הבית', 'בית חם', 'משפחתיות', 'הבית', 'כמו בית'],
         'a small cardboard house painted yellow with an orange roof and a pink heart on the door.', { h: 0.12 }),
       K('grandpa', 'סבא ונכד', ['^סבא', '^סבים', 'דורות', '^דור', 'יום המשפחה'],
-      'A smiling grandfather with a white beard, a black kippah and a cardigan, holding hands with his young grandson who wears a backpack.', { sz: 'sq', h: 0.29, v: 2, uniform: 1 }),
+      'A smiling grandfather with a white beard, a black kippah and a cardigan, holding hands with his young grandson who wears a backpack.', { sz: 'sq', h: 0.29, v: 3, uniform: 1 }),
       K('grandma', 'סבתא ונכדה', ['^סבתא', 'סבתות', 'דורות', '^דור', 'יום המשפחה'],
       'A smiling grandmother with a modest hat, a long skirt and a warm cardigan, holding hands with her young granddaughter who wears a backpack.', { sz: 'sq', h: 0.29, v: 2, uniform: 1 }),
       O('phone', 'טלפון עם עדכונים', ['עדכונים', 'קבוצת הורים', 'וואטסאפ', 'ווטסאפ', 'אפליקציה', 'תקשורת עם ההורים', 'קשר רציף', 'שקיפות'],
@@ -554,8 +554,6 @@ export const GROUPS = [
   { id: 'staff', domain: 'management', he: 'צוות מוביל', topic: 'staff',
     kw: ['מורה', 'מורות', 'מורים', 'צוות', 'צוות חינוכי', 'מחנכת', 'מחנכות', '^מחנך', 'השתלמות', 'השתלמויות', 'פיתוח מקצועי', 'הכשרה', 'מקצועיות', 'מקצועי', 'הוראה', 'פדגוגיה', 'פדגוגי', 'למידת עמיתים', 'חדר מורות', 'אנשי חינוך', 'גננות'],
     items: [
-      K('teacher', 'מורה מסבירה', ['מורה', 'מורות', 'מחנכת', 'מחנכות', 'הוראה', 'מלמדת'],
-        'A warm young teacher — a modern Israeli woman in a modest trendy style: a long straight skirt, a blouse with three-quarter sleeves covering the elbows, a stylish head scarf — pointing at a small cardboard whiteboard on an easel with colorful shapes, smiling. She is the only person in the image — nobody else at all.', { h: 0.3, v: 4, uniform: 1 }),
       O('apple-books', 'תפוח על ספרים', ['מורה', 'מורות', 'צוות', 'הוראה'],
         'a shiny red apple on top of two stacked books.', { h: 0.1 }),
       O('coffee-mug', 'ספל קפה של חדר המורות', ['חדר מורות', 'צוות מגובש', 'ישיבת צוות', 'ישיבות צוות', 'אווירה בצוות', 'גיבוש צוות'],
@@ -566,8 +564,6 @@ export const GROUPS = [
         'a shiny brass school hand bell with a wooden handle.', { h: 0.09 }),
       O('clock', 'שעון', ['^זמן', '^זמנים', 'דייקנות', 'דייקן', 'בזמן', 'שעון', 'ניהול זמן'],
         'a big round cardboard wall clock with a cyan frame, colorful dots instead of numbers and orange hands.', { h: 0.11 }),
-      K('teacher-kids', 'מורה קוראת עם תלמידות', ['מחנכת', 'קשר אישי', 'קשר עם המורה', 'מורה אוהבת'],
-      'A kind teacher in a modest style (long skirt, blouse with three-quarter sleeves covering the elbows, head scarf) sitting on a low cardboard bench with two girls on either side, reading a picture book to them, all smiling.', { sz: 'wide', h: 0.25, v: 2, uniform: 1 }),
     ] },
 
   // ───────────── הישגים וצמיחה ─────────────
@@ -748,10 +744,6 @@ export const GROUPS = [
   { id: 'management', domain: 'management', he: 'ניהול מיטבי', topic: 'staff',
     kw: ['ניהול', 'ניהול מיטבי', 'מנהלת', 'הנהלה', 'מקצועיות', 'מקצועית', 'תכנון', 'תוכנית עבודה', 'תכנית עבודה', 'בקרה', 'מעקב', 'נהלים', 'ארגון', '^מאורגן', '^מאורגנת', '^מסודר', '^מסודרת', 'תהליכים', 'הובלה', 'מנהיגות חינוכית', 'למידת צוות', 'קהילה מקצועית', 'עבודת צוות', 'שיתוף פעולה', 'צוות מוביל', 'אחריות משותפת'],
     items: [
-      K('principal', 'מנהלת', ['מנהלת', 'המנהלת', 'הנהלה', 'ניהול', 'מנהיגות חינוכית', 'הובלה'],
-        'A confident, warm school principal — a modern Israeli woman in a modest elegant style: a long straight skirt reaching mid-calf, a long-sleeved blazer over a blouse, a stylish head scarf — holding a tablet against her arm and smiling, standing tall. She is the only person in the image — nobody else at all.', { h: 0.3, v: 3, uniform: 1 }),
-      K('team-meeting', 'ישיבת צוות', ['ישיבת צוות', 'ישיבות צוות', 'למידת צוות', 'קהילה מקצועית', 'עבודת צוות'],
-        'Three women teachers in a modest style (long skirts, long-sleeved blouses, stylish head scarves) sitting around a small round cardboard table with notebooks, a laptop and coffee mugs, discussing and smiling. Only these three women are in the image — nobody else at all.', { sz: 'wide', h: 0.24, v: 3, uniform: 1 }),
       O('gears', 'גלגלי שיניים', ['תהליכים', 'מערכת', 'ניהול', 'ארגון', 'עובד כמו שעון'],
         'three interlocking colorful cardboard gears (cyan, orange and purple) turning together.', { h: 0.12 }),
       O('planner', 'לוח תכנון', ['תכנון', 'תוכנית עבודה', 'תכנית עבודה', 'לוח זמנים', 'גאנט', 'מעקב'],
