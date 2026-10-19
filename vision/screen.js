@@ -2,7 +2,7 @@
 // עובד בשני מצבים: מהשרת במחשב המציג, או מגיטהאב (STATIC_SITE) — שם הוא מתחבר לשרת החי אם הוא פועל, ואם לא מציג הדגמה
 import { TOPIC, classify, gist, domainOf } from './topics.js';
 import { pickItems, scoreItems, ITEM } from './items.js';
-import { placeItem } from './items-place.js';
+import { placeItem, GAME_ZONES } from './items-place.js';
 
 const $ = (s, el = document) => el.querySelector(s);
 const app = $('#app');
@@ -171,7 +171,7 @@ function bankFloats(a, animate) {
     ...WIN.map((_, i) => { const q = winRect(i); return { x: q.x - 10, y: q.y - 34, w: q.w + 20, h: q.h + 34 }; }),
     ...Object.values(DECO).map(d => ({ x: d.x, y: d.y, w: d.w, h: d.w })), { l: 1320, t: 40, r: 1500, b: 600 }]; // + השאלה מימין
   for (const it of pickItems(a.text, { used: BANK.used, rand: r, max: 1, filter: x => (x.zone === 'float' || x.zone === 'sky') && BM[x.id] })) {
-    const p = placeItem(it, BM[it.id], BANK.placed, r, { avoid });
+    const p = placeItem(it, BM[it.id], BANK.placed, r, { avoid, zones: GAME_ZONES, scale: 0.85 }); // אזורי ריחוף מותאמים למסך הזה
     BANK.placed.push(p); BANK.used.add(it.id);
     const el = document.createElement('img'); el.className = 'bank-float' + (animate ? ' in' : ''); el.src = img('items/' + it.id); el.alt = '';
     Object.assign(el.style, { left: p.rect.l + 'px', top: p.rect.t + 'px', width: p.w + 'px', height: p.h + 'px', zIndex: p.z, animationDelay: animate ? '' : (-r() * 6).toFixed(1) + 's' });

@@ -20,6 +20,11 @@ export const ZONES = {
   sky:   { boxes: [R(300, 1460, 105, 195), R(285, 375, 250, 560), R(1385, 1475, 250, 560)], anchor: 'center', z: 700 },
 };
 
+// אזורי ריחוף מותאמים למסך המשחק (screen.js): שם העמודות בצדדים תפוסות בקישוטים ובשאלה,
+// אז מפזרים את החפצים בפס העליון, משמאל מתחת לכוכב ומעל הקבוצות שעל הגג. שימוש: placeItem(..., { zones: GAME_ZONES, scale: 0.85, avoid })
+const GAME_FLOAT = { boxes: [R(560, 1280, 70, 200), R(300, 420, 400, 640), R(430, 700, 215, 262), R(1040, 1300, 215, 262), R(300, 540, 200, 250)], anchor: 'center', z: 720 };
+export const GAME_ZONES = { float: GAME_FLOAT, sky: GAME_FLOAT };
+
 function rect(x, y, w, h, anchor) {
   return anchor === 'center' ? { l: x - w / 2, t: y - h / 2, r: x + w / 2, b: y + h / 2 } : { l: x - w / 2, t: y - h, r: x + w / 2, b: y };
 }
