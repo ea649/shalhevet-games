@@ -92,12 +92,12 @@
     $('ask').style.display = 'none'; $('done').classList.add('on');
     if (st.pending) {
       $('ico').innerHTML = '<div class="spin"></div>';
-      $('title').textContent = 'מכינים איור מיוחד…';
-      $('msg').textContent = 'החזון שלך לא דומה לאף אחד אחר, אז אנחנו מציירים לו איור משלו. עוד כמה שניות הוא יעלה למסך הגדול.';
+      $('title').textContent = 'החזון שלך התקבל!';
+      $('msg').textContent = 'אנחנו מאיירים לו איור משלו — זה לוקח כמה רגעים, ואז הוא יקפוץ למסך הגדול.';
     } else {
       $('ico').innerHTML = `<img src="${st.icon.startsWith('gen/') ? API : ''}images/web/${st.icon}.png" alt="">`;
-      $('title').textContent = 'החזון שלך על המסך!';
-      $('msg').innerHTML = `נושא החזון: <span class="topic"></span><br>הסתכלי על המסך הגדול 👀`;
+      $('title').textContent = 'החזון שלך התקבל!';
+      $('msg').innerHTML = `נושא החזון: <span class="topic"></span><br>בעוד כמה רגעים הוא יופיע על המסך הגדול 👀`;
       $('msg').querySelector('.topic').textContent = st.label;
     }
   }

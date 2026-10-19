@@ -31,7 +31,7 @@ const SPOTS = {
   roof: [{ x: 586, y: 432, h: 150 }, { x: 1174, y: 432, h: 150 }, { x: 870, y: 324, h: 112 }],
 };
 // גיוון: כל תשובה מקבלת מקום אחר — לפני בית הספר, בחלון, על הגג, בצד...
-const CYCLE = ['front', 'window', 'roof', 'front', 'window', 'side', 'front', 'roof', 'window', 'front'];
+const CYCLE = ['front', 'window', 'door', 'roof', 'front', 'window', 'side', 'front', 'roof', 'window'];
 const VISION_SIGN = [.1994, .0244, .6057, .2622];
 const BOYS = ['b1', 'b2', 'b3', 'b4'], GIRLS = ['g1', 'g2', 'g3'];
 const DECO = {
@@ -42,7 +42,7 @@ const DECO = {
 const SKY_SPOTS = [[330, 70, 1400, 170], [300, 300, 370, 760], [1400, 580, 1430, 780]];
 
 // ---------- מצב ----------
-const S = { answers: [], items: [], wins: Array(WIN.length).fill(null), byId: new Map(), order: 0, n: 0,
+const S = { answers: [], items: [], wins: Array(WIN.length).fill(null), door: null, nextG: 'g', byId: new Map(), order: 0, n: 0,
   focus: null, queue: [], flying: false, tour: false, lastClose: 0, tourIdx: -1, local: false, pending: new Map(), demoN: 0 };
 const visible = () => S.answers.filter(a => a.status !== 'pending');
 
@@ -55,28 +55,34 @@ const pick = (arr, r = Math.random) => arr[Math.floor(r() * arr.length)];
 const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 
 // ---------- מה מציגים לתשובה ----------
-// לכל נושא יש איור בנים (-b) ואיור בנות (-g) — אף פעם לא ביחד. בוחרים את מה שעוד לא על הבמה
-function variant(a, T) {
-  const has = g => M[`scenes/${T.id}-${g}`];
-  if (T.windows === 'boys') return has('b') ? 'b' : null;
-  if (T.windows === 'girls') return has('g') ? 'g' : null;
-  if (has('b') && has('g')) {
-    const on = g => S.items.some(it => it.key === `scenes/${T.id}-${g}`);
-    if (on('b') !== on('g')) return on('b') ? 'g' : 'b';
-    return rng(a.id + T.id)() < .5 ? 'b' : 'g';
-  }
-  return has('b') ? 'b' : has('g') ? 'g' : null;
-}
+// כל תשובה מקבלת פעם אחת "מראה" קבוע (a._vis): איפה היא על הבמה, בנים או בנות, ואיזה איור.
+// ההצגה הגדולה, הבמה וההצגה החוזרת מהסרגל — כולם משתמשים באותו מראה, כך שתמיד רואים אותו איור.
+const topicOf = a => { const t = a.topics?.[0]; return TOPIC[t] && t !== 'custom' ? TOPIC[t] : TOPIC.vision; };
 function info(a) {
-  const t = a.topics?.[0];
-  if (t === 'custom' && a.custom) return { id: 'custom', key: a.custom.scene, label: a.custom.label, color: a.custom.color, icon: img(a.custom.icon),
-    scene: img(a.custom.scene), ar: a.custom.w / a.custom.h, unique: true, gender: a.custom.gender };
-  const T = TOPIC[t] && t !== 'custom' ? TOPIC[t] : TOPIC.vision, v = variant(a, T);
-  const key = v ? `scenes/${T.id}-${v}` : `scenes/${T.id}`, m = M[key] || { w: 1, h: 1 };
-  const icon = T.logo && M[T.logo] ? img(T.logo) : img(`icons/${T.id}`);
-  return { id: T.id, key, label: T.label, color: T.color, icon, scene: img(key), ar: m.w / m.h, unique: T.id === 'vision',
-    sign: T.id === 'vision' ? (m.sign || VISION_SIGN) : null, gender: v || (T.windows === 'boys' ? 'b' : T.windows === 'girls' ? 'g' : null) };
+  if (a.topics?.[0] === 'custom' && a.custom) return { id: 'custom', label: a.custom.label, color: a.custom.color, icon: img(a.custom.icon) };
+  const T = topicOf(a);
+  return { id: T.id, label: T.label, color: T.color, icon: T.logo && M[T.logo] ? img(T.logo) : img(`icons/${T.id}`) };
 }
+// איור הנושא במין שנבחר (לכל נושא יש איור בנים -b ואיור בנות -g — אף פעם לא ביחד)
+function sceneFor(T, gender) {
+  const key = [`scenes/${T.id}-${gender}`, `scenes/${T.id}-b`, `scenes/${T.id}-g`, `scenes/${T.id}`].find(k => M[k]) || `scenes/${T.id}`;
+  const m = M[key] || { w: 1, h: 1 };
+  return { key, src: img(key), ar: m.w / m.h, sign: T.id === 'vision' ? (m.sign || VISION_SIGN) : null, unique: T.id === 'vision',
+    gender: /-g$/.test(key) ? 'g' : /-b$/.test(key) ? 'b' : gender };
+}
+function prepare(a) {
+  if (a._vis) return a._vis;
+  const T = topicOf(a), custom = a.topics?.[0] === 'custom' && a.custom, kind = chooseKind(a);
+  let gender;
+  if (custom) gender = a.custom.gender || 'b';
+  else if (T.windows) gender = T.windows === 'boys' ? 'b' : 'g';
+  else { gender = S.nextG; S.nextG = gender === 'g' ? 'b' : 'g'; } // בנות ובנים לסירוגין
+  let vis;
+  if (custom) vis = { key: a.custom.scene, src: img(a.custom.scene), ar: a.custom.w / a.custom.h, unique: true };
+  else vis = ((kind === 'front' || kind === 'side') && bankScene(a, gender)) || sceneFor(T, gender);
+  return a._vis = { gender, ...vis, kind };
+}
+
 // אייקון / לוגו של תחום המנהלת
 function domainIcons(a) {
   const d = domainOf(a.domain); if (!d) return [];
@@ -89,7 +95,9 @@ function domainIcons(a) {
 function fit() { app.style.transform = `scale(${Math.min(innerWidth / 1920, innerHeight / 1080)})`; }
 addEventListener('resize', fit); fit();
 
-// ---------- בית הספר: לוגו בשלט, חלונות ----------
+// ---------- בית הספר: לוגו בשלט, חלונות, דלת ----------
+const DOOR = [.44, .6862, .1114, .1816]; // שתי כנפות הדלת בתמונה
+let doorRect = null;
 function buildSchool() {
   const [sx, sy, sw, sh] = SIGN, pad = 10;
   Object.assign($('.sign-panel').style, { left: SCHOOL.x + sx * SCHOOL.w - pad + 'px', top: SCHOOL.y + sy * SCHOOL.h - pad + 'px',
@@ -98,8 +106,13 @@ function buildSchool() {
   for (const [x, y, w, h] of WIN) {
     const d = document.createElement('div'); d.className = 'win';
     Object.assign(d.style, { left: SCHOOL.x + x * SCHOOL.w + 'px', top: SCHOOL.y + y * SCHOOL.h + 'px', width: w * SCHOOL.w + 'px', height: h * SCHOOL.h + 'px' });
+    d.style.setProperty('--d', (-Math.random() * 4).toFixed(1) + 's');
     box.append(d);
   }
+  const [dx, dy, dw, dh] = DOOR;
+  doorRect = { x: SCHOOL.x + dx * SCHOOL.w, y: SCHOOL.y + dy * SCHOOL.h, w: dw * SCHOOL.w, h: dh * SCHOOL.h };
+  Object.assign($('#door').style, { left: doorRect.x + 'px', top: doorRect.y + 'px', width: doorRect.w + 'px', height: doorRect.h + 'px' });
+  $('#door').onclick = () => S.door && openReplay(S.answers.find(a => a.id === S.door.aid));
   if (M['logos/bidenu']) $('.logo').src = img('logos/bidenu'); else $('.side').classList.add('nologo');
 }
 const winRect = i => { const [x, y, w, h] = WIN[i]; return { x: SCHOOL.x + x * SCHOOL.w, y: SCHOOL.y + y * SCHOOL.h, w: w * SCHOOL.w, h: h * SCHOOL.h }; };
@@ -115,6 +128,17 @@ function showWindow(i, animate, delay = 0) {
   if (!animate) { k.style.transition = 'none'; d.classList.add('on'); requestAnimationFrame(() => k.style.transition = ''); }
   else setTimeout(() => d.classList.add('on'), delay);
 }
+// הדלת נפתחת — והילד / הילדה של החזון מופיעים בפתח
+function showDoor(animate) {
+  const d = $('#door'), w = S.door;
+  d.classList.remove('open', 'on');
+  if (!w) { d.innerHTML = ''; return; }
+  d.style.setProperty('--tc', w.color);
+  d.innerHTML = `<div class="inside"></div><img class="kid" src="${img('kids/' + w.kid)}" alt=""><img class="held" src="${w.icon}" alt=""><i class="leaf l"></i><i class="leaf r"></i>`;
+  d.classList.add('on');
+  if (!animate) { d.classList.add('open', 'instant'); requestAnimationFrame(() => requestAnimationFrame(() => d.classList.remove('instant'))); }
+  else setTimeout(() => d.classList.add('open'), 120);
+}
 
 // ---------- קבוצות על הבמה (לפני בית הספר / בצד / על הגג) ----------
 function signText(cls, text, w, h, rect = VISION_SIGN) {
@@ -125,13 +149,13 @@ function signText(cls, text, w, h, rect = VISION_SIGN) {
   box.textContent = text;
   return box;
 }
-function makeGroup(a, inf, kind, slot) {
-  const sp = SPOTS[kind][slot], h = sp.h, w = h * inf.ar;
+function makeGroup(a, vis, color, kind, slot) {
+  const sp = SPOTS[kind][slot], h = sp.h, w = h * vis.ar;
   const el = document.createElement('div'); el.className = 'scene k-' + kind; // לא 'side' — זה שם העמודה הימנית
-  el.style.cssText = `left:${sp.x - w / 2}px; top:${sp.y - h}px; width:${w}px; height:${h}px; z-index:${kind === 'roof' ? 1 : sp.y}; --tc:${inf.color}`;
-  el.innerHTML = `<img src="${inf.scene}" alt="">`;
-  if (inf.sign) el.append(signText('sign-text', gist(a.text), w, h, inf.sign));
-  const it = { el, kind, slot, key: inf.unique ? null : inf.key, ids: [a.id], order: 0, rect: { x: sp.x - w / 2, y: sp.y - h, w, h } };
+  el.style.cssText = `left:${sp.x - w / 2}px; top:${sp.y - h}px; width:${w}px; height:${h}px; z-index:${kind === 'roof' ? 1 : sp.y}; --tc:${color}; --d:${(-Math.random() * 5).toFixed(1)}s`;
+  el.innerHTML = `<img src="${vis.src}" alt="">`;
+  if (vis.sign) el.append(signText('sign-text', gist(a.text), w, h, vis.sign));
+  const it = { el, kind, slot, key: vis.unique ? null : vis.key, ids: [a.id], order: 0, rect: { x: sp.x - w / 2, y: sp.y - h, w, h } };
   el.onclick = () => openReplay(S.answers.find(x => x.id === it.ids[it.ids.length - 1]));
   (kind === 'roof' ? $('#roof') : $('#scenes')).append(el);
   return it;
@@ -144,84 +168,79 @@ function badge(it) {
 function removeItem(it, animate) {
   S.items = S.items.filter(x => x !== it);
   if (it.kind === 'window') { for (const i of it.wins) { S.wins[i] = null; showWindow(i, false); } return; }
+  if (it.kind === 'door') { S.door = null; showDoor(false); return; }
   if (animate) { it.el.classList.add('out'); setTimeout(() => it.el.remove(), 700); } else it.el.remove();
 }
-const freeSlot = kind => kind === 'window' ? (S.wins.findIndex(w => !w) >= 0 ? 0 : -1)
+const freeSlot = kind => kind === 'window' ? (S.wins.some(w => !w) ? 0 : -1) : kind === 'door' ? (S.door ? -1 : 0)
   : SPOTS[kind].findIndex((_, i) => !S.items.some(it => it.kind === kind && it.slot === i));
 
 // ---------- מאגר הפריטים (מהסשן "מאגר אפשרויות לתיאור בית הספר"): איור שמתאים לתשובה עצמה + חפצים מרחפים ----------
-const BANK = { used: new Set(), placed: [], els: [] }, MAX_FLOATS = 12;
+const BANK = { used: new Set(), placed: [], els: [] }, MAX_FLOATS = 10;
 let BM = {}; // מידות פריטי המאגר
-// איור מהמאגר במקום האיור הכללי של הנושא — רק כשיש מילה בתשובה שמתאימה לו, ורק מאותו מין כמו שנבחר
+// רק פריטים שיש בתשובה מילה שמתאימה להם — בלי "סתם" פריטים
+const matched = (a, ok) => new Set(scoreItems(a.text).filter(x => x.own.length && ok(ITEM[x.id])).map(x => x.id));
+// איור מהמאגר במקום האיור הכללי של הנושא — רק כשיש התאמה ממשית, ורק מאותו מין
 function bankScene(a, gender) {
   const t = a.topics?.[0];
   if (t === 'custom' || t === 'vision' || TOPIC[t]?.windows) return null; // לאיורי זמן אמת ולשלט יש איור משלהם
-  const ok = x => (x.kind === 'kid' || x.kind === 'big') && (!x.g || !gender || x.g === gender) && BM[x.id];
-  if (!scoreItems(a.text).some(x => x.own.length && ok(ITEM[x.id]))) return null; // אין התאמה ממשית → האיור של הנושא
-  const it = pickItems(a.text, { used: BANK.used, rand: rng('bank' + a.id), max: 1, filter: ok })[0];
+  const ok = x => (x.kind === 'kid' || x.kind === 'big') && (!x.g || x.g === gender) && BM[x.id];
+  const m = matched(a, ok); if (!m.size) return null;
+  const it = pickItems(a.text, { used: BANK.used, rand: rng('bank' + a.id), max: 1, filter: x => m.has(x.id) })[0];
   if (!it) return null;
   BANK.used.add(it.id);
-  return { src: img('items/' + it.id), ar: BM[it.id].w / BM[it.id].h, key: 'items/' + it.id };
+  return { key: 'items/' + it.id, src: img('items/' + it.id), ar: BM[it.id].w / BM[it.id].h };
 }
-// 1–2 חפצים מרחפים סביב בית הספר, שלא מכסים קבוצות, חלונות, קישוטים והחיווי העליון
+// חפץ אחד שמרחף סביב בית הספר — רק אם הוא באמת קשור לתשובה
 function bankFloats(a, animate) {
   if (!Object.keys(BM).length) return;
+  const m = matched(a, x => (x.zone === 'float' || x.zone === 'sky') && BM[x.id]); if (!m.size) return;
   const r = rng('bankf' + a.id);
-  const avoid = [...SPOTS.front, ...SPOTS.side, ...SPOTS.roof,
+  const avoid = [...SPOTS.front, ...SPOTS.side, ...SPOTS.roof, doorRect,
     ...WIN.map((_, i) => { const q = winRect(i); return { x: q.x - 10, y: q.y - 34, w: q.w + 20, h: q.h + 34 }; }),
-    ...Object.values(DECO).map(d => ({ x: d.x, y: d.y, w: d.w, h: d.w })), { l: 1320, t: 40, r: 1500, b: 600 }]; // + השאלה מימין
-  for (const it of pickItems(a.text, { used: BANK.used, rand: r, max: 1, filter: x => (x.zone === 'float' || x.zone === 'sky') && BM[x.id] })) {
+    { l: 1320, t: 40, r: 1500, b: 600 }]; // + השאלה מימין
+  for (const it of pickItems(a.text, { used: BANK.used, rand: r, max: 1, filter: x => m.has(x.id) })) {
     const p = placeItem(it, BM[it.id], BANK.placed, r, { avoid, zones: GAME_ZONES, scale: 0.85 }); // אזורי ריחוף מותאמים למסך הזה
     BANK.placed.push(p); BANK.used.add(it.id);
     const el = document.createElement('img'); el.className = 'bank-float' + (animate ? ' in' : ''); el.src = img('items/' + it.id); el.alt = '';
     Object.assign(el.style, { left: p.rect.l + 'px', top: p.rect.t + 'px', width: p.w + 'px', height: p.h + 'px', zIndex: p.z, animationDelay: animate ? '' : (-r() * 6).toFixed(1) + 's' });
     $('#bankLayer').append(el); BANK.els.push(el);
-    // לא יותר מדי חפצים בשמיים — הוותיק מפנה מקום
-    if (BANK.els.length > MAX_FLOATS) { BANK.els.shift().remove(); BANK.placed.shift(); }
+    if (BANK.els.length > MAX_FLOATS) { BANK.els.shift().remove(); BANK.placed.shift(); } // הוותיק מפנה מקום
   }
 }
 
-// איפה התשובה תופיע: לפני בית הספר, בחלון, על הגג, בצד... (בלי לשנות מצב — נקרא גם לפני ההצגה)
+// איפה התשובה תופיע: לפני בית הספר, בחלון, בדלת, על הגג, בצד... (בלי לשנות מצב — נקרא גם לפני ההצגה)
 function chooseKind(a) {
-  const T = TOPIC[a.topics?.[0]] || {};
-  let kind = T.windows ? 'window' : CYCLE[S.n % CYCLE.length];
-  if (freeSlot(kind) < 0) kind = ['front', 'window', 'roof', 'side'].find(k => freeSlot(k) >= 0) || kind;
+  let kind = topicOf(a).windows ? 'window' : CYCLE[S.n % CYCLE.length];
+  if (freeSlot(kind) < 0) kind = ['front', 'window', 'door', 'roof', 'side'].find(k => freeSlot(k) >= 0) || kind;
   return kind;
-}
-// לתשובה חדשה מחליטים מראש מקום ואיור, כדי שההצגה הגדולה תראה בדיוק את מה שיעוף לבמה
-function prepare(a) {
-  if (a._kind) return;
-  a._kind = chooseKind(a);
-  a._bank = a._kind === 'front' || a._kind === 'side' ? bankScene(a, info(a).gender) || false : false;
 }
 
 // מוסיף תשובה לבמה. מחזיר מה השתנה כדי להנפיש
 function place(a, animate) {
-  prepare(a);
-  const inf = info(a), T = TOPIC[a.topics?.[0]] || {};
+  const vis = prepare(a), inf = info(a), T = topicOf(a);
   S.n++;
-  let kind = a._kind;
-  const key = a._bank ? a._bank.key : inf.key;
-  // אותו איור כבר על הבמה → מצטרפים אליו
-  const same = !inf.unique && S.items.find(it => it.key === key && it.kind !== 'window');
-  if (same && kind !== 'window') {
+  let kind = vis.kind;
+  // אותו איור בדיוק כבר על הבמה → מצטרפים אליו
+  const same = !vis.unique && (kind === 'front' || kind === 'side' || kind === 'roof') && S.items.find(it => it.key === vis.key);
+  if (same) {
     same.ids.push(a.id); same.order = ++S.order; S.byId.set(a.id, same);
     if (!animate) badge(same);
     return { it: same, fresh: false, inf };
   }
   // אין מקום מהסוג הזה → מנסים סוג אחר, ואם אין בכלל — מפנים את הוותיק ביותר מאותו סוג
-  if (freeSlot(kind) < 0) kind = ['front', 'window', 'roof', 'side'].find(k => freeSlot(k) >= 0) || kind;
+  if (freeSlot(kind) < 0) kind = ['front', 'window', 'door', 'roof', 'side'].find(k => freeSlot(k) >= 0) || kind;
   if (freeSlot(kind) < 0) {
     const old = S.items.filter(it => it.kind === kind).reduce((m, it) => !m || it.order < m.order ? it : m, null);
     if (old) removeItem(old, animate);
   }
+  const r = rng(a.id), pool = vis.gender === 'g' ? GIRLS : BOYS;
   let it;
   if (kind === 'window') {
-    const r = rng(a.id), count = T.windows ? 3 : 1, wins = [];
-    const gender = inf.gender || (r() < .5 ? 'b' : 'g'), pool = gender === 'b' ? BOYS : GIRLS;
-    for (let k = 0; k < count; k++) {
-      let i = S.wins.findIndex(w => !w);
-      if (i < 0) break;
+    const wins = [];
+    for (let k = 0; k < (T.windows ? 3 : 1); k++) {
+      const free = S.wins.map((w, i) => w ? -1 : i).filter(i => i >= 0); // חלון אקראי — כל פעם במקום אחר בבניין
+      if (!free.length) break;
+      const i = pick(free, r);
       S.wins[i] = { kid: pick(pool, r), icon: k === 0 ? inf.icon : null, color: inf.color, aid: a.id };
       wins.push(i);
     }
@@ -229,9 +248,12 @@ function place(a, animate) {
     it = { kind, wins, key: null, ids: [a.id], order: 0,
       rect: { x: x0 - 20, y: y0 - 30, w: Math.max(...rects.map(q => q.x + q.w)) - x0 + 40, h: Math.max(...rects.map(q => q.y + q.h)) - y0 + 30 } };
     if (!animate) wins.forEach(i => showWindow(i, false));
+  } else if (kind === 'door') {
+    S.door = { kid: pick(pool, r), icon: inf.icon, color: inf.color, aid: a.id };
+    it = { kind, key: null, ids: [a.id], order: 0, rect: { ...doorRect } };
+    if (!animate) showDoor(false);
   } else {
-    const ginf = a._bank && (kind === 'front' || kind === 'side') ? { ...inf, scene: a._bank.src, ar: a._bank.ar, key: a._bank.key } : inf;
-    it = makeGroup(a, ginf, kind, Math.max(0, freeSlot(kind)));
+    it = makeGroup(a, vis, inf.color, kind, Math.max(0, freeSlot(kind)));
   }
   it.order = ++S.order; S.items.push(it); S.byId.set(a.id, it);
   return { it, fresh: true, inf };
@@ -239,13 +261,15 @@ function place(a, animate) {
 
 function rebuild() {
   $('#scenes').innerHTML = ''; $('#roof').innerHTML = ''; $('#bankLayer').innerHTML = '';
-  S.items = []; S.byId.clear(); S.order = 0; S.n = 0; S.wins.fill(null);
+  S.items = []; S.byId.clear(); S.order = 0; S.n = 0; S.wins.fill(null); S.door = null; S.nextG = 'g';
   BANK.used.clear(); BANK.placed = []; BANK.els = [];
   [...$('#windows').children].forEach(d => { d.classList.remove('on', 'answer'); d.innerHTML = ''; });
-  for (const a of S.answers) { delete a._kind; delete a._bank; }
+  showDoor(false);
+  for (const a of S.answers) delete a._vis;
   for (const a of visible()) { place(a, false); bankFloats(a, false); }
   renderTiles(); refreshExtras();
 }
+
 
 // ---------- סרגל החזונות ----------
 function tileHtml(a, n) {
@@ -277,13 +301,14 @@ let extras = { bubbles: [], floaters: [], confetti: false };
 function refreshExtras() {
   const ts = new Set(visible().flatMap(a => a.topics || []));
   extras = { bubbles: [], floaters: [], confetti: ts.has('joy') };
-  const deco = new Set(['sun', 'plane', 'planet']);
+  const deco = new Set();
   for (const id of ts) {
     const T = TOPIC[id]; if (!T) continue;
     (T.bubbles || []).forEach(b => extras.bubbles.push(b));
-    (T.floaters || []).forEach(f => extras.floaters.push({ t: f, c: T.color }));
+    (T.floaters || []).filter(f => !/^[✦★✧]$/.test(f)).forEach(f => extras.floaters.push({ t: f, c: T.color }));
     (T.deco || []).forEach(d => deco.add(d));
   }
+  refreshRiders();
   for (const [name, d] of Object.entries(DECO)) {
     const el = $(`#sky .deco[data-n="${name}"]`);
     if (deco.has(name) && !el && M['deco/' + name]) {
@@ -294,6 +319,17 @@ function refreshExtras() {
       $('#sky').append(e);
     } else if (!deco.has(name) && el) el.remove();
   }
+}
+function refreshRiders() {
+  const ex = visible().filter(a => topicOf(a).id === 'excellence' && a.topics?.[0] !== 'custom');
+  const want = [...new Set(ex.map(a => prepare(a).gender))].filter(g => M['deco/rocket-' + (g === 'g' ? 'girl' : 'boy')]);
+  for (const el of document.querySelectorAll('#flyers .rider')) if (!want.includes(el.dataset.g)) el.remove();
+  want.forEach((g, i) => {
+    if ($()) return;
+    const el = document.createElement('img'); el.className = 'rider'; el.dataset.g = g; el.alt = '';
+    el.src = img('deco/rocket-' + (g === 'g' ? 'girl' : 'boy')); el.style.animationDelay = (-i * 9) + 's';
+    $('#flyers').append(el);
+  });
 }
 function anchors() {
   const out = [];
@@ -339,13 +375,12 @@ function showFocus(a, mode) {
   S.focus = { a, mode };
   f.classList.remove('on', 'replay'); void f.offsetWidth;
   f.style.setProperty('--tc', inf.color);
-  if (mode === 'new') prepare(a);
-  const heroSrc = a._bank ? a._bank.src : inf.scene, heroAr = a._bank ? a._bank.ar : inf.ar;
+  const vis = prepare(a), heroSrc = vis.src, heroAr = vis.ar;
   const cx = 520, bottom = 990; let hh = 790, hw = hh * heroAr; if (hw > 840) { hw = 840; hh = hw / heroAr; }
   const hero = $('.hero', f);
   Object.assign(hero.style, { left: cx - hw / 2 + 'px', top: bottom - hh + 'px', width: hw + 'px', height: hh + 'px' });
   hero.innerHTML = `<img src="${heroSrc}" alt="">`;
-  if (inf.sign && !a._bank) hero.append(signText('hero-sign', gist(a.text), hw, hh, inf.sign));
+  if (vis.sign) hero.append(signText('hero-sign', gist(a.text), hw, hh, vis.sign));
   S.heroRect = { x: cx - hw / 2, y: bottom - hh, w: hw, h: hh };
   Object.assign($('.hero-shadow', f).style, { left: cx - hw * .46 + 'px', top: bottom - 34 + 'px', width: hw * .92 + 'px' });
   const burst = $('.burst', f);
@@ -384,11 +419,12 @@ function closeFocus() {
     const fly = $('.hero', f).cloneNode(true); fly.className = 'flyer';
     Object.assign(fly.style, { left: from.x + 'px', top: from.y + 'px', width: from.w + 'px', height: from.h + 'px' });
     app.append(fly); S.flying = true;
-    const k = Math.min(to.w / from.w, to.h / from.h), win = it.kind === 'window';
+    const k = Math.min(to.w / from.w, to.h / from.h), win = it.kind === 'window' || it.kind === 'door';
     fly.animate([{ transform: 'none', opacity: 1 }, { transform: `translate(${to.x + (to.w - from.w * k) / 2 - from.x}px, ${to.y + (to.h - from.h * k) - from.y}px) scale(${k})`, opacity: win ? 0 : 1 }],
       { duration: 1000, easing: 'cubic-bezier(.6,0,.25,1)', fill: 'forwards' }).onfinish = () => {
       fly.remove(); S.flying = false;
-      if (win) it.wins.forEach((i, j) => showWindow(i, true, j * 220));
+      if (it.kind === 'door') showDoor(true);
+      else if (win) it.wins.forEach((i, j) => showWindow(i, true, j * 220));
       else if (fresh) { it.el.style.opacity = ''; it.el.classList.add('in'); } else flash(it);
       bankFloats(a, true);
       badge(it);
@@ -403,7 +439,7 @@ function closeFocus() {
   markCurrent();
 }
 function flash(it) {
-  const els = it.el ? [it.el] : it.wins.map(i => $('#windows').children[i]);
+  const els = it.el ? [it.el] : it.kind === 'door' ? [$('#door')] : it.wins.map(i => $('#windows').children[i]);
   for (const el of els) { el.classList.remove('flash'); void el.offsetWidth; el.classList.add('flash'); }
 }
 
@@ -420,6 +456,7 @@ function openReplay(a) {
   showFocus(a, 'replay');
 }
 $('#focus').addEventListener('click', closeFocus);
+addEventListener('animationend', e => { if (e.animationName === 'hop' || e.animationName === 'flash') e.target.closest('.scene, .win, #door')?.classList.remove('hop', 'flash'); });
 
 // סיור אוטומטי (מקש A, ובהדגמה תמיד): כשאין פעילות — מציג שוב את החזונות אחד אחרי השני
 setInterval(() => {
@@ -438,8 +475,8 @@ function renderPending() {
   pendSig = sig;
   const p = items[items.length - 1], since = (Date.now() - p.t) / 1000;
   box.innerHTML = `<div class="pd-art"><i></i><i></i><i></i></div>
-    <div class="pd-text"><b>${items.length > 1 ? `${items.length} חזונות חדשים התקבלו!` : 'חזון חדש התקבל!'}</b>
-    <span>${esc(items.map(x => x.name).join(' · '))} — מציירים איור, עוד רגע זה על המסך</span>
+    <div class="pd-text"><b>${items.length > 1 ? `החזונות של ${esc(items.map(x => x.name).join(' ו'))} הם…` : `החזון של ${esc(p.name)} הוא…`}</b>
+    <span>מאיירים אותו עכשיו — ברגע שהאיור מוכן הוא יקפוץ למסך</span>
     <div class="pd-bar"><i style="animation-delay:-${since.toFixed(1)}s"></i></div></div>`;
 }
 const addPending = (id, name, at) => { S.pending.set(id, { name, t: at ? Date.parse(at) : Date.now() }); renderPending(); };

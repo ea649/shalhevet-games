@@ -416,6 +416,16 @@
   "h": 360,
   "src": "deco/planet.png"
  },
+ "deco/rocket-boy": {
+  "w": 360,
+  "h": 360,
+  "src": "deco/rocket-boy.png"
+ },
+ "deco/rocket-girl": {
+  "w": 356,
+  "h": 360,
+  "src": "deco/rocket-girl.png"
+ },
  "deco/rocket": {
   "w": 286,
   "h": 360,
