@@ -238,3 +238,9 @@ body { font-family: 'Tamlil', 'Segoe UI', sans-serif; color: var(--ink); directi
 .scene.k-roof::before { bottom: -6px; height: 18px; }
 .demo-tag { display: none; position: absolute; bottom: 22px; left: 30px; z-index: 12; padding: 6px 16px; border-radius: 20px; background: var(--ink); color: #fff; font: 400 18px 'Tamlil'; }
 body.demo .demo-tag { display: block; }
+
+/* חפצים מהמאגר שמרחפים סביב בית הספר */
+#bankLayer { position: absolute; inset: 0; z-index: 5; pointer-events: none; }
+.bank-float { position: absolute; object-fit: contain; filter: drop-shadow(0 8px 10px rgba(15, 50, 80, .16)); animation: bankbob 6s ease-in-out infinite alternate; }
+.bank-float.in { animation: decoIn 1s var(--spring) both, bankbob 6s 1s ease-in-out infinite alternate; }
+@keyframes bankbob { from { translate: 0 -6px; } to { translate: 0 6px; } }

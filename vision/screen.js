@@ -1,6 +1,8 @@
 // המסך הגדול — בית הספר שלהבות מתמלא בחיים עם כל חזון שנשלח
 // עובד בשני מצבים: מהשרת במחשב המציג, או מגיטהאב (STATIC_SITE) — שם הוא מתחבר לשרת החי אם הוא פועל, ואם לא מציג הדגמה
 import { TOPIC, classify, gist, domainOf } from './topics.js';
+import { pickItems, scoreItems, ITEM } from './items.js';
+import { placeItem } from './items-place.js';
 
 const $ = (s, el = document) => el.querySelector(s);
 const app = $('#app');
@@ -147,13 +149,61 @@ function removeItem(it, animate) {
 const freeSlot = kind => kind === 'window' ? (S.wins.findIndex(w => !w) >= 0 ? 0 : -1)
   : SPOTS[kind].findIndex((_, i) => !S.items.some(it => it.kind === kind && it.slot === i));
 
+// ---------- מאגר הפריטים (מהסשן "מאגר אפשרויות לתיאור בית הספר"): איור שמתאים לתשובה עצמה + חפצים מרחפים ----------
+const BANK = { used: new Set(), placed: [], els: [] }, MAX_FLOATS = 12;
+let BM = {}; // מידות פריטי המאגר
+// איור מהמאגר במקום האיור הכללי של הנושא — רק כשיש מילה בתשובה שמתאימה לו, ורק מאותו מין כמו שנבחר
+function bankScene(a, gender) {
+  const t = a.topics?.[0];
+  if (t === 'custom' || t === 'vision' || TOPIC[t]?.windows) return null; // לאיורי זמן אמת ולשלט יש איור משלהם
+  const ok = x => (x.kind === 'kid' || x.kind === 'big') && (!x.g || !gender || x.g === gender) && BM[x.id];
+  if (!scoreItems(a.text).some(x => x.own.length && ok(ITEM[x.id]))) return null; // אין התאמה ממשית → האיור של הנושא
+  const it = pickItems(a.text, { used: BANK.used, rand: rng('bank' + a.id), max: 1, filter: ok })[0];
+  if (!it) return null;
+  BANK.used.add(it.id);
+  return { src: img('items/' + it.id), ar: BM[it.id].w / BM[it.id].h, key: 'items/' + it.id };
+}
+// 1–2 חפצים מרחפים סביב בית הספר, שלא מכסים קבוצות, חלונות, קישוטים והחיווי העליון
+function bankFloats(a, animate) {
+  if (!Object.keys(BM).length) return;
+  const r = rng('bankf' + a.id);
+  const avoid = [...SPOTS.front, ...SPOTS.side, ...SPOTS.roof,
+    ...WIN.map((_, i) => { const q = winRect(i); return { x: q.x - 10, y: q.y - 34, w: q.w + 20, h: q.h + 34 }; }),
+    ...Object.values(DECO).map(d => ({ x: d.x, y: d.y, w: d.w, h: d.w })), { l: 1320, t: 40, r: 1500, b: 600 }]; // + השאלה מימין
+  for (const it of pickItems(a.text, { used: BANK.used, rand: r, max: 1, filter: x => (x.zone === 'float' || x.zone === 'sky') && BM[x.id] })) {
+    const p = placeItem(it, BM[it.id], BANK.placed, r, { avoid });
+    BANK.placed.push(p); BANK.used.add(it.id);
+    const el = document.createElement('img'); el.className = 'bank-float' + (animate ? ' in' : ''); el.src = img('items/' + it.id); el.alt = '';
+    Object.assign(el.style, { left: p.rect.l + 'px', top: p.rect.t + 'px', width: p.w + 'px', height: p.h + 'px', zIndex: p.z, animationDelay: animate ? '' : (-r() * 6).toFixed(1) + 's' });
+    $('#bankLayer').append(el); BANK.els.push(el);
+    // לא יותר מדי חפצים בשמיים — הוותיק מפנה מקום
+    if (BANK.els.length > MAX_FLOATS) { BANK.els.shift().remove(); BANK.placed.shift(); }
+  }
+}
+
+// איפה התשובה תופיע: לפני בית הספר, בחלון, על הגג, בצד... (בלי לשנות מצב — נקרא גם לפני ההצגה)
+function chooseKind(a) {
+  const T = TOPIC[a.topics?.[0]] || {};
+  let kind = T.windows ? 'window' : CYCLE[S.n % CYCLE.length];
+  if (freeSlot(kind) < 0) kind = ['front', 'window', 'roof', 'side'].find(k => freeSlot(k) >= 0) || kind;
+  return kind;
+}
+// לתשובה חדשה מחליטים מראש מקום ואיור, כדי שההצגה הגדולה תראה בדיוק את מה שיעוף לבמה
+function prepare(a) {
+  if (a._kind) return;
+  a._kind = chooseKind(a);
+  a._bank = a._kind === 'front' || a._kind === 'side' ? bankScene(a, info(a).gender) || false : false;
+}
+
 // מוסיף תשובה לבמה. מחזיר מה השתנה כדי להנפיש
 function place(a, animate) {
+  prepare(a);
   const inf = info(a), T = TOPIC[a.topics?.[0]] || {};
-  const n = S.n++;
-  // אותו איור כבר על הבמה (גם הבנים וגם הבנות) → מצטרפים אליו
-  const same = !inf.unique && S.items.find(it => it.key === inf.key && it.kind !== 'window');
-  let kind = T.windows ? 'window' : CYCLE[n % CYCLE.length];
+  S.n++;
+  let kind = a._kind;
+  const key = a._bank ? a._bank.key : inf.key;
+  // אותו איור כבר על הבמה → מצטרפים אליו
+  const same = !inf.unique && S.items.find(it => it.key === key && it.kind !== 'window');
   if (same && kind !== 'window') {
     same.ids.push(a.id); same.order = ++S.order; S.byId.set(a.id, same);
     if (!animate) badge(same);
@@ -180,17 +230,20 @@ function place(a, animate) {
       rect: { x: x0 - 20, y: y0 - 30, w: Math.max(...rects.map(q => q.x + q.w)) - x0 + 40, h: Math.max(...rects.map(q => q.y + q.h)) - y0 + 30 } };
     if (!animate) wins.forEach(i => showWindow(i, false));
   } else {
-    it = makeGroup(a, inf, kind, Math.max(0, freeSlot(kind)));
+    const ginf = a._bank && (kind === 'front' || kind === 'side') ? { ...inf, scene: a._bank.src, ar: a._bank.ar, key: a._bank.key } : inf;
+    it = makeGroup(a, ginf, kind, Math.max(0, freeSlot(kind)));
   }
   it.order = ++S.order; S.items.push(it); S.byId.set(a.id, it);
   return { it, fresh: true, inf };
 }
 
 function rebuild() {
-  $('#scenes').innerHTML = ''; $('#roof').innerHTML = '';
+  $('#scenes').innerHTML = ''; $('#roof').innerHTML = ''; $('#bankLayer').innerHTML = '';
   S.items = []; S.byId.clear(); S.order = 0; S.n = 0; S.wins.fill(null);
+  BANK.used.clear(); BANK.placed = []; BANK.els = [];
   [...$('#windows').children].forEach(d => { d.classList.remove('on', 'answer'); d.innerHTML = ''; });
-  for (const a of visible()) place(a, false);
+  for (const a of S.answers) { delete a._kind; delete a._bank; }
+  for (const a of visible()) { place(a, false); bankFloats(a, false); }
   renderTiles(); refreshExtras();
 }
 
@@ -286,11 +339,13 @@ function showFocus(a, mode) {
   S.focus = { a, mode };
   f.classList.remove('on', 'replay'); void f.offsetWidth;
   f.style.setProperty('--tc', inf.color);
-  const cx = 520, bottom = 990; let hh = 790, hw = hh * inf.ar; if (hw > 840) { hw = 840; hh = hw / inf.ar; }
+  if (mode === 'new') prepare(a);
+  const heroSrc = a._bank ? a._bank.src : inf.scene, heroAr = a._bank ? a._bank.ar : inf.ar;
+  const cx = 520, bottom = 990; let hh = 790, hw = hh * heroAr; if (hw > 840) { hw = 840; hh = hw / heroAr; }
   const hero = $('.hero', f);
   Object.assign(hero.style, { left: cx - hw / 2 + 'px', top: bottom - hh + 'px', width: hw + 'px', height: hh + 'px' });
-  hero.innerHTML = `<img src="${inf.scene}" alt="">`;
-  if (inf.sign) hero.append(signText('hero-sign', gist(a.text), hw, hh, inf.sign));
+  hero.innerHTML = `<img src="${heroSrc}" alt="">`;
+  if (inf.sign && !a._bank) hero.append(signText('hero-sign', gist(a.text), hw, hh, inf.sign));
   S.heroRect = { x: cx - hw / 2, y: bottom - hh, w: hw, h: hh };
   Object.assign($('.hero-shadow', f).style, { left: cx - hw * .46 + 'px', top: bottom - 34 + 'px', width: hw * .92 + 'px' });
   const burst = $('.burst', f);
@@ -335,6 +390,7 @@ function closeFocus() {
       fly.remove(); S.flying = false;
       if (win) it.wins.forEach((i, j) => showWindow(i, true, j * 220));
       else if (fresh) { it.el.style.opacity = ''; it.el.classList.add('in'); } else flash(it);
+      bankFloats(a, true);
       badge(it);
       renderTiles(a.id); refreshExtras();
       S.lastClose = Date.now(); setTimeout(next, 900);
@@ -456,7 +512,7 @@ addEventListener('keydown', e => {
     case 'KeyQ': $('#bigqr').classList.toggle('on'); break;
     case 'KeyA': S.tour = !S.tour; S.tourIdx = -1; toast(S.tour ? 'סיור אוטומטי: פועל' : 'סיור אוטומטי: כבוי'); break;
     case 'KeyD': // חזון לדוגמה — רק על המסך הזה, לא נשמר. Shift+D = מילוי מהיר בלי הצגה
-      if (e.shiftKey) { for (let k = 0; k < 6; k++) { const a = demoAnswer(); S.answers.push(a); place(a, false); } renderTiles(); refreshExtras(); }
+      if (e.shiftKey) { for (let k = 0; k < 6; k++) { const a = demoAnswer(); S.answers.push(a); place(a, false); bankFloats(a, false); } renderTiles(); refreshExtras(); }
       else { const a = demoAnswer(); S.answers.push(a); enqueue(a); }
       break;
   }
@@ -516,6 +572,7 @@ async function startDemo() {
 }
 async function init() {
   M = await fetch(IMG + 'manifest.json', { cache: 'no-store' }).then(r => r.json());
+  BM = await fetch(IMG + 'items/manifest.json', { cache: 'no-store' }).then(r => r.ok ? r.json() : {}).catch(() => ({}));
   const sch = M.school; SCHOOL.h = SCHOOL.w * sch.h / sch.w;
   buildSchool();
   await document.fonts.ready;
