@@ -1,0 +1,469 @@
+{
+ "scenes/art-b": {
+  "w": 620,
+  "h": 521,
+  "src": "scenes/art-b_v9.png"
+ },
+ "scenes/art-g": {
+  "w": 620,
+  "h": 583,
+  "src": "scenes/art-g_v9.png"
+ },
+ "scenes/chayalei-b": {
+  "w": 620,
+  "h": 605,
+  "src": "scenes/chayalei-b_v9.png"
+ },
+ "scenes/chayalei-g": {
+  "w": 601,
+  "h": 620,
+  "src": "scenes/chayalei-g_v9.png"
+ },
+ "scenes/climate-b": {
+  "w": 620,
+  "h": 548,
+  "src": "scenes/climate-b_v9.png"
+ },
+ "scenes/climate-g": {
+  "w": 515,
+  "h": 620,
+  "src": "scenes/climate-g_v9.png"
+ },
+ "scenes/english-b": {
+  "w": 596,
+  "h": 620,
+  "src": "scenes/english-b_v9.png"
+ },
+ "scenes/english-g": {
+  "w": 572,
+  "h": 620,
+  "src": "scenes/english-g_v9.png"
+ },
+ "scenes/everychild-b": {
+  "w": 620,
+  "h": 559,
+  "src": "scenes/everychild-b_v9.png"
+ },
+ "scenes/everychild-g": {
+  "w": 620,
+  "h": 620,
+  "src": "scenes/everychild-g_v9.png"
+ },
+ "scenes/excellence-b": {
+  "w": 537,
+  "h": 620,
+  "src": "scenes/excellence-b_v9.png"
+ },
+ "scenes/excellence-g": {
+  "w": 474,
+  "h": 620,
+  "src": "scenes/excellence-g_v9.png"
+ },
+ "scenes/girls-g": {
+  "w": 564,
+  "h": 620,
+  "src": "scenes/girls-g_v9.png"
+ },
+ "scenes/heart-b": {
+  "w": 501,
+  "h": 620,
+  "src": "scenes/heart-b_v9.png"
+ },
+ "scenes/heart-g": {
+  "w": 477,
+  "h": 620,
+  "src": "scenes/heart-g_v9.png"
+ },
+ "scenes/joy-b": {
+  "w": 620,
+  "h": 541,
+  "src": "scenes/joy-b_v9.png"
+ },
+ "scenes/joy-g": {
+  "w": 620,
+  "h": 619,
+  "src": "scenes/joy-g_v9.png"
+ },
+ "scenes/kippa": {
+  "w": 446,
+  "h": 620,
+  "src": "scenes/kippa_v9.png"
+ },
+ "scenes/math-b": {
+  "w": 620,
+  "h": 522,
+  "src": "scenes/math-b_v9.png"
+ },
+ "scenes/math-g": {
+  "w": 620,
+  "h": 525,
+  "src": "scenes/math-g_v9.png"
+ },
+ "scenes/middot-b": {
+  "w": 620,
+  "h": 558,
+  "src": "scenes/middot-b_v9.png"
+ },
+ "scenes/middot-g": {
+  "w": 620,
+  "h": 597,
+  "src": "scenes/middot-g_v9.png"
+ },
+ "scenes/mivtzaim-b": {
+  "w": 600,
+  "h": 620,
+  "src": "scenes/mivtzaim-b_v9.png"
+ },
+ "scenes/mivtzaim-g": {
+  "w": 620,
+  "h": 607,
+  "src": "scenes/mivtzaim-g_v9.png"
+ },
+ "scenes/nature-b": {
+  "w": 620,
+  "h": 603,
+  "src": "scenes/nature-b_v9.png"
+ },
+ "scenes/nature-g": {
+  "w": 620,
+  "h": 573,
+  "src": "scenes/nature-g_v9.png"
+ },
+ "scenes/parents-b": {
+  "w": 613,
+  "h": 620,
+  "src": "scenes/parents-b_v9.png"
+ },
+ "scenes/parents-g": {
+  "w": 533,
+  "h": 620,
+  "src": "scenes/parents-g_v9.png"
+ },
+ "scenes/pedagogy-b": {
+  "w": 620,
+  "h": 588,
+  "src": "scenes/pedagogy-b_v9.png"
+ },
+ "scenes/pedagogy-g": {
+  "w": 620,
+  "h": 588,
+  "src": "scenes/pedagogy-g_v9.png"
+ },
+ "scenes/reading-b": {
+  "w": 533,
+  "h": 620,
+  "src": "scenes/reading-b_v9.png"
+ },
+ "scenes/reading-g": {
+  "w": 620,
+  "h": 619,
+  "src": "scenes/reading-g_v9.png"
+ },
+ "scenes/science-b": {
+  "w": 620,
+  "h": 603,
+  "src": "scenes/science-b_v9.png"
+ },
+ "scenes/science-g": {
+  "w": 620,
+  "h": 602,
+  "src": "scenes/science-g_v9.png"
+ },
+ "scenes/shabbat-b": {
+  "w": 612,
+  "h": 620,
+  "src": "scenes/shabbat-b_v9.png"
+ },
+ "scenes/shabbat-g": {
+  "w": 599,
+  "h": 620,
+  "src": "scenes/shabbat-g_v9.png"
+ },
+ "scenes/sport-b": {
+  "w": 620,
+  "h": 608,
+  "src": "scenes/sport-b_v9.png"
+ },
+ "scenes/sport-g": {
+  "w": 620,
+  "h": 597,
+  "src": "scenes/sport-g_v9.png"
+ },
+ "scenes/staff-b": {
+  "w": 598,
+  "h": 620,
+  "src": "scenes/staff-b_v9.png"
+ },
+ "scenes/staff-g": {
+  "w": 422,
+  "h": 620,
+  "src": "scenes/staff-g_v10.png"
+ },
+ "scenes/tefila-b": {
+  "w": 586,
+  "h": 620,
+  "src": "scenes/tefila-b_v9.png"
+ },
+ "scenes/tefila-g": {
+  "w": 510,
+  "h": 620,
+  "src": "scenes/tefila-g_v9.png"
+ },
+ "scenes/torah-b": {
+  "w": 620,
+  "h": 521,
+  "src": "scenes/torah-b_v9.png"
+ },
+ "scenes/torah-g": {
+  "w": 546,
+  "h": 620,
+  "src": "scenes/torah-g_v9.png"
+ },
+ "scenes/vision-b": {
+  "w": 436,
+  "h": 620,
+  "src": "scenes/vision-b_v9.png",
+  "sign": [
+   0.109,
+   0.0244,
+   0.7867,
+   0.2111
+  ]
+ },
+ "scenes/vision-g": {
+  "w": 404,
+  "h": 620,
+  "src": "scenes/vision-g_v9.png",
+  "sign": [
+   0.1465,
+   0.0222,
+   0.7036,
+   0.1678
+  ]
+ },
+ "kids/b1": {
+  "w": 388,
+  "h": 420,
+  "src": "kids/b1_v9.png"
+ },
+ "kids/b2": {
+  "w": 404,
+  "h": 420,
+  "src": "kids/b2_v9.png"
+ },
+ "kids/b3": {
+  "w": 318,
+  "h": 420,
+  "src": "kids/b3_v9.png"
+ },
+ "kids/b4": {
+  "w": 290,
+  "h": 420,
+  "src": "kids/b4_v9.png"
+ },
+ "kids/g1": {
+  "w": 395,
+  "h": 420,
+  "src": "kids/g1_v9.png"
+ },
+ "kids/g2": {
+  "w": 295,
+  "h": 420,
+  "src": "kids/g2_v9.png"
+ },
+ "kids/g3": {
+  "w": 371,
+  "h": 420,
+  "src": "kids/g3_v9.png"
+ },
+ "icons/art": {
+  "w": 240,
+  "h": 239,
+  "src": "icons/art.png"
+ },
+ "icons/climate": {
+  "w": 240,
+  "h": 206,
+  "src": "icons/climate.png"
+ },
+ "icons/english": {
+  "w": 240,
+  "h": 227,
+  "src": "icons/english.png"
+ },
+ "icons/everychild": {
+  "w": 226,
+  "h": 240,
+  "src": "icons/everychild.png"
+ },
+ "icons/excellence-ab": {
+  "w": 188,
+  "h": 240,
+  "src": "icons/excellence-ab.png"
+ },
+ "icons/excellence": {
+  "w": 224,
+  "h": 240,
+  "src": "icons/excellence.png"
+ },
+ "icons/girls": {
+  "w": 240,
+  "h": 229,
+  "src": "icons/girls.png"
+ },
+ "icons/heart": {
+  "w": 240,
+  "h": 229,
+  "src": "icons/heart.png"
+ },
+ "icons/joy": {
+  "w": 202,
+  "h": 240,
+  "src": "icons/joy.png"
+ },
+ "icons/kippa": {
+  "w": 240,
+  "h": 213,
+  "src": "icons/kippa.png"
+ },
+ "icons/management": {
+  "w": 182,
+  "h": 240,
+  "src": "icons/management.png"
+ },
+ "icons/math": {
+  "w": 240,
+  "h": 220,
+  "src": "icons/math.png"
+ },
+ "icons/middot": {
+  "w": 240,
+  "h": 174,
+  "src": "icons/middot.png"
+ },
+ "icons/mivtzaim": {
+  "w": 145,
+  "h": 240,
+  "src": "icons/mivtzaim.png"
+ },
+ "icons/nature": {
+  "w": 203,
+  "h": 240,
+  "src": "icons/nature.png"
+ },
+ "icons/parents": {
+  "w": 228,
+  "h": 240,
+  "src": "icons/parents.png"
+ },
+ "icons/pedagogy": {
+  "w": 240,
+  "h": 239,
+  "src": "icons/pedagogy.png"
+ },
+ "icons/reading": {
+  "w": 240,
+  "h": 209,
+  "src": "icons/reading.png"
+ },
+ "icons/science": {
+  "w": 229,
+  "h": 240,
+  "src": "icons/science.png"
+ },
+ "icons/shabbat": {
+  "w": 240,
+  "h": 203,
+  "src": "icons/shabbat.png"
+ },
+ "icons/sport": {
+  "w": 230,
+  "h": 240,
+  "src": "icons/sport.png"
+ },
+ "icons/staff": {
+  "w": 215,
+  "h": 240,
+  "src": "icons/staff.png"
+ },
+ "icons/tefila": {
+  "w": 169,
+  "h": 240,
+  "src": "icons/tefila.png"
+ },
+ "icons/torah": {
+  "w": 152,
+  "h": 240,
+  "src": "icons/torah.png"
+ },
+ "icons/vision": {
+  "w": 190,
+  "h": 240,
+  "src": "icons/vision.png"
+ },
+ "deco/comet": {
+  "w": 360,
+  "h": 336,
+  "src": "deco/comet.png"
+ },
+ "deco/plane": {
+  "w": 360,
+  "h": 322,
+  "src": "deco/plane.png"
+ },
+ "deco/planet": {
+  "w": 351,
+  "h": 360,
+  "src": "deco/planet.png"
+ },
+ "deco/rocket": {
+  "w": 286,
+  "h": 360,
+  "src": "deco/rocket.png"
+ },
+ "deco/star": {
+  "w": 360,
+  "h": 344,
+  "src": "deco/star.png"
+ },
+ "deco/sun": {
+  "w": 359,
+  "h": 360,
+  "src": "deco/sun.png"
+ },
+ "school": {
+  "w": 1400,
+  "h": 870,
+  "src": "school.png"
+ },
+ "logo": {
+  "w": 1100,
+  "h": 336,
+  "src": "logo.png"
+ },
+ "logo-word": {
+  "w": 1100,
+  "h": 215,
+  "src": "logo.png (חלק)"
+ },
+ "logo-tag": {
+  "w": 900,
+  "h": 104,
+  "src": "logo.png (חלק)"
+ },
+ "logo-school": {
+  "w": 1000,
+  "h": 284,
+  "src": "logo.png (חלק)"
+ },
+ "logos/chayalei": {
+  "w": 600,
+  "h": 526,
+  "src": "logos/chayalei.png"
+ },
+ "logos/moreshet": {
+  "w": 600,
+  "h": 173,
+  "src": "logos/moreshet.png"
+ }
+}

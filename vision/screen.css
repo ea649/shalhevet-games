@@ -1,0 +1,240 @@
+:root {
+  --ink: #221C4A; --ink2: rgba(34, 28, 74, .58); --hair: rgba(34, 28, 74, .09);
+  --cyan: #00B4D8; --yellow: #FBB616; --orange: #F26B2A; --pink: #EE2E5D; --lime: #BCCD32; --purple: #A84A9C; --navy: #4F3A96;
+  --spring: cubic-bezier(.18, 1.35, .4, 1);
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; height: 100%; background: #C9E7F3; overflow: hidden; }
+body { font-family: 'Tamlil', 'Segoe UI', sans-serif; color: var(--ink); direction: rtl; -webkit-font-smoothing: antialiased; user-select: none; }
+
+/* הקנבס: 1920×1080 קבוע, מוקטן/מוגדל לחלון */
+#app { position: absolute; left: 50%; top: 50%; width: 1920px; height: 1080px; transform-origin: center; overflow: hidden; translate: -50% -50%; }
+.bg { position: absolute; inset: 0; background: radial-gradient(110% 85% at 46% 28%, #F5FBFE 0%, #DDF1F9 50%, #C2E3F1 100%); }
+.grid { position: absolute; inset: 0; background-image: radial-gradient(circle, rgba(0, 105, 150, .17) 1.1px, transparent 1.6px); background-size: 30px 30px;
+  -webkit-mask-image: radial-gradient(70% 62% at 46% 40%, #000 25%, transparent 80%); mask-image: radial-gradient(70% 62% at 46% 40%, #000 25%, transparent 80%); }
+.bigword { position: absolute; top: -10px; left: 270px; width: 1220px; text-align: center; font: 900 640px/1 'TamlilCond'; color: rgba(34, 28, 74, .032); letter-spacing: -.01em; }
+.floor { position: absolute; left: 0; right: 0; top: 820px; bottom: 0; background: linear-gradient(rgba(20, 110, 150, 0), rgba(20, 110, 150, .08) 40%, rgba(20, 110, 150, .15)); }
+#app::before, #app::after { content: ''; position: absolute; top: 40px; bottom: 40px; width: 1px; background: var(--hair); z-index: 1; }
+#app::before { left: 272px; } #app::after { left: 1488px; }
+
+.meta { position: absolute; top: 30px; left: 272px; width: 1216px; display: flex; justify-content: center; align-items: center; gap: 14px;
+  font: 300 18px 'Tamlil'; letter-spacing: .14em; color: var(--ink2); z-index: 5; }
+.meta b { font-weight: 300; opacity: .4; }
+.live { display: inline-block; width: 10px; height: 10px; border-radius: 50%; background: var(--pink); box-shadow: 0 0 0 0 rgba(238, 46, 93, .5); animation: live 1.8s infinite; }
+@keyframes live { 0% { box-shadow: 0 0 0 0 rgba(238, 46, 93, .55); } 70% { box-shadow: 0 0 0 12px rgba(238, 46, 93, 0); } 100% { box-shadow: 0 0 0 0 rgba(238, 46, 93, 0); } }
+
+#pending { position: absolute; top: 66px; left: 880px; translate: -50% 0; z-index: 12; display: flex; align-items: center; gap: 12px; white-space: nowrap;
+  font: 400 32px 'Shirbut'; color: var(--purple); opacity: 0; transition: opacity .4s; pointer-events: none; }
+#pending.on { opacity: 1; }
+.spin { width: 22px; height: 22px; border-radius: 50%; border: 3px solid rgba(168, 74, 156, .25); border-top-color: var(--purple); animation: spin .9s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ---------- הבמה ---------- */
+#stage, #sky, #bubbles, #confetti { position: absolute; inset: 0; }
+#sky { z-index: 2; pointer-events: none; }
+#stage { z-index: 3; }
+#bubbles { z-index: 30; pointer-events: none; }
+#confetti { z-index: 31; pointer-events: none; overflow: hidden; }
+.school { position: absolute; left: 390px; top: 250px; width: 980px; filter: drop-shadow(0 26px 26px rgba(15, 60, 90, .18)); z-index: 2; }
+.school-shadow { position: absolute; left: 330px; top: 818px; width: 1100px; height: 80px; background: radial-gradient(50% 50% at 50% 50%, rgba(15, 60, 95, .28), transparent 72%); z-index: 1; }
+.roof-logo { position: absolute; left: 585px; top: 210px; width: 572px; z-index: 4;
+  filter: drop-shadow(0 1.5px 0 #B59A70) drop-shadow(0 1.5px 0 #A68B62) drop-shadow(0 1.5px 0 #957A53) drop-shadow(0 2px 0 #846A46) drop-shadow(0 14px 14px rgba(40, 25, 5, .28)); }
+.sign-tag { position: absolute; left: 749px; top: 337px; width: 243px; z-index: 4; }
+#windows, #scenes, #roof { position: absolute; inset: 0; }
+#windows { z-index: 3; }
+#roof { z-index: 5; }
+#scenes { z-index: 6; }
+.sign-panel { position: absolute; z-index: 4; display: flex; align-items: center; justify-content: center; padding: 6px 10px; background: #fff;
+  border: 3px solid #C9A877; border-radius: 6px; box-shadow: 0 6px 14px rgba(15, 60, 90, .18); }
+.sign-logo { max-width: 100%; max-height: 100%; object-fit: contain; }
+
+.win { position: absolute; cursor: pointer; clip-path: inset(-160% -80% -40% -80%); }
+.win .kid { position: absolute; bottom: 0; left: 50%; width: 168%; translate: -50% 0; transform: translateY(120%); transition: transform 1s var(--spring);
+  filter: drop-shadow(0 6px 8px rgba(0, 30, 60, .25)); clip-path: inset(-50% -50% 0 -50%); }
+.win.on .kid { transform: translateY(0); }
+.win .held { position: absolute; bottom: -22%; left: 50%; width: 82%; translate: -50% 0; z-index: 2; transform: scale(0) rotate(-14deg);
+  transition: transform .7s .45s var(--spring); filter: drop-shadow(0 4px 6px rgba(0, 30, 60, .3)); }
+.win.on .held { transform: scale(1) rotate(-6deg); }
+.win.flash .kid { animation: flash 2.2s ease-out; }
+.win.old-unused { overflow: hidden; }
+
+@keyframes winbob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(3%); } }
+
+.scene { position: absolute; transform-origin: 50% 100%; cursor: pointer; }
+.scene img { width: 100%; height: 100%; display: block; filter: drop-shadow(0 10px 10px rgba(50, 35, 10, .16)); }
+.scene::before { content: ''; position: absolute; left: 6%; right: 6%; bottom: -14px; height: 34px; z-index: -1;
+  background: radial-gradient(50% 50% at 50% 50%, rgba(60, 40, 10, .30), transparent 70%); }
+.scene.in { animation: sceneIn 1.1s var(--spring) both; }
+.scene.out { animation: sceneOut .6s ease-in both; }
+.scene.hop img { animation: hop .9s ease-out; }
+.scene.flash img { animation: flash 2.2s ease-out; }
+.scene .badge { position: absolute; top: 2%; left: 4%; min-width: 44px; height: 44px; padding: 0 10px; border-radius: 22px; background: var(--tc); color: #fff;
+  font: 700 24px/44px 'Tamlil'; text-align: center; box-shadow: 0 6px 14px rgba(0, 0, 0, .18); animation: badge .6s var(--spring); }
+.scene .sign-text, .hero-sign { position: absolute; display: flex; align-items: center; justify-content: center; text-align: center;
+  font-family: 'Shirbut'; color: var(--ink); line-height: 1.05; padding: 2% 4%; }
+@keyframes sceneIn { 0% { transform: translateY(60px) scale(.3); opacity: 0; } 55% { opacity: 1; } 100% { transform: none; opacity: 1; } }
+@keyframes sceneOut { to { transform: translateY(30px) scale(.5); opacity: 0; } }
+@keyframes hop { 0%, 100% { transform: translateY(0); } 30% { transform: translateY(-16px); } 55% { transform: translateY(0) scaleY(.97); } 75% { transform: translateY(-4px); } }
+@keyframes flash { 0% { filter: drop-shadow(0 0 0 transparent); transform: scale(1); } 20% { filter: drop-shadow(0 0 26px var(--tc)) drop-shadow(0 0 8px var(--tc)); transform: scale(1.07); }
+  60% { filter: drop-shadow(0 0 18px var(--tc)); transform: scale(1); } 100% { filter: drop-shadow(0 10px 10px rgba(50, 35, 10, .16)); } }
+@keyframes badge { from { transform: scale(0); } }
+
+/* קישוטים בשמיים */
+.deco { position: absolute; filter: drop-shadow(0 8px 10px rgba(40, 30, 10, .14)); animation: decoIn 1s var(--spring) both; }
+.deco img { width: 100%; display: block; animation: bob 7s ease-in-out infinite alternate; }
+.deco.fly { animation: fly 16s linear infinite; }
+@keyframes decoIn { from { transform: scale(0) rotate(-20deg); opacity: 0; } }
+@keyframes bob { from { transform: translateY(-8px) rotate(-2deg); } to { transform: translateY(8px) rotate(2deg); } }
+@keyframes fly { 0% { transform: translate(0, 0) rotate(0); opacity: 0; } 6% { opacity: 1; } 94% { opacity: 1; } 100% { transform: translate(var(--dx), var(--dy)) rotate(4deg); opacity: 0; } }
+.fl { position: absolute; font: 400 52px/1 'Shirbut', 'Ink Free', 'Segoe Print', cursive; color: var(--c); opacity: 0; white-space: nowrap; animation: drift 8s ease-in-out forwards; text-shadow: 0 2px 0 rgba(255, 255, 255, .7); }
+@keyframes drift { 0% { opacity: 0; transform: translateY(30px) scale(.8) rotate(var(--r)); } 18% { opacity: .9; } 80% { opacity: .75; } 100% { opacity: 0; transform: translateY(-70px) scale(1) rotate(var(--r)); } }
+
+/* בועות דיבור — בסגנון טוש */
+.bubble { position: absolute; padding: 8px 22px 12px; background: #fff; border: 3px solid var(--ink); border-radius: 30px 24px 32px 26px; font: 400 34px/1.1 'Shirbut', 'Ink Free', 'Segoe Print', cursive;
+  color: var(--ink); white-space: nowrap; transform-origin: 50% 100%; animation: bubble 3.6s ease-in-out both; box-shadow: 4px 5px 0 rgba(34, 28, 74, .12); }
+.bubble::after { content: ''; position: absolute; bottom: -11px; left: calc(50% - 10px); width: 18px; height: 18px; background: #fff; border-right: 3px solid var(--ink); border-bottom: 3px solid var(--ink); transform: rotate(45deg) skew(10deg, 10deg); }
+.bubble.ltr { direction: ltr; }
+@keyframes bubble { 0% { transform: scale(0) rotate(-6deg); opacity: 0; } 12% { transform: scale(1.08) rotate(var(--r)); opacity: 1; } 18% { transform: scale(1) rotate(var(--r)); }
+  85% { transform: scale(1) rotate(var(--r)); opacity: 1; } 100% { transform: scale(.6) translateY(-20px); opacity: 0; } }
+
+.cf { position: absolute; top: -30px; width: 12px; height: 18px; border-radius: 2px; background: var(--c); animation: fall var(--t) linear forwards; }
+@keyframes fall { to { transform: translate(var(--dx), 1180px) rotate(var(--rot)); } }
+
+/* ---------- עמודה ימנית ---------- */
+.side { position: absolute; top: 0; right: 44px; width: 392px; height: 1080px; z-index: 10; }
+.logo { position: absolute; top: 40px; right: 0; max-width: 392px; max-height: 150px; object-fit: contain; }
+.logo:not([src]) { display: none; }
+.side.nologo .kicker { top: 70px; } .side.nologo .question { top: 128px; } .side.nologo .qr-wrap { top: 440px; }
+.kicker { position: absolute; top: 214px; right: 0; font: 400 52px/1 'Shirbut'; color: var(--orange); white-space: nowrap; }
+.question { position: absolute; top: 272px; right: 0; margin: 0; font: 900 128px/.88 'TamlilCond'; color: var(--ink); letter-spacing: -.005em; }
+.question span { display: block; white-space: nowrap; }
+.question em { font-style: normal; color: var(--orange); }
+.qr-wrap { position: absolute; top: 560px; right: 0; width: 392px; height: 400px; }
+.qr-paper { position: absolute; top: 0; right: 36px; width: 252px; height: 252px; padding: 20px; background: #fff; transform: rotate(-2.5deg);
+  box-shadow: 0 1px 0 rgba(0, 0, 0, .05), 0 22px 40px -8px rgba(34, 28, 74, .22); }
+.qr-paper #qr, .bq-code { width: 100%; height: 100%; }
+.qr-paper svg, .bq-code svg { width: 100%; height: 100%; display: block; }
+.tape { position: absolute; width: 104px; height: 30px; background: rgba(226, 206, 160, .78); box-shadow: 0 1px 2px rgba(0, 0, 0, .08); }
+.tape.t1 { top: -14px; right: -26px; transform: rotate(32deg); }
+.tape.t2 { bottom: -12px; left: -28px; transform: rotate(38deg); }
+.arrow { position: absolute; top: 236px; left: 0; width: 110px; fill: none; stroke: var(--orange); stroke-width: 5; stroke-linecap: round; stroke-linejoin: round; }
+.scan { position: absolute; top: 290px; right: 40px; font: 400 50px/1.02 'Shirbut'; color: var(--ink); text-align: right; }
+.url { display: none; position: absolute; bottom: 30px; right: 0; font: 300 15px 'Tamlil'; color: var(--ink2); direction: ltr; letter-spacing: .04em; }
+
+/* ---------- סרגל החזונות ---------- */
+.ribbon { position: absolute; top: 0; left: 28px; width: 232px; height: 1080px; z-index: 10; }
+.rib-head { position: absolute; top: 30px; right: 4px; left: 4px; display: flex; align-items: center; gap: 14px; }
+.rib-count { font: 900 104px/.9 'TamlilCond'; color: var(--orange); min-width: 60px; text-align: center; }
+.rib-title b { display: block; font: 700 32px/1 'Tamlil'; }
+.rib-title span { display: block; font: 400 30px/1.1 'Shirbut'; color: var(--ink2); }
+.rib-list { position: absolute; top: 160px; bottom: 20px; right: 0; left: 0; overflow-y: auto; scrollbar-width: none; display: grid;
+  grid-template-columns: repeat(2, 104px); gap: 14px 16px; align-content: start; justify-content: center; padding: 8px 0 30px; }
+.rib-list::-webkit-scrollbar { display: none; }
+.tile-ghost { width: 104px; height: 122px; border-radius: 20px; border: 2px dashed rgba(0, 105, 150, .22); }
+.rib-empty { grid-column: 1 / -1; font: 400 30px/1.15 'Shirbut'; color: var(--ink2); text-align: center; padding-top: 30px; }
+.tile { position: relative; width: 104px; height: 122px; border-radius: 20px; background: #fff; cursor: pointer; display: flex; flex-direction: column; align-items: center;
+  box-shadow: 0 1px 0 rgba(0, 0, 0, .04), 0 10px 22px -6px rgba(34, 28, 74, .16); transition: transform .25s; }
+.tile:hover { transform: translateY(-3px); }
+.tile .dom { position: absolute; top: 6px; left: 6px; width: 28px; height: 28px; object-fit: contain; }
+.tile .ic { width: 72px; height: 72px; object-fit: contain; margin-top: 12px; filter: drop-shadow(0 4px 4px rgba(0, 0, 0, .12)); }
+.tile .nm { margin-top: 4px; max-width: 92px; font: 500 16px/1.1 'Tamlil'; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.tile .no { position: absolute; top: 8px; right: 11px; font: 300 12px 'Tamlil'; color: var(--ink2); letter-spacing: .06em; }
+.tile .dot { position: absolute; top: 11px; left: 11px; width: 8px; height: 8px; border-radius: 50%; background: var(--tc); }
+.tile.new { animation: tileIn .9s var(--spring) both; }
+.tile.new::after { content: ''; position: absolute; inset: -4px; border-radius: 24px; border: 3px solid var(--tc); animation: ring 2.4s ease-out forwards; }
+.tile.cur { box-shadow: 0 0 0 3px var(--tc), 0 10px 22px -6px rgba(34, 28, 74, .2); }
+.tile.demo .no::after { content: ' · דמו'; }
+@keyframes tileIn { from { transform: translateY(-40px) scale(.5); opacity: 0; } }
+@keyframes ring { 0% { opacity: 1; transform: scale(1); } 100% { opacity: 0; transform: scale(1.25); } }
+
+/* ---------- מצב הצגה ---------- */
+#focus { position: absolute; inset: 0; z-index: 50; visibility: hidden; opacity: 0; transition: opacity .55s, visibility 0s .55s; }
+#focus.on { visibility: visible; opacity: 1; transition: opacity .45s; }
+.veil { position: absolute; inset: 0; background: rgba(228, 244, 251, .86); -webkit-backdrop-filter: blur(18px) saturate(1.1); backdrop-filter: blur(18px) saturate(1.1); }
+.veil::after { content: ''; position: absolute; inset: 0; background-image: radial-gradient(circle, rgba(34, 28, 74, .12) 1.1px, transparent 1.6px); background-size: 30px 30px;
+  -webkit-mask-image: radial-gradient(60% 60% at 28% 55%, #000 10%, transparent 75%); mask-image: radial-gradient(60% 60% at 28% 55%, #000 10%, transparent 75%); }
+.hero { position: absolute; transform-origin: 50% 100%; }
+.hero img { width: 100%; height: 100%; display: block; filter: drop-shadow(0 22px 24px rgba(50, 35, 10, .22)); }
+.hero-shadow { position: absolute; height: 60px; background: radial-gradient(50% 50% at 50% 50%, rgba(60, 40, 10, .3), transparent 70%); }
+#focus.on .hero { animation: heroIn 1.1s var(--spring) both; }
+#focus.on .hero-shadow { animation: fadeIn .8s .2s both; }
+@keyframes heroIn { 0% { transform: translateY(90px) scale(.55) rotate(-3deg); opacity: 0; } 50% { opacity: 1; } 100% { transform: none; opacity: 1; } }
+@keyframes fadeIn { from { opacity: 0; } }
+.burst { position: absolute; width: 300px; height: 300px; overflow: visible; }
+.burst path { fill: none; stroke: var(--tc); stroke-width: 6; stroke-linecap: round; stroke-dasharray: 80; stroke-dashoffset: 80; }
+#focus.on .burst path { animation: draw .45s ease-out forwards; }
+@keyframes draw { to { stroke-dashoffset: 0; } }
+
+.copy { position: absolute; right: 120px; width: 860px; top: 110px; bottom: 120px; display: flex; flex-direction: column; justify-content: center; }
+.copy > * { opacity: 0; }
+#focus.on .copy > * { animation: up .7s cubic-bezier(.2, .9, .3, 1) forwards; }
+#focus.on .copy > :nth-child(1) { animation-delay: .25s; }
+#focus.on .copy > :nth-child(2) { animation-delay: .4s; }
+#focus.on .copy > :nth-child(3) { animation-delay: .5s; opacity: 1; animation: none; }
+#focus.on .copy > :nth-child(4) { animation-delay: var(--late, 1.4s); }
+#focus.on .copy > :nth-child(5) { animation-delay: calc(var(--late, 1.4s) + .15s); }
+@keyframes up { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: none; } }
+.kick { display: none !important; align-items: center; gap: 14px; font: 400 22px 'Tamlil'; letter-spacing: .16em; color: var(--ink2); }
+.topic { display: flex; align-items: center; gap: 18px; margin: 22px 0 6px; font: 700 48px/1 'Tamlil'; color: var(--tc); }
+.topic img { width: 100px; height: 100px; object-fit: contain; filter: drop-shadow(0 8px 8px rgba(0, 0, 0, .14)); }
+.quote { position: relative; margin: 14px 0 36px; font: 500 var(--qs, 60px)/1.2 'Tamlil'; color: var(--ink); }
+.quote::before { content: '”'; position: absolute; top: -.5em; right: -.62em; font: 900 2.6em/1 'TamlilCond'; color: var(--tc); opacity: .9; }
+.quote .w { display: inline-block; opacity: 0; filter: blur(8px); transform: translateY(16px); }
+#focus.on .quote .w { animation: wordIn .55s cubic-bezier(.2, .9, .3, 1) forwards; animation-delay: calc(var(--i) * 55ms + .65s); }
+@keyframes wordIn { to { opacity: 1; filter: blur(0); transform: none; } }
+.who { position: relative; display: inline-block; align-self: flex-start; font: 400 72px/1.1 'Shirbut'; color: var(--ink); padding-bottom: 6px; }
+.who svg { position: absolute; left: -10px; right: -10px; bottom: -8px; width: calc(100% + 20px); height: 22px; overflow: visible; }
+.who path { fill: none; stroke: var(--tc); stroke-width: 6; stroke-linecap: round; stroke-dasharray: 320; stroke-dashoffset: 320; }
+#focus.on .who path { animation: draw .7s ease-out forwards; animation-delay: calc(var(--late, 1.4s) + .4s); }
+.role { margin-top: 18px; display: flex; align-items: center; gap: 16px; font: 400 30px/1.3 'Tamlil'; color: var(--ink2); }
+.role .doms { display: flex; gap: 10px; align-items: center; }
+.role .dom { height: 64px; max-width: 190px; object-fit: contain; filter: drop-shadow(0 4px 6px rgba(0, 30, 60, .15)); }
+.role b { font-weight: 700; color: var(--ink); }
+.progress { position: absolute; left: 120px; right: 120px; bottom: 60px; height: 3px; background: rgba(34, 28, 74, .08); border-radius: 2px; overflow: hidden; }
+.progress i { display: block; height: 100%; background: var(--tc); transform-origin: right center; transform: scaleX(0); }
+#focus.on .progress i { animation: prog var(--dur, 12s) linear forwards; }
+#focus.replay .progress { opacity: .35; }
+@keyframes prog { to { transform: scaleX(1); } }
+
+/* מעוף הדמויות מהמצב המוגדל למקום על הבמה */
+.flyer { position: absolute; z-index: 60; pointer-events: none; transform-origin: 0 0; }
+.flyer img { width: 100%; height: 100%; display: block; }
+
+/* ברקוד גדול */
+#bigqr { position: absolute; inset: 0; z-index: 70; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 46px; visibility: hidden; opacity: 0; transition: opacity .4s, visibility 0s .4s; }
+#bigqr.on { visibility: visible; opacity: 1; transition: opacity .4s; }
+.bq-paper { position: relative; width: 640px; height: 640px; padding: 46px; background: #fff; transform: rotate(-1.5deg); box-shadow: 0 30px 60px -12px rgba(34, 28, 74, .3); }
+.bq-text { position: relative; font: 400 76px/1 'Shirbut'; color: var(--ink); }
+
+/* תפריט ניהול (קליק ימני על ריבוע) */
+#menu { position: absolute; z-index: 90; display: none; width: 420px; padding: 14px; border-radius: 18px; background: #fff; box-shadow: 0 24px 50px -10px rgba(34, 28, 74, .35); }
+#menu.on { display: block; }
+#menu h4 { margin: 0 0 10px; font: 700 20px 'Tamlil'; }
+#menu .opts { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
+#menu button { all: unset; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 6px 2px; border-radius: 10px; font: 400 13px 'Tamlil'; text-align: center; }
+#menu button:hover { background: #F2EFEA; }
+#menu button img { width: 40px; height: 40px; object-fit: contain; }
+#menu .acts { display: flex; gap: 10px; margin-top: 10px; border-top: 1px solid var(--hair); padding-top: 10px; }
+#menu .acts button { flex-direction: row; font-size: 16px; padding: 8px 12px; background: #F2EFEA; }
+#menu .acts .del { color: var(--pink); }
+#toast { position: absolute; bottom: 26px; left: 50%; translate: -50% 0; z-index: 95; padding: 10px 22px; border-radius: 30px; background: var(--ink); color: #fff; font: 400 20px 'Tamlil';
+  opacity: 0; transition: opacity .3s; pointer-events: none; }
+#toast.on { opacity: 1; }
+
+/* חזון חדש בהכנה — בולט, שיראו שאין תקלה */
+#pending { position: absolute; top: 34px; left: 880px; translate: -50% -140%; z-index: 40; display: flex; align-items: center; gap: 28px; padding: 22px 44px 24px 34px;
+  background: rgba(255, 255, 255, .96); border-radius: 40px; box-shadow: 0 18px 40px -10px rgba(15, 60, 90, .35); opacity: 0; pointer-events: none;
+  transition: translate .7s var(--spring), opacity .4s; white-space: nowrap; font: inherit; color: var(--ink); }
+#pending.on { translate: -50% 0; opacity: 1; }
+.pd-art { display: flex; gap: 8px; align-items: flex-end; height: 80px; }
+.pd-art i { width: 24px; height: 24px; border-radius: 4px; animation: pdhop 1s ease-in-out infinite; }
+.pd-art i:nth-child(1) { background: var(--cyan); } .pd-art i:nth-child(2) { background: var(--yellow); animation-delay: .15s; } .pd-art i:nth-child(3) { background: var(--pink); animation-delay: .3s; }
+@keyframes pdhop { 0%, 100% { transform: translateY(0) rotate(0); } 40% { transform: translateY(-26px) rotate(90deg); } }
+.pd-text b { display: block; font: 400 64px/1 'Shirbut'; color: var(--pink); }
+.pd-text span { display: block; margin-top: 6px; font: 500 30px/1.2 'Tamlil'; }
+.pd-bar { margin-top: 14px; height: 10px; border-radius: 4px; background: rgba(34, 28, 74, .08); overflow: hidden; }
+.pd-bar i { display: block; height: 100%; width: 100%; background: linear-gradient(90deg, var(--cyan), var(--purple), var(--pink)); transform-origin: right; animation: pdfill 22s cubic-bezier(.2, .6, .4, 1) forwards; }
+@keyframes pdfill { from { transform: scaleX(.03); } to { transform: scaleX(.96); } }
+.scene.k-roof::before { bottom: -6px; height: 18px; }
+.demo-tag { display: none; position: absolute; bottom: 22px; left: 30px; z-index: 12; padding: 6px 16px; border-radius: 20px; background: var(--ink); color: #fff; font: 400 18px 'Tamlil'; }
+body.demo .demo-tag { display: block; }

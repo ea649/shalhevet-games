@@ -1,0 +1,6 @@
+@font-face { font-family: 'Tamlil'; font-weight: 300; src: url('fonts/FbTamlil-Light.otf') format('opentype'); font-display: block; }
+@font-face { font-family: 'Tamlil'; font-weight: 400; src: url('fonts/FbTamlil-Regular.otf') format('opentype'); font-display: block; }
+@font-face { font-family: 'Tamlil'; font-weight: 500; src: url('fonts/FbTamlil-Medium.otf') format('opentype'); font-display: block; }
+@font-face { font-family: 'Tamlil'; font-weight: 700; src: url('fonts/FbTamlil-Bold.otf') format('opentype'); font-display: block; }
+@font-face { font-family: 'TamlilCond'; font-weight: 900; src: url('fonts/FbTamlilCondensed-Black.otf') format('opentype'); font-display: block; }
+@font-face { font-family: 'Shirbut'; font-weight: 400; src: url('fonts/FbShirbut-Regular.otf') format('opentype'); font-display: block; }

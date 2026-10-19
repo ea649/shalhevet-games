@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>חזון שלהבות — מפגש מנהלות תחומים</title>
+<link rel="stylesheet" href="fonts.css">
+<link rel="stylesheet" href="screen.css">
+</head>
+<body>
+<div id="app">
+  <!-- רקע: סטודיו תכלת, רשת נקודות -->
+  <div class="bg"></div>
+  <div class="grid"></div>
+  <div class="floor"></div>
+
+  <!-- חזון חדש בהכנה -->
+  <div id="pending"></div>
+
+  <!-- שמיים: קישוטים וסימנים מרחפים -->
+  <div id="sky"></div>
+
+  <!-- הבמה: בית הספר עם הלוגו בשלט, ילדים בחלונות, על הגג ולפני הבית -->
+  <div id="stage">
+    <div class="school-shadow"></div>
+    <img class="school" src="images/web/school.png" alt="">
+    <div class="sign-panel"><img class="sign-logo" src="images/web/logo-school.png" alt="שלהבות חב״ד — להאמין. להאיר. להצליח."></div>
+    <div id="roof"></div>
+    <div id="windows"></div>
+    <div id="scenes"></div>
+  </div>
+  <div id="bubbles"></div>
+  <div id="confetti"></div>
+
+  <!-- עמודה ימנית: לוגו בידנו, שאלה, ברקוד -->
+  <aside class="side">
+    <img class="logo" alt="בידנו">
+    <div class="kicker">סוף השנה.</div>
+    <h1 class="question"><span>מה רואים</span><span>בשלהבות<em>?</em></span></h1>
+    <div class="qr-wrap">
+      <div class="qr-paper"><i class="tape t1"></i><i class="tape t2"></i><div id="qr"></div></div>
+      <svg class="arrow" viewBox="0 0 120 90"><path d="M110 78 C 70 84, 30 64, 22 18" /><path d="M8 34 L22 14 L38 30" /></svg>
+      <div class="scan">סרקי ושתפי</div>
+    </div>
+  </aside>
+
+  <!-- עמודה שמאלית: סרגל החזונות -->
+  <nav class="ribbon">
+    <div class="rib-head">
+      <div class="rib-count" id="count">0</div>
+      <div class="rib-title"><b>חזונות</b></div>
+    </div>
+    <div class="rib-list" id="tiles"></div>
+  </nav>
+  <div class="demo-tag">תצוגה לדוגמה</div>
+
+  <!-- מצב הצגה של חזון אחד -->
+  <section id="focus">
+    <div class="veil"></div>
+    <div class="hero-shadow"></div>
+    <div class="hero"></div>
+    <svg class="burst" viewBox="-100 -100 200 200"></svg>
+    <div class="copy">
+      <div class="kick"></div>
+      <div class="topic"><img alt=""><span></span></div>
+      <blockquote class="quote"></blockquote>
+      <div class="who"><span class="nm"></span><svg viewBox="0 0 300 24" preserveAspectRatio="none"><path d="M4 16 C 60 6, 140 4, 296 12" /></svg></div>
+      <div class="role"></div>
+    </div>
+    <div class="progress"><i></i></div>
+  </section>
+
+  <!-- ברקוד גדול (מקש Q) -->
+  <section id="bigqr"><div class="veil"></div><div class="bq-paper"><div class="bq-code"></div></div><div class="bq-text">סרקי ושתפי</div></section>
+
+  <div id="menu"></div>
+  <div id="toast"></div>
+</div>
+<script>window.STATIC_SITE = true;</script>
+<script type="module" src="screen.js"></script>
+</body>
+</html>

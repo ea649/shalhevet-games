@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#DDF1F9">
+<title>החזון שלך — שלהבות חב״ד</title>
+<link rel="stylesheet" href="fonts.css">
+<style>
+  :root { --ink: #221C4A; --ink2: rgba(34, 28, 74, .6); --orange: #F26B2A; --hair: rgba(0, 90, 130, .22); }
+  * { box-sizing: border-box; }
+  html { background: #DDF1F9; }
+  body { margin: 0; min-height: 100vh; font-family: 'Tamlil', 'Segoe UI', sans-serif; color: var(--ink); direction: rtl; -webkit-font-smoothing: antialiased;
+    background: radial-gradient(120% 60% at 50% 0%, #F5FBFE, #DDF1F9 60%, #C9E7F3); }
+  main { max-width: 480px; margin: 0 auto; padding: 26px 22px 40px; }
+  .logo { display: block; width: 230px; margin: 0 auto 26px; }
+  .kicker { font: 400 30px/1 'Shirbut'; color: var(--orange); }
+  h1 { margin: 8px 0 12px; font: 900 50px/.95 'TamlilCond'; letter-spacing: -.005em; }
+  h1 em { font-style: normal; color: var(--orange); }
+  .sub { margin: 0 0 26px; font: 400 18px/1.45 'Tamlil'; color: var(--ink2); }
+  label { display: block; margin: 22px 0 4px; font: 500 15px 'Tamlil'; color: var(--ink2); letter-spacing: .04em; }
+  input, textarea { width: 100%; border: 0; border-bottom: 2px solid var(--hair); background: transparent; padding: 8px 2px 10px; font: 400 21px/1.35 'Tamlil'; color: var(--ink);
+    border-radius: 0; outline: none; transition: border-color .2s; -webkit-appearance: none; }
+  input:focus, textarea:focus { border-bottom-color: var(--orange); }
+  textarea { resize: none; min-height: 120px; }
+  .count { text-align: left; font: 300 13px 'Tamlil'; color: var(--ink2); margin-top: 4px; }
+  button { all: unset; box-sizing: border-box; display: flex; align-items: center; justify-content: center; gap: 10px; width: 100%; height: 62px; margin-top: 30px; border-radius: 31px;
+    background: var(--orange); color: #fff; font: 700 22px 'Tamlil'; cursor: pointer; box-shadow: 0 14px 26px -10px rgba(242, 107, 42, .7); transition: transform .15s, opacity .2s; }
+  button:active { transform: scale(.98); }
+  button[disabled] { opacity: .6; }
+  .err { margin-top: 12px; min-height: 22px; font: 500 16px 'Tamlil'; color: #D0204A; }
+  #done { display: none; text-align: center; padding-top: 30px; }
+  #done.on { display: block; animation: up .6s cubic-bezier(.2, 1.2, .3, 1); }
+  #done .ico { width: 170px; height: 170px; margin: 0 auto 10px; display: grid; place-items: center; }
+  #done .ico img { max-width: 100%; max-height: 100%; filter: drop-shadow(0 12px 14px rgba(0, 0, 0, .15)); animation: pop .8s cubic-bezier(.2, 1.4, .4, 1); }
+  #done h2 { margin: 6px 0 4px; font: 400 44px/1.05 'Shirbut'; }
+  #done p { margin: 6px 0; font: 400 19px/1.4 'Tamlil'; color: var(--ink2); }
+  #done .topic { font-weight: 700; color: var(--ink); }
+  #done a { display: inline-block; margin-top: 28px; font: 500 18px 'Tamlil'; color: var(--orange); text-decoration: none; border-bottom: 2px solid currentColor; padding-bottom: 2px; }
+  .spin { width: 64px; height: 64px; border-radius: 50%; border: 5px solid rgba(242, 107, 42, .2); border-top-color: var(--orange); animation: spin .9s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  @keyframes up { from { opacity: 0; transform: translateY(20px); } }
+  @keyframes pop { from { transform: scale(.3); opacity: 0; } }
+</style>
+<script>window.STATIC_SITE = true;</script>
+</head>
+<body>
+<main>
+  <img class="logo" src="images/web/logo.png" alt="שלהבות חב״ד">
+  <section id="ask">
+    <div class="kicker">סוף השנה. התחום שלך הצליח.</div>
+    <h1>מה רואים כשנכנסים לשלהבות<em>?</em></h1>
+    <p class="sub">החזון שלך יעלה למסך הגדול.</p>
+    <form id="f" autocomplete="on">
+      <label for="name">מה השם שלך?</label>
+      <input id="name" name="name" maxlength="60" required autocomplete="name">
+      <label for="domain">איזה תחום את מנהלת?</label>
+      <input id="domain" name="domain" maxlength="80">
+      <label for="text">איך את רואה את בית הספר בסוף השנה, אחרי שהתחום שלך יושם במלואו?</label>
+      <textarea id="text" name="text" maxlength="300" required></textarea>
+      <div class="count"><span id="n">0</span>/300</div>
+      <button id="send" type="submit">שליחה למסך ←</button>
+      <div class="err" id="err"></div>
+    </form>
+  </section>
+  <section id="done">
+    <div class="ico" id="ico"></div>
+    <h2 id="title"></h2>
+    <p id="msg"></p>
+    <a href="" id="again">לשלוח חזון נוסף</a>
+  </section>
+</main>
+<script>
+  const $ = id => document.getElementById(id);
+  // בגיטהאב (STATIC_SITE) מוצאים את השרת החי; במחשב המציג — אותו שרת
+  let API = '';
+  const ready = (async () => {
+    if (!window.STATIC_SITE) return true;
+    try {
+      const cfg = await fetch('https://api.github.com/repos/ea649/shalhevet-games/contents/vision/live.json', { headers: { Accept: 'application/vnd.github.raw+json' }, cache: 'no-store' }).then(r => r.json());
+      const ctl = new AbortController(); setTimeout(() => ctl.abort(), 6000);
+      if (cfg.url && (await fetch(cfg.url + 'api/info', { signal: ctl.signal })).ok) { API = cfg.url; return true; }
+    } catch {}
+    $('send').disabled = true; $('err').textContent = 'המשחק לא פעיל כרגע — אפשר לשלוח חזון רק בזמן המפגש';
+    return false;
+  })();
+  const store = { get: k => { try { return localStorage.getItem(k) || ''; } catch { return ''; } }, set: (k, v) => { try { localStorage.setItem(k, v); } catch {} } };
+  $('name').value = store.get('svName'); $('domain').value = store.get('svDomain');
+  $('text').addEventListener('input', () => $('n').textContent = $('text').value.length);
+
+  function showDone(st) {
+    $('ask').style.display = 'none'; $('done').classList.add('on');
+    if (st.pending) {
+      $('ico').innerHTML = '<div class="spin"></div>';
+      $('title').textContent = 'מכינים איור מיוחד…';
+      $('msg').textContent = 'החזון שלך לא דומה לאף אחד אחר, אז אנחנו מציירים לו איור משלו. עוד כמה שניות הוא יעלה למסך הגדול.';
+    } else {
+      $('ico').innerHTML = `<img src="${st.icon.startsWith('gen/') ? API : ''}images/web/${st.icon}.png" alt="">`;
+      $('title').textContent = 'החזון שלך על המסך!';
+      $('msg').innerHTML = `נושא החזון: <span class="topic"></span><br>הסתכלי על המסך הגדול 👀`;
+      $('msg').querySelector('.topic').textContent = st.label;
+    }
+  }
+  async function poll(id) {
+    for (let i = 0; i < 90; i++) {
+      await new Promise(r => setTimeout(r, 2000));
+      try { const st = await fetch(API + 'api/status/' + id).then(r => r.json()); if (!st.pending) return showDone(st); } catch {}
+    }
+  }
+  $('f').addEventListener('submit', async e => {
+    e.preventDefault();
+    const body = { name: $('name').value.trim(), domain: $('domain').value.trim(), text: $('text').value.trim() };
+    if (!body.name || !body.text) return $('err').textContent = 'חסר שם או חזון';
+    store.set('svName', body.name); store.set('svDomain', body.domain);
+    $('send').disabled = true; $('err').textContent = '';
+    try {
+      if (!(await ready)) return;
+      const r = await fetch(API + 'api/answer', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) }).then(r => r.json());
+      if (!r.ok) throw new Error(r.error || 'שגיאה');
+      if (r.pending) { showDone({ pending: true }); poll(r.id); }
+      else showDone({ icon: r.icon || 'icons/' + r.topic, label: r.label });
+    } catch (err) { $('err').textContent = 'לא הצלחנו לשלוח, נסי שוב'; $('send').disabled = false; }
+  });
+</script>
+</body>
+</html>
