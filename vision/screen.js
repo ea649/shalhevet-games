@@ -204,8 +204,9 @@ let BM = {}, HD = {}; // מידות פריטי המאגר (רגילים / ברז
 // רק פריטים שיש בתשובה מילה שמתאימה להם — בלי "סתם" פריטים
 const matched = (a, ok) => new Set(scoreItems(a.text).filter(x => x.own.length && ok(ITEM[x.id])).map(x => x.id));
 // איור מהמאגר במקום האיור הכללי של הנושא — רק כשיש התאמה ממשית, ורק מאותו מין
-const SOLO = /^(boy|girl)-|^(chidon-kid|teacher|principal|grandpa|grandma)$/;
-const NO_BANK = new Set(['rocket-kid', 'rocket']); // הטיל מופיע רק פעם אחת — הילד/ה שעפים בשמיים
+const SOLO = /^(boy|girl)-|^(chidon-kid|grandpa|grandma)$/;
+// הטיל מופיע רק פעם אחת (הילד/ה שעפים בשמיים) · בלי דמויות של מורים ומורות — הורים כן
+const NO_BANK = new Set(['rocket-kid', 'rocket', 'teacher', 'teacher-kids', 'principal', 'team-meeting']);
 function bankScene(a, gender, solo = false) {
   const t = a.topics?.[0];
   if (t === 'custom' || t === 'vision') return null; // לאיורי זמן אמת ולשלט יש איור משלהם

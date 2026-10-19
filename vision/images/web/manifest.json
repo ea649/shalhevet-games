@@ -190,14 +190,14 @@
   "src": "scenes/sport-g_v9.png"
  },
  "scenes/staff-b": {
-  "w": 868,
-  "h": 900,
-  "src": "scenes/staff-b_v9.png"
+  "w": 900,
+  "h": 894,
+  "src": "scenes/staff-b_v11.png"
  },
  "scenes/staff-g": {
-  "w": 613,
-  "h": 900,
-  "src": "scenes/staff-g_v10.png"
+  "w": 900,
+  "h": 872,
+  "src": "scenes/staff-g_v11.png"
  },
  "scenes/tefila-b": {
   "w": 850,
