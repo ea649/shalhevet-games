@@ -72,13 +72,22 @@ function sceneFor(T, gender) {
 }
 function prepare(a) {
   if (a._vis) return a._vis;
-  const T = topicOf(a), custom = a.topics?.[0] === 'custom' && a.custom, kind = chooseKind(a);
+  const T = topicOf(a), custom = a.topics?.[0] === 'custom' && a.custom;
+  let kind = chooseKind(a);
   let gender;
   if (custom) gender = a.custom.gender || 'b';
   else if (T.windows) gender = T.windows === 'boys' ? 'b' : 'g';
   else { gender = S.nextG; S.nextG = gender === 'g' ? 'b' : 'g'; } // בנות ובנים לסירוגין
   let vis;
-  if (custom) vis = { key: a.custom.scene, src: img(a.custom.scene), ar: a.custom.w / a.custom.h, unique: true };
+  // בחלון ובדלת מופיע ילד אחד — רק כשיש במאגר ילד/ה שמתאימים לתשובה. אחרת הקבוצה מופיעה לפני בית הספר / על הגג
+  // הדלת עוד סגורה? החזון הראשון שיש לו ילד/ה מתאימים פותח אותה
+  if (!custom && !S.door && kind !== 'window' && S.n >= 2) { const solo = bankScene(a, gender, true); if (solo) { vis = solo; kind = 'door'; } }
+  if (!vis && (kind === 'window' || kind === 'door')) {
+    vis = !custom && bankScene(a, gender, true);
+    if (!vis) kind = ['front', 'roof', 'side'].find(k => freeSlot(k) >= 0) || 'front';
+  }
+  if (vis) {}
+  else if (custom) vis = { key: a.custom.scene, src: img(a.custom.scene), ar: a.custom.w / a.custom.h, unique: true };
   else vis = ((kind === 'front' || kind === 'side') && bankScene(a, gender)) || sceneFor(T, gender);
   return a._vis = { gender, ...vis, kind };
 }
@@ -122,8 +131,8 @@ function showWindow(i, animate, delay = 0) {
   d.classList.remove('on', 'answer');
   d.innerHTML = '';
   if (!w) return;
-  d.innerHTML = `<img class="kid" src="${img('kids/' + w.kid)}" alt="">` + (w.icon ? `<img class="held" src="${w.icon}" alt="">` : '');
-  if (w.icon) d.classList.add('answer'), d.style.setProperty('--tc', w.color);
+  d.innerHTML = `<img class="kid" src="${w.src}" alt="">`;
+  d.classList.add('answer', 'full'); d.style.setProperty('--tc', w.color);
   const k = d.querySelector('.kid');
   if (!animate) { k.style.transition = 'none'; d.classList.add('on'); requestAnimationFrame(() => k.style.transition = ''); }
   else setTimeout(() => d.classList.add('on'), delay);
@@ -134,7 +143,7 @@ function showDoor(animate) {
   d.classList.remove('open', 'on');
   if (!w) { d.innerHTML = ''; return; }
   d.style.setProperty('--tc', w.color);
-  d.innerHTML = `<div class="inside"></div><img class="kid" src="${img('kids/' + w.kid)}" alt=""><img class="held" src="${w.icon}" alt=""><i class="leaf l"></i><i class="leaf r"></i>`;
+  d.innerHTML = `<div class="inside"></div><img class="kid" src="${w.src}" alt=""><i class="leaf l"></i><i class="leaf r"></i>`;
   d.classList.add('on');
   if (!animate) { d.classList.add('open', 'instant'); requestAnimationFrame(() => requestAnimationFrame(() => d.classList.remove('instant'))); }
   else setTimeout(() => d.classList.add('open'), 120);
@@ -155,10 +164,25 @@ function makeGroup(a, vis, color, kind, slot) {
   el.style.cssText = `left:${sp.x - w / 2}px; top:${sp.y - h}px; width:${w}px; height:${h}px; z-index:${kind === 'roof' ? 1 : sp.y}; --tc:${color}; --d:${(-Math.random() * 5).toFixed(1)}s`;
   el.innerHTML = `<img src="${vis.src}" alt="">`;
   if (vis.sign) el.append(signText('sign-text', gist(a.text), w, h, vis.sign));
+  motion(a, vis, el);
   const it = { el, kind, slot, key: vis.unique ? null : vis.key, ids: [a.id], order: 0, rect: { x: sp.x - w / 2, y: sp.y - h, w, h } };
   el.onclick = () => openReplay(S.answers.find(x => x.id === it.ids[it.ids.length - 1]));
   (kind === 'roof' ? $('#roof') : $('#scenes')).append(el);
   return it;
+}
+// תנועה לפי מה שבאיור: ילדים קופצים / ילדים לומדים (אותיות ומספרים שעולים, נורה שנדלקת)
+const JUMP = /jump|skip|race|tag|run|scooter|soccer|basketball/, LEARN = /learn|read|chumash|mishna|chavruta|writ|chalkboard|number|project|scientist|tablet|english|siddur|chidon|first-reader/;
+const GLYPHS = { english: ['A', 'B', 'C', 'Hi!'], math: ['1', '+', '2', '='], reading: ['א', 'ב', 'ג', '✎'], torah: ['א', 'ב', 'ג', '✎'], tefila: ['א', 'ב', 'ג'],
+  pedagogy: ['?', '!', '✎'], science: ['?', '!', '⚙'], excellence: ['100', 'A+', '✓'] };
+function motion(a, vis, el) {
+  const t = topicOf(a).id, id = vis.id || '';
+  if (t === 'joy' || t === 'sport' || JUMP.test(id)) el.classList.add('jumping');
+  const learn = GLYPHS[t] || (LEARN.test(id) ? (/english/.test(id) ? GLYPHS.english : /number/.test(id) ? GLYPHS.math : GLYPHS.reading) : null);
+  if (!learn) return;
+  const fx = document.createElement('div'); fx.className = 'learn-fx';
+  fx.innerHTML = (M['icons/vision'] ? `<img class="bulb" src="${img('icons/vision')}" alt="">` : '') +
+    learn.map((g, i) => `<span style="--i:${i}; --x:${(i - (learn.length - 1) / 2) * 34}px">${g}</span>`).join('');
+  el.append(fx);
 }
 function badge(it) {
   if (!it.el) return;
@@ -176,24 +200,29 @@ const freeSlot = kind => kind === 'window' ? (S.wins.some(w => !w) ? 0 : -1) : k
 
 // ---------- מאגר הפריטים (מהסשן "מאגר אפשרויות לתיאור בית הספר"): איור שמתאים לתשובה עצמה + חפצים מרחפים ----------
 const BANK = { used: new Set(), placed: [], els: [] }, MAX_FLOATS = 10;
-let BM = {}; // מידות פריטי המאגר
+let BM = {}, HD = {}; // מידות פריטי המאגר (רגילים / ברזולוציה מלאה)
 // רק פריטים שיש בתשובה מילה שמתאימה להם — בלי "סתם" פריטים
 const matched = (a, ok) => new Set(scoreItems(a.text).filter(x => x.own.length && ok(ITEM[x.id])).map(x => x.id));
 // איור מהמאגר במקום האיור הכללי של הנושא — רק כשיש התאמה ממשית, ורק מאותו מין
-function bankScene(a, gender) {
+const SOLO = /^(boy|girl)-|^(chidon-kid|teacher|principal|grandpa|grandma)$/;
+const NO_BANK = new Set(['rocket-kid', 'rocket']); // הטיל מופיע רק פעם אחת — הילד/ה שעפים בשמיים
+function bankScene(a, gender, solo = false) {
   const t = a.topics?.[0];
-  if (t === 'custom' || t === 'vision' || TOPIC[t]?.windows) return null; // לאיורי זמן אמת ולשלט יש איור משלהם
-  const ok = x => (x.kind === 'kid' || x.kind === 'big') && (!x.g || x.g === gender) && BM[x.id];
+  if (t === 'custom' || t === 'vision') return null; // לאיורי זמן אמת ולשלט יש איור משלהם
+  const tops = new Set(a.topics || []); // רק איור מאותו נושא של התשובה — שהתמונה תתאים למה שנכתב
+  const ok = x => (solo ? x.kind === 'kid' && SOLO.test(x.id) : x.kind === 'kid' || x.kind === 'big') && tops.has(x.topic)
+    && !NO_BANK.has(x.id) && (!x.g || x.g === gender) && BM[x.id];
   const m = matched(a, ok); if (!m.size) return null;
   const it = pickItems(a.text, { used: BANK.used, rand: rng('bank' + a.id), max: 1, filter: x => m.has(x.id) })[0];
   if (!it) return null;
   BANK.used.add(it.id);
-  return { key: 'items/' + it.id, src: img('items/' + it.id), ar: BM[it.id].w / BM[it.id].h };
+  const hd = HD[it.id], dir = hd ? 'items-hd/' : 'items/', sz = hd || BM[it.id];
+  return { key: 'items/' + it.id, id: it.id, src: img(dir + it.id), ar: sz.w / sz.h, solo };
 }
 // חפץ אחד שמרחף סביב בית הספר — רק אם הוא באמת קשור לתשובה
 function bankFloats(a, animate) {
   if (!Object.keys(BM).length) return;
-  const m = matched(a, x => (x.zone === 'float' || x.zone === 'sky') && BM[x.id]); if (!m.size) return;
+  const m = matched(a, x => (x.zone === 'float' || x.zone === 'sky') && BM[x.id] && !NO_BANK.has(x.id)); if (!m.size) return;
   const r = rng('bankf' + a.id);
   const avoid = [...SPOTS.front, ...SPOTS.side, ...SPOTS.roof, doorRect,
     ...WIN.map((_, i) => { const q = winRect(i); return { x: q.x - 10, y: q.y - 34, w: q.w + 20, h: q.h + 34 }; }),
@@ -210,7 +239,7 @@ function bankFloats(a, animate) {
 
 // איפה התשובה תופיע: לפני בית הספר, בחלון, בדלת, על הגג, בצד... (בלי לשנות מצב — נקרא גם לפני ההצגה)
 function chooseKind(a) {
-  let kind = topicOf(a).windows ? 'window' : CYCLE[S.n % CYCLE.length];
+  let kind = CYCLE[S.n % CYCLE.length];
   if (freeSlot(kind) < 0) kind = ['front', 'window', 'door', 'roof', 'side'].find(k => freeSlot(k) >= 0) || kind;
   return kind;
 }
@@ -228,28 +257,23 @@ function place(a, animate) {
     return { it: same, fresh: false, inf };
   }
   // אין מקום מהסוג הזה → מנסים סוג אחר, ואם אין בכלל — מפנים את הוותיק ביותר מאותו סוג
-  if (freeSlot(kind) < 0) kind = ['front', 'window', 'door', 'roof', 'side'].find(k => freeSlot(k) >= 0) || kind;
+  if (freeSlot(kind) < 0) kind = (vis.solo ? ['window', 'door', 'front', 'roof', 'side'] : ['front', 'roof', 'side']).find(k => freeSlot(k) >= 0) || kind;
   if (freeSlot(kind) < 0) {
     const old = S.items.filter(it => it.kind === kind).reduce((m, it) => !m || it.order < m.order ? it : m, null);
     if (old) removeItem(old, animate);
   }
-  const r = rng(a.id), pool = vis.gender === 'g' ? GIRLS : BOYS;
+  const r = rng(a.id);
   let it;
   if (kind === 'window') {
-    const wins = [];
-    for (let k = 0; k < (T.windows ? 3 : 1); k++) {
-      const free = S.wins.map((w, i) => w ? -1 : i).filter(i => i >= 0); // חלון אקראי — כל פעם במקום אחר בבניין
-      if (!free.length) break;
-      const i = pick(free, r);
-      S.wins[i] = { kid: pick(pool, r), icon: k === 0 ? inf.icon : null, color: inf.color, aid: a.id };
-      wins.push(i);
-    }
+    // הילד / הילדה של החזון — אותה תמונה שהופיעה בהצגה — בחלון אקראי, כל פעם במקום אחר בבניין
+    const free = S.wins.map((w, i) => w ? -1 : i).filter(i => i >= 0), wins = [pick(free, r)];
+    S.wins[wins[0]] = { src: vis.src, color: inf.color, aid: a.id };
     const rects = wins.map(winRect), x0 = Math.min(...rects.map(q => q.x)), y0 = Math.min(...rects.map(q => q.y));
     it = { kind, wins, key: null, ids: [a.id], order: 0,
       rect: { x: x0 - 20, y: y0 - 30, w: Math.max(...rects.map(q => q.x + q.w)) - x0 + 40, h: Math.max(...rects.map(q => q.y + q.h)) - y0 + 30 } };
     if (!animate) wins.forEach(i => showWindow(i, false));
   } else if (kind === 'door') {
-    S.door = { kid: pick(pool, r), icon: inf.icon, color: inf.color, aid: a.id };
+    S.door = { src: vis.src, color: inf.color, aid: a.id };
     it = { kind, key: null, ids: [a.id], order: 0, rect: { ...doorRect } };
     if (!animate) showDoor(false);
   } else {
@@ -322,10 +346,10 @@ function refreshExtras() {
 }
 function refreshRiders() {
   const ex = visible().filter(a => topicOf(a).id === 'excellence' && a.topics?.[0] !== 'custom');
-  const want = [...new Set(ex.map(a => prepare(a).gender))].filter(g => M['deco/rocket-' + (g === 'g' ? 'girl' : 'boy')]);
+  const want = ex.slice(0, 1).map(a => prepare(a).gender).filter(g => M['deco/rocket-' + (g === 'g' ? 'girl' : 'boy')]); // רק טיל אחד
   for (const el of document.querySelectorAll('#flyers .rider')) if (!want.includes(el.dataset.g)) el.remove();
   want.forEach((g, i) => {
-    if ($()) return;
+    if ($(`#flyers .rider[data-g="${g}"]`)) return;
     const el = document.createElement('img'); el.className = 'rider'; el.dataset.g = g; el.alt = '';
     el.src = img('deco/rocket-' + (g === 'g' ? 'girl' : 'boy')); el.style.animationDelay = (-i * 9) + 's';
     $('#flyers').append(el);
@@ -610,6 +634,7 @@ async function startDemo() {
 async function init() {
   M = await fetch(IMG + 'manifest.json', { cache: 'no-store' }).then(r => r.json());
   BM = await fetch(IMG + 'items/manifest.json', { cache: 'no-store' }).then(r => r.ok ? r.json() : {}).catch(() => ({}));
+  HD = await fetch(IMG + 'items-hd/manifest.json', { cache: 'no-store' }).then(r => r.ok ? r.json() : {}).catch(() => ({}));
   const sch = M.school; SCHOOL.h = SCHOOL.w * sch.h / sch.w;
   buildSchool();
   await document.fonts.ready;
