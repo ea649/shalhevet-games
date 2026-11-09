@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>מפת שיעור לכיתה א – שלהבות חב"ד</title>
+
+<style>
+@font-face{font-family:'Tamlil';src:url(../fonts/FbTamlil-Regular.otf) format('opentype');font-weight:400;font-display:swap}
+@font-face{font-family:'Tamlil';src:url(../fonts/FbTamlil-Medium.otf) format('opentype');font-weight:500;font-display:swap}
+@font-face{font-family:'Tamlil';src:url(../fonts/FbTamlil-Bold.otf) format('opentype');font-weight:700;font-display:swap}
+@font-face{font-family:'TamlilCond';src:url(../fonts/FbTamlilCondensed-Black.otf) format('opentype');font-weight:900;font-display:swap}
+
+:root{
+  --indigo:#513996; --magenta:#AA479A; --pink:#EE2F62; --cyan:#1EBCD7;
+  --yellow:#FDB916; --lime:#BDCC32; --orange:#F36F29; --ink:#1B1533; --muted:#6B6486;
+  --g-brand:linear-gradient(120deg,#00C6FF 0%,#6A3BFF 50%,#F107A3 100%);
+  --shadow:0 14px 34px -18px rgba(40,50,110,.40),0 0 0 1px rgba(40,50,110,.06);
+  --gut:clamp(14px,2.4vw,32px);
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{min-height:100%}
+body{
+  font-family:'Tamlil','Segoe UI',Arial,sans-serif;font-weight:500;color:var(--ink);background:#fff;
+  padding:clamp(10px,1.8vh,20px) var(--gut) 24px;-webkit-font-smoothing:antialiased;overflow-x:hidden;
+}
+.page{margin:0 auto;display:grid;gap:clamp(12px,2vh,22px)}
+button,input,select,textarea{font-family:'Tamlil',sans-serif}
+
+/* ---------- toolbar ---------- */
+.tools{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between}
+.tools .logo{height:clamp(34px,5.2vh,54px);width:auto}
+.tools .btns{display:flex;flex-wrap:wrap;gap:8px}
+.tb{border:0;background:#fff;color:#2B1F66;border-radius:999px;padding:8px 18px;font:700 16px 'Tamlil',sans-serif;cursor:pointer;
+  box-shadow:0 6px 16px -6px rgba(8,58,110,.35);transition:.18s}
+.tb:hover{transform:translateY(-2px);box-shadow:0 12px 22px -8px rgba(8,58,110,.45)}
+.tb.main{background:var(--g-brand);color:#fff;box-shadow:0 10px 24px -8px rgba(106,59,255,.6)}
+.toast{position:fixed;bottom:22px;left:50%;transform:translate(-50%,30px);opacity:0;background:var(--ink);color:#fff;
+  padding:10px 18px;border-radius:12px;font-size:16px;transition:.3s;z-index:50;pointer-events:none}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+
+/* ---------- top: big timer (left) + big noise meter without words ---------- */
+.top{display:flex;gap:clamp(12px,2vw,28px);align-items:center;justify-content:space-between}
+.box{background:#fff;border-radius:28px;box-shadow:var(--shadow)}
+
+.noise{padding:12px 16px}
+.tlight{--d:clamp(56px,10vh,110px);display:flex;align-items:center;gap:clamp(8px,1.2vh,14px);padding:clamp(8px,1.2vh,14px);
+  border-radius:999px;background:linear-gradient(180deg,#2E2747,#1B1533)}
+.lamp{width:var(--d);aspect-ratio:1;border-radius:50%;border:0;cursor:pointer;padding:0;
+  background:color-mix(in srgb,var(--lc) 22%,#14101F);box-shadow:inset 0 3px 8px rgba(0,0,0,.6);transition:background .25s,box-shadow .25s,transform .2s}
+.lamp:hover{transform:scale(1.05)}
+.lamp.on{background:radial-gradient(circle at 38% 32%,#fff 0 8%,color-mix(in srgb,var(--lc) 70%,#fff) 22%,var(--lc) 62%);
+  box-shadow:0 0 0 4px color-mix(in srgb,var(--lc) 45%,transparent),0 0 30px 8px var(--lc)}
+.noise.pop .lamp.on{animation:npop .45s ease}
+@keyframes npop{40%{transform:scale(1.15)}}
+
+.timer{display:flex;align-items:center;gap:clamp(10px,1.6vw,22px);padding:10px 22px 10px 12px}
+.dial{position:relative;flex:none;width:clamp(120px,21vh,230px);aspect-ratio:1;cursor:pointer}
+.dial svg{width:100%;height:100%;display:block;overflow:visible}
+.dial .face{position:absolute;inset:0;display:flex;align-items:center;justify-content:center}
+.dial .time{font:700 clamp(30px,5.6vh,60px)/1 'Tamlil',sans-serif;font-variant-numeric:tabular-nums;direction:ltr}
+#ring{transition:stroke-dashoffset .95s linear}
+.timer.run #glow{animation:pulse 2s ease-in-out infinite}
+@keyframes pulse{50%{opacity:.35}}
+.timer.end .dial{animation:shake .6s ease 6}
+.timer.end .time{color:var(--pink)}
+@keyframes shake{0%,100%{transform:rotate(0)}25%{transform:rotate(-4deg)}75%{transform:rotate(4deg)}}
+.tside{display:flex;flex-direction:column;align-items:center;gap:10px}
+.tctl{display:flex;gap:8px}
+.tctl button{border:0;border-radius:999px;padding:8px 16px;cursor:pointer;font:700 18px 'Tamlil',sans-serif;white-space:nowrap;
+  background:#fff;color:var(--indigo);box-shadow:inset 0 0 0 1.5px rgba(81,57,150,.18)}
+.tctl button.go{background:var(--g-brand);color:#fff;min-width:96px;box-shadow:none}
+.stepper{display:flex;align-items:center;gap:8px}
+.stepper button{width:32px;height:32px;border-radius:50%;border:0;cursor:pointer;font:700 20px/1 'Tamlil',sans-serif;color:var(--indigo);background:#EDE7FA}
+.stepper button:disabled{opacity:.35;cursor:default}
+.stepper .val{white-space:nowrap;font:700 18px 'Tamlil',sans-serif}
+.stepper input{width:38px;border:0;background:transparent;text-align:center;font:inherit;color:inherit;border-bottom:2px solid #D8D1EE;-moz-appearance:textfield}
+.stepper input::-webkit-inner-spin-button{-webkit-appearance:none}
+.timer.run .stepper,.timer.run #resetBtn{display:none}
+
+/* ---------- rotate ---------- */
+.rot-row{display:flex;justify-content:center}
+.rotate{border:0;cursor:pointer;border-radius:999px;padding:12px 34px;font:900 clamp(22px,3.2vh,34px)/1 'TamlilCond','Tamlil',sans-serif;
+  color:#fff;background:var(--g-brand);box-shadow:0 14px 30px -10px rgba(106,59,255,.65);display:flex;align-items:center;gap:12px;transition:.2s}
+.rotate:hover{transform:translateY(-2px) scale(1.02)}
+.rotate .arr{display:inline-block;transition:transform .5s}
+.rotate.spin .arr{transform:translateX(-14px)}
+
+/* ---------- the track ---------- */
+.track{position:relative;display:grid;grid-template-columns:repeat(var(--cols,4),minmax(0,1fr)) 64px;gap:clamp(14px,1.8vw,26px);align-items:stretch}
+body.present .track{grid-template-columns:repeat(var(--cols,4),minmax(0,1fr))}
+/* the path that joins the stations (behind the cards) */
+.track::before{content:"";position:absolute;inset-inline:4%;top:calc(var(--tok) / 2 + 2px);height:10px;border-radius:9px;
+  background:repeating-linear-gradient(90deg,#D9D2F0 0 22px,transparent 22px 36px);z-index:0}
+.track{--tok:clamp(62px,10vh,104px)}
+body.present .track::before{inset-inline:8%}
+
+.st{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;gap:clamp(6px,1vh,12px);min-width:0}
+/* group colour above the station */
+.tok{width:var(--tok);height:var(--tok);border-radius:50%;border:6px solid #fff;cursor:pointer;padding:0;
+  background:radial-gradient(circle at 35% 30%,color-mix(in srgb,var(--gc) 55%,#fff),var(--gc) 62%);
+  box-shadow:0 10px 22px -8px var(--gc),0 0 0 2px color-mix(in srgb,var(--gc) 40%,transparent);position:relative;z-index:3}
+.tok.empty{background:#fff;border:3px dashed #C9C1E2;box-shadow:none;color:var(--muted);font:700 14px/1.1 'Tamlil',sans-serif}
+body.present .tok{cursor:default}
+.card{position:relative;width:100%;flex:1;display:flex;flex-direction:column;align-items:center;gap:clamp(6px,1vh,12px);
+  background:#fff;border-radius:26px;padding:12px 12px 14px;box-shadow:var(--shadow);
+  border-top:10px solid var(--gc,#E6E1F4);transition:border-color .5s;container:st/inline-size}
+.num{position:absolute;top:10px;right:12px;font:900 clamp(14px,1.9vh,19px)/1 'TamlilCond','Tamlil',sans-serif;color:var(--muted)}
+.ttl{display:block;width:100%;text-align:center;color:#2B1F66;font:900 clamp(24px,min(4vh,14cqi),46px)/1.1 'TamlilCond','Tamlil',sans-serif;
+  padding:8px 6px 2px;min-height:1.4em;outline:none;border-radius:12px;overflow-wrap:break-word}
+.editing .ttl:hover{background:rgba(81,57,150,.05)}
+.editing .ttl:focus{background:rgba(81,57,150,.08)}
+.ttl:empty:before{content:attr(data-ph);color:#B8B2CC;font-weight:400}
+body.present .ttl:empty:before{content:none}
+/* the activity emoji – big */
+.act{flex:1;width:100%;min-height:clamp(120px,22vh,300px);border:0;background:none;cursor:pointer;border-radius:22px;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;transition:background .15s}
+.editing .act:hover{background:#F8F6FE}
+.act .big{height:clamp(110px,min(22vh,60cqi),260px);width:auto;max-width:100%;object-fit:contain;display:block;filter:drop-shadow(0 8px 10px rgba(40,30,90,.12))}
+.act .lbl{font:700 clamp(15px,2vh,22px) 'Tamlil',sans-serif;color:var(--muted)}
+body.present .act .lbl{display:none}
+.act.none{border:3px dashed #D8D1EE;color:var(--muted);font:700 18px 'Tamlil',sans-serif}
+.act.none .plus{width:40px;height:40px;border-radius:50%;background:var(--g-brand);color:#fff;display:flex;align-items:center;justify-content:center;font:700 28px/1 'Tamlil',sans-serif}
+body.present .act.none{visibility:hidden}
+body.present .act{cursor:default}
+/* intelligence symbols (up to 3), small, under the emoji */
+.intel{--ih:clamp(90px,15vh,160px);display:flex;align-items:center;justify-content:center;gap:0;border:0;background:none;cursor:pointer;min-height:calc(var(--ih) * .64);
+  border-radius:16px;padding:2px 6px}
+.intel img{height:var(--ih);width:auto;display:block;margin:calc(var(--ih) * -.17) calc(var(--ih) * -.12)}
+.intel[data-n="3"]{--ih:clamp(74px,12vh,130px)}
+.intel.none{border:2px dashed #D8D1EE;color:var(--muted);font:700 14px 'Tamlil',sans-serif;padding:4px 12px}
+body.present .intel.none{display:none}
+body.present .intel{cursor:default}
+.del{position:absolute;top:8px;left:10px;width:28px;height:28px;border-radius:50%;border:0;cursor:pointer;background:#F1EEF8;color:var(--muted);
+  font:700 18px/1 'Tamlil',sans-serif;opacity:0;transition:.15s;z-index:4}
+.card:hover .del,.del:focus{opacity:1}
+.del:hover{background:var(--pink);color:#fff}
+@media (hover:none){.del{opacity:1}}
+.add-st{border:2px dashed #CFDDF0;border-radius:24px;background:#F7FAFE;cursor:pointer;display:flex;flex-direction:column;align-items:center;
+  justify-content:center;gap:6px;padding:8px 4px;font:700 13px 'Tamlil',sans-serif;color:#2B1F66;text-align:center;margin-top:calc(var(--tok) + 10px)}
+.add-st:hover{background:#fff;border-color:#9DB6E8}
+.add-st .plus{width:36px;height:36px;border-radius:50%;background:var(--g-brand);color:#fff;display:flex;align-items:center;justify-content:center;font:700 26px/1 'Tamlil',sans-serif}
+body.present .del,body.present .add-st{display:none}
+
+.foot-note{text-align:center;color:#8A83A6;font-size:15px}
+body.present .edit-only,body.present .foot-note{display:none}
+
+/* ---------- pickers ---------- */
+.pick{position:fixed;inset:0;background:rgba(27,21,51,.45);backdrop-filter:blur(4px);display:none;align-items:center;justify-content:center;z-index:40;padding:16px}
+.pick.show{display:flex}
+.panel{border-radius:28px;padding:22px;max-width:760px;width:100%;max-height:92vh;overflow-y:auto;
+  border:3px solid transparent;background:linear-gradient(#fff,#fff) padding-box,var(--g-brand) border-box;
+  box-shadow:0 24px 60px rgba(27,21,51,.35);animation:pop .3s cubic-bezier(.2,1.2,.4,1)}
+@keyframes pop{from{transform:scale(.9);opacity:0}}
+.panel h3{text-align:center;font:900 30px 'TamlilCond',sans-serif;margin-bottom:12px;color:var(--indigo)}
+.pnote{text-align:center;color:var(--muted);font-size:15px;margin:-4px 0 14px}
+.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.grid button{position:relative;border:2px solid transparent;background:#F8F6FE;border-radius:18px;padding:8px 4px;cursor:pointer;transition:.15s;
+  display:flex;flex-direction:column;align-items:center;gap:4px;font:700 15px 'Tamlil',sans-serif;color:var(--ink)}
+.grid button:hover{transform:translateY(-2px);border-color:#C9B8F2}
+.grid button.sel{border-color:var(--magenta);background:#FFF5FD}
+.grid .big{height:96px;width:96px;object-fit:contain;display:block}
+.grid img{width:100%;display:block}
+#intelGrid button{padding:4px}
+#intelGrid button.sel::after{content:attr(data-o);position:absolute;top:6px;left:6px;width:26px;height:26px;border-radius:50%;
+  background:var(--magenta);color:#fff;font:700 15px/26px 'Tamlil',sans-serif;text-align:center}
+.colors{display:flex;flex-wrap:wrap;gap:14px;justify-content:center}
+.colors button{width:70px;height:70px;border-radius:50%;border:5px solid #fff;cursor:pointer;background:var(--gc);box-shadow:0 0 0 2px #E2DCF2;transition:.15s}
+.colors button:hover{transform:scale(1.08)}
+.colors button.sel{box-shadow:0 0 0 4px var(--ink)}
+.pfoot{display:flex;justify-content:center;gap:10px;margin-top:16px}
+
+/* ---------- desktop / projector: one screen ---------- */
+@media (min-width:901px) and (min-height:560px){
+  html,body{height:100%}
+  body{height:100dvh;overflow:hidden;display:flex;flex-direction:column}
+  .page{flex:1;min-height:0;width:100%;grid-template-rows:auto auto auto minmax(0,1fr) auto}
+  .track{min-height:0}
+  .foot-note{display:none}
+}
+@media (max-width:900px){
+  .track,body.present .track{grid-template-columns:repeat(2,1fr)}
+  .track::before{display:none}
+  .add-st{margin-top:0;min-height:90px}
+  .top{flex-wrap:wrap;justify-content:center}
+}
+@media (max-width:620px){
+  .track,body.present .track{grid-template-columns:1fr}
+  .grid{grid-template-columns:repeat(2,1fr)}
+}
+@media print{
+  .tools .btns,.tctl,.stepper,.rot-row,.foot-note,.toast,.del,.add-st{display:none!important}
+  *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  @page{size:A4 landscape;margin:8mm}
+}
+</style>
+</head>
+<body class="editing">
+<div class="page">
+
+  <div class="tools">
+    <img class="logo" src="../canva/assets/shalhevet-logo.png" alt="שלהבות חב&quot;ד">
+    <div class="btns">
+      <button class="tb main" id="presentBtn">מצב הקרנה</button>
+      <button class="tb edit-only" id="shareBtn">העתקת קישור לשיעור</button>
+      <button class="tb edit-only" id="clearBtn">ניקוי המפה</button>
+      <button class="tb edit-only" id="printBtn">הדפסה</button>
+    </div>
+  </div>
+
+  <section class="top">
+    <div class="box noise" id="noise">
+      <div class="tlight" id="tlight" role="radiogroup" tabindex="0" aria-label="מד רעש"></div>
+    </div>
+
+    <div class="box timer" id="timer">
+      <div class="tside">
+        <div class="tctl">
+          <button class="go" id="goBtn">▶ הפעלה</button>
+          <button id="resetBtn">↺ איפוס</button>
+        </div>
+        <div class="stepper">
+          <button id="plus" aria-label="עוד דקה">+</button>
+          <span class="val"><input id="customMin" type="number" min="1" max="120" aria-label="דקות"> דק׳</span>
+          <button id="minus" aria-label="פחות דקה">−</button>
+        </div>
+      </div>
+      <div class="dial" id="dial" title="לחיצה: הפעלה / עצירה">
+        <svg viewBox="0 0 200 200" aria-hidden="true">
+          <defs>
+            <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0" stop-color="#1EBCD7"/><stop offset=".45" stop-color="#513996"/>
+              <stop offset=".72" stop-color="#AA479A"/><stop offset="1" stop-color="#EE2F62"/>
+            </linearGradient>
+            <linearGradient id="gw" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0" stop-color="#F36F29"/><stop offset="1" stop-color="#EE2F62"/>
+            </linearGradient>
+            <radialGradient id="fc" cx=".5" cy=".38" r=".7">
+              <stop offset="0" stop-color="#fff"/><stop offset="1" stop-color="#F3EFFC"/>
+            </radialGradient>
+            <filter id="blur"><feGaussianBlur stdDeviation="6"/></filter>
+          </defs>
+          <circle id="glow" cx="100" cy="100" r="86" fill="none" stroke="url(#g)" stroke-width="16" opacity=".5" filter="url(#blur)"/>
+          <circle cx="100" cy="100" r="86" fill="url(#fc)" stroke="#ECE7F8" stroke-width="14"/>
+          <circle id="ring" cx="100" cy="100" r="86" fill="none" stroke="url(#g)" stroke-width="14" stroke-linecap="round" transform="rotate(-90 100 100)"/>
+          <g stroke="#CFC7E6" stroke-width="3" stroke-linecap="round" id="ticks"></g>
+        </svg>
+        <div class="face"><div class="time" id="time">10:00</div></div>
+      </div>
+    </div>
+  </section>
+
+  <div class="rot-row">
+    <button class="rotate" id="rotateBtn" title="כל קבוצה עוברת לתחנה הבאה">החלפת תחנות <span class="arr">⬅</span></button>
+  </div>
+
+  <section class="track" id="track"></section>
+
+  <p class="foot-note">לוחצים על העיגול שמעל התחנה ובוחרים צבע לקבוצה · כותבים כותרת · לוחצים על הריבוע כדי לבחור תמונה לפעילות · הכול נשמר אוטומטית במחשב הזה</p>
+</div>
+
+<div class="pick" id="pickEmoji">
+  <div class="panel">
+    <h3>בחירת תמונה לפעילות בתחנה</h3>
+    <div class="grid" id="emojiGrid"></div>
+    <div class="pfoot"><button class="tb" data-clear="emoji">בלי תמונה</button><button class="tb main" data-close>סגירה</button></div>
+  </div>
+</div>
+<div class="pick" id="pickIntel">
+  <div class="panel">
+    <h3>בחירת אינטליגנציה לתחנה</h3>
+    <p class="pnote">אפשר לבחור עד 3 סמלים לתחנה · לחיצה נוספת על סמל מבטלת אותו</p>
+    <div class="grid" id="intelGrid"></div>
+    <div class="pfoot"><button class="tb" data-clear="intels">בלי סמל</button><button class="tb main" data-close>סיום</button></div>
+  </div>
+</div>
+<div class="pick" id="pickColor">
+  <div class="panel" style="max-width:560px">
+    <h3>צבע הקבוצה</h3>
+    <div class="colors" id="colorGrid"></div>
+    <div class="pfoot"><button class="tb main" data-close>סגירה</button></div>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+// ---------- data ----------
+// activity pictures – the list from the lesson-map document (es@, 3.11.2026), in the same order.
+// Illustrations: OpenAI gpt-image-2.6-flare (medium, 1024x1024, transparent), img/<key>.png
+const EMOJI = [
+  ['board', 'לוח מחיק'],
+  ['lgames', 'משחקי למידה'],
+  ['games', 'משחקים רגילים'],
+  ['pc', 'מחשבים'],
+  ['teacher', 'מורה'],
+  ['notebook', 'מחברת'],
+  ['heb', 'ספר עברית אותיות'],
+  ['math', 'ספר חשבון שבילים'],
+  ['craft', 'תוצר יצירה- טושים ודפים'],
+  ['rug', 'שטיח'],
+  ['read', 'פינת קריאה'],
+  ['clay', 'פלסטלינה'],
+  ['stickers', 'מדבקות'],
+  ['car', 'מכונית'],
+  ['marker', 'מרקר+ דף'],
+  ['cards', 'קלפים'],
+];
+const emojiHTML = k => EMOJI.some(x => x[0] === k) ? `<img class="big" src="img/web2/${k}.webp" alt="">` : '';
+const INTEL = [
+  ['linguistic','לשונית'],['logical','לוגית מתמטית'],['spatial','מרחבית'],['bodily','גופנית תנועתית'],
+  ['musical','מוזיקלית'],['interpersonal','בין אישית'],['intrapersonal','תוך אישית'],['naturalist','נטורליסטית']
+];
+const MAX_INTEL = 3;
+const COLORS = ['#EE2F62','#1EBCD7','#FDB916','#3DBB4E','#F36F29','#AA479A','#513996','#BDCC32','#8B5A2B','#9AA0A6'];
+const KEY = 'shalhevet-lesson-map-a';
+const MIN_ST = 2, MAX_ST = 8;
+const newStation = () => ({title:'', emoji:'', intels:[]});
+const blank = () => ({minutes:10, noise:'green', shift:0,
+  groups:COLORS.slice(0,4), stations:[0,1,2,3].map(newStation)});
+
+function decode(s){try{return JSON.parse(decodeURIComponent(escape(atob(s))))}catch(e){return null}}
+function encode(o){return btoa(unescape(encodeURIComponent(JSON.stringify(o))))}
+let state = null;
+try { state = JSON.parse(localStorage.getItem(KEY)) } catch(e) {}
+if (location.hash.length > 2) {
+  const got = decode(location.hash.slice(1));
+  if (got && got.stations) state = got;
+  history.replaceState(null, '', location.pathname);
+}
+if (!state || !state.stations) state = blank();
+function save(){ try { localStorage.setItem(KEY, JSON.stringify(state)) } catch(e) {} }
+save();
+
+// ---------- track ----------
+// group g stands at station (g + shift) % n; "החלפת תחנות" adds 1 to shift
+const track = document.getElementById('track');
+const present = () => document.body.classList.contains('present');
+const groupAt = i => { const n = state.stations.length; return ((i - state.shift) % n + n) % n; };
+function render(){
+  const n = state.stations.length;
+  track.style.setProperty('--cols', n);
+  track.innerHTML = '';
+  state.stations.forEach((s, i) => {
+    const g = groupAt(i), col = state.groups[g] || '';
+    const its = (s.intels || []).map(k => INTEL.find(x => x[0] === k)).filter(Boolean);
+    const lbl = (EMOJI.find(x => x[0] === s.emoji) || [])[1] || '';
+    const el = document.createElement('div');
+    el.className = 'st';
+    el.innerHTML = `
+      <button class="tok ${col ? '' : 'empty'}" data-g="${g}" style="--gc:${col || '#ccc'}" title="צבע הקבוצה" aria-label="צבע הקבוצה">${col ? '' : 'צבע'}</button>
+      <div class="card" style="--gc:${col || '#E6E1F4'}">
+        <span class="num">${i + 1}</span>
+        ${n > MIN_ST ? `<button class="del" data-del="${i}" title="מחיקת תחנה ${i + 1}" aria-label="מחיקת תחנה">×</button>` : ''}
+        <span class="ttl" contenteditable="${!present()}" data-s="${i}" data-ph="כותרת התחנה"></span>
+        <button class="act ${s.emoji ? '' : 'none'}" data-emo="${i}" title="${lbl || 'בחירת תמונה'}">
+          ${s.emoji ? emojiHTML(s.emoji) + `<span class="lbl">${lbl}</span>` : '<span class="plus">+</span>בחירת תמונה'}
+        </button>
+        <button class="intel ${its.length ? '' : 'none'}" data-int="${i}" data-n="${its.length}" title="${its.length ? its.map(x => x[1]).join(' · ') : 'בחירת אינטליגנציה'}">
+          ${its.length ? its.map(x => `<img src="../entry-card/img/${x[0]}.png" alt="${x[1]}">`).join('') : '+ סמל אינטליגנציה'}
+        </button>
+      </div>`;
+    track.appendChild(el);
+    el.querySelector('.ttl').innerText = s.title || '';
+  });
+  if (n < MAX_ST) {
+    const add = document.createElement('button');
+    add.className = 'add-st'; add.title = 'הוספת תחנה';
+    add.innerHTML = '<span class="plus">+</span>הוספת<br>תחנה';
+    track.appendChild(add);
+  }
+}
+render();
+
+// rotate with a slide animation of the colour circles (FLIP)
+document.getElementById('rotateBtn').onclick = e => {
+  const before = {};
+  track.querySelectorAll('.tok').forEach(t => before[t.dataset.g] = t.getBoundingClientRect());
+  state.shift = (state.shift + 1) % state.stations.length; save(); render();
+  track.querySelectorAll('.tok').forEach(t => {
+    const a = before[t.dataset.g], b = t.getBoundingClientRect(); if (!a) return;
+    t.animate([{transform:`translate(${a.left - b.left}px,${a.top - b.top}px)`},{transform:'none'}],
+      {duration:700, easing:'cubic-bezier(.3,1.2,.4,1)'});
+  });
+  const btn = e.currentTarget; btn.classList.add('spin'); setTimeout(() => btn.classList.remove('spin'), 500);
+};
+
+track.addEventListener('click', e => {
+  if (e.target.closest('.add-st')) {
+    state.stations.push(newStation());
+    state.groups.push(COLORS.find(c => !state.groups.includes(c)) || COLORS[0]);
+    save(); render(); return;
+  }
+  const d = e.target.closest('[data-del]');
+  if (d) {
+    const i = +d.dataset.del, s = state.stations[i];
+    if ((s.title || s.emoji || (s.intels || []).length) && !confirm(`למחוק את תחנה ${i + 1}?`)) return;
+    const g = groupAt(i);
+    state.stations.splice(i, 1); state.groups.splice(g, 1);
+    state.shift = state.shift % state.stations.length; save(); render(); return;
+  }
+  if (present()) return;
+  const t = e.target.closest('.tok'); if (t) return openPick('pickColor', +t.dataset.g);
+  const a = e.target.closest('[data-emo]'); if (a) return openPick('pickEmoji', +a.dataset.emo);
+  const n = e.target.closest('[data-int]'); if (n) return openPick('pickIntel', +n.dataset.int);
+});
+track.addEventListener('input', e => {
+  const t = e.target; if (t.dataset.s == null) return;
+  state.stations[+t.dataset.s].title = t.innerText.trim(); save();
+});
+document.addEventListener('keydown', e => { if (e.key === 'Enter' && e.target.matches('.ttl')) { e.preventDefault(); e.target.blur(); } });
+document.addEventListener('paste', e => {
+  if (!e.target.closest('[contenteditable]')) return;
+  e.preventDefault(); document.execCommand('insertText', false, (e.clipboardData || window.clipboardData).getData('text'));
+});
+
+// ---------- pickers ----------
+let pickFor = -1;
+const emojiGrid = document.getElementById('emojiGrid'), intelGrid = document.getElementById('intelGrid'), colorGrid = document.getElementById('colorGrid');
+emojiGrid.innerHTML = EMOJI.map(([k, n]) => `<button data-v="${k}" title="${n}">${emojiHTML(k)}<span>${n}</span></button>`).join('');
+intelGrid.innerHTML = INTEL.map(([k, n]) => `<button data-v="${k}" title="${n}"><img src="../entry-card/img/${k}.png" alt="${n}"></button>`).join('');
+colorGrid.innerHTML = COLORS.map(c => `<button data-v="${c}" style="--gc:${c}" aria-label="צבע"></button>`).join('');
+function mark(){
+  const s = state.stations[pickFor];
+  if (s) {
+    emojiGrid.querySelectorAll('button').forEach(b => b.classList.toggle('sel', b.dataset.v === s.emoji));
+    const list = s.intels || [];
+    intelGrid.querySelectorAll('button').forEach(b => { const o = list.indexOf(b.dataset.v); b.classList.toggle('sel', o >= 0); b.dataset.o = o >= 0 ? o + 1 : ''; });
+  }
+}
+function openPick(id, i){
+  pickFor = i;
+  if (id === 'pickColor') colorGrid.querySelectorAll('button').forEach(b => b.classList.toggle('sel', b.dataset.v === state.groups[i]));
+  else mark();
+  document.getElementById(id).classList.add('show');
+}
+const closeAll = () => document.querySelectorAll('.pick').forEach(p => p.classList.remove('show'));
+document.querySelectorAll('.pick').forEach(p => p.addEventListener('click', e => { if (e.target === p || e.target.closest('[data-close]')) closeAll(); }));
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeAll(); });
+emojiGrid.addEventListener('click', e => {
+  const b = e.target.closest('button'); if (!b) return;
+  state.stations[pickFor].emoji = b.dataset.v; save(); render(); closeAll();
+});
+intelGrid.addEventListener('click', e => {
+  const b = e.target.closest('button'); if (!b) return;
+  const s = state.stations[pickFor], list = s.intels || [], k = b.dataset.v;
+  if (list.includes(k)) s.intels = list.filter(x => x !== k);
+  else if (list.length >= MAX_INTEL) return say(`אפשר עד ${MAX_INTEL} סמלים לתחנה`);
+  else s.intels = [...list, k];
+  save(); render(); mark();
+});
+colorGrid.addEventListener('click', e => {
+  const b = e.target.closest('button'); if (!b) return;
+  const c = b.dataset.v, other = state.groups.indexOf(c);
+  if (other >= 0 && other !== pickFor) state.groups[other] = state.groups[pickFor];   // swap, so two groups never share a colour
+  state.groups[pickFor] = c; save(); render(); closeAll();
+});
+document.querySelectorAll('[data-clear]').forEach(b => b.onclick = () => {
+  const s = state.stations[pickFor];
+  if (b.dataset.clear === 'emoji') s.emoji = ''; else s.intels = [];
+  save(); render(); closeAll();
+});
+
+// ---------- timer (long ring at the end) ----------
+const ring = document.getElementById('ring'), glow = document.getElementById('glow'), C = 2 * Math.PI * 86;
+ring.style.strokeDasharray = C;
+const ticks = document.getElementById('ticks');
+for (let i = 0; i < 12; i++) {
+  const a = i * 30 * Math.PI / 180, r1 = 70, r2 = i % 3 ? 74 : 65;
+  ticks.insertAdjacentHTML('beforeend', `<line x1="${100+r1*Math.sin(a)}" y1="${100-r1*Math.cos(a)}" x2="${100+r2*Math.sin(a)}" y2="${100-r2*Math.cos(a)}"/>`);
+}
+const timerEl = document.getElementById('timer'), timeEl = document.getElementById('time'), goBtn = document.getElementById('goBtn'), customMin = document.getElementById('customMin');
+let total, left, endAt = 0, tick = null;
+const fmt = s => { s = Math.max(0, Math.ceil(s)); return String(Math.floor(s/60)).padStart(2,'0') + ':' + String(s%60).padStart(2,'0'); };
+function draw(){
+  timeEl.textContent = fmt(left);
+  ring.style.strokeDashoffset = C * (1 - left / total);
+  const warn = left <= 60 && left > 0;
+  ring.setAttribute('stroke', warn ? 'url(#gw)' : 'url(#g)'); glow.setAttribute('stroke', warn ? 'url(#gw)' : 'url(#g)');
+}
+function setMinutes(m){
+  m = Math.min(120, Math.max(1, Math.round(m) || 10));
+  stop(); total = left = m * 60; state.minutes = m; save();
+  customMin.value = m; timerEl.classList.remove('end','run');
+  document.getElementById('minus').disabled = m <= 1; document.getElementById('plus').disabled = m >= 120;
+  goBtn.textContent = '▶ הפעלה';
+  ring.style.transition = 'none'; draw(); ring.getBoundingClientRect(); ring.style.transition = '';
+}
+function start(){
+  unlockAudio();
+  if (left <= 0) setMinutes(state.minutes);
+  endAt = Date.now() + left * 1000; timerEl.classList.remove('end'); timerEl.classList.add('run');
+  tick = setInterval(() => { left = (endAt - Date.now()) / 1000; if (left <= 0) { left = 0; draw(); finish(); return; } draw(); }, 250);
+  goBtn.textContent = '❚❚ עצירה';
+}
+function stop(){ if (tick) { clearInterval(tick); tick = null; } }
+function pause(){ stop(); timerEl.classList.remove('run'); goBtn.textContent = '▶ המשך'; }
+const toggle = () => tick ? pause() : start();
+function finish(){ stop(); timerEl.classList.remove('run'); timerEl.classList.add('end'); goBtn.textContent = '▶ שוב'; ring_(); }
+let ac = null;
+function unlockAudio(){
+  try {
+    if (!ac) ac = new (window.AudioContext || window.webkitAudioContext)();
+    if (ac.state !== 'running') ac.resume();
+    const b = ac.createBuffer(1, 1, 22050), s = ac.createBufferSource(); s.buffer = b; s.connect(ac.destination); s.start(0);
+  } catch(e) {}
+}
+// long school-bell ring: ~5 seconds of fast bell strikes, then a soft fade
+function ring_(){
+  try {
+    if (!ac) ac = new (window.AudioContext || window.webkitAudioContext)();
+    const play = () => {
+      const t0 = ac.currentTime + .05, LEN = 5;
+      for (let t = 0; t < LEN; t += .09) {
+        const at = t0 + t, fade = t > LEN - 1 ? (LEN - t) : 1;
+        [1046, 1318].forEach((f, j) => {
+          const o = ac.createOscillator(), g = ac.createGain();
+          o.type = 'triangle'; o.frequency.value = f;
+          g.gain.setValueAtTime(0, at);
+          g.gain.linearRampToValueAtTime(.32 * fade / (j + 1), at + .008);
+          g.gain.exponentialRampToValueAtTime(.001, at + .25);
+          o.connect(g).connect(ac.destination); o.start(at); o.stop(at + .27);
+        });
+      }
+    };
+    ac.state === 'running' ? play() : ac.resume().then(play);
+  } catch(e) {}
+}
+goBtn.onclick = toggle;
+document.getElementById('dial').onclick = toggle;
+document.getElementById('resetBtn').onclick = () => setMinutes(state.minutes);
+document.getElementById('plus').onclick = () => setMinutes(state.minutes + 1);
+document.getElementById('minus').onclick = () => setMinutes(state.minutes - 1);
+customMin.addEventListener('change', () => setMinutes(+customMin.value));
+setMinutes(state.minutes || 10);
+
+// ---------- noise meter: big traffic light, no words ----------
+const NOISE = {red:'#EE2F62', orange:'#F36F29', green:'#3DBB4E'};
+const NKEYS = Object.keys(NOISE);
+const noiseEl = document.getElementById('noise'), tlight = document.getElementById('tlight');
+tlight.innerHTML = NKEYS.map(k => `<button class="lamp" data-n="${k}" style="--lc:${NOISE[k]}" role="radio" aria-label="${k}"></button>`).join('');
+function setNoise(k, anim){
+  if (!NOISE[k]) k = 'green';
+  const changed = k !== state.noise; state.noise = k; save();
+  tlight.querySelectorAll('.lamp').forEach(b => { const on = b.dataset.n === k; b.classList.toggle('on', on); b.setAttribute('aria-checked', on); });
+  if (anim && changed) { noiseEl.classList.remove('pop'); void noiseEl.offsetWidth; noiseEl.classList.add('pop'); }
+}
+tlight.addEventListener('click', e => { const b = e.target.closest('.lamp'); if (b) setNoise(b.dataset.n, true); });
+setNoise(state.noise);
+
+// ---------- toolbar ----------
+const toast = document.getElementById('toast');
+function say(t){ toast.textContent = t; toast.classList.add('show'); setTimeout(() => toast.classList.remove('show'), 2200); }
+const presentBtn = document.getElementById('presentBtn');
+function setPresent(on){
+  document.body.classList.toggle('present', on); document.body.classList.toggle('editing', !on);
+  document.querySelectorAll('[contenteditable]').forEach(el => el.contentEditable = on ? 'false' : 'true');
+  presentBtn.textContent = on ? 'חזרה לעריכה' : 'מצב הקרנה';
+  if (on && document.documentElement.requestFullscreen) document.documentElement.requestFullscreen().catch(() => {});
+  if (!on && document.fullscreenElement) document.exitFullscreen().catch(() => {});
+}
+presentBtn.onclick = () => setPresent(!present());
+document.addEventListener('fullscreenchange', () => { if (!document.fullscreenElement && present()) setPresent(false); });
+document.getElementById('printBtn').onclick = () => window.print();
+document.getElementById('clearBtn').onclick = () => {
+  if (!confirm('לנקות את כל המפה ולהתחיל מחדש?')) return;
+  state = blank(); save(); render(); setMinutes(state.minutes); setNoise(state.noise);
+};
+document.getElementById('shareBtn').onclick = async () => {
+  const url = location.href.split('#')[0] + '#' + encode(state);
+  try { await navigator.clipboard.writeText(url); say('הקישור הועתק – מי שיפתח אותו יקבל את המפה הזו'); }
+  catch(e) { prompt('העתיקו את הקישור:', url); }
+};
+</script>
+</body>
+</html>
