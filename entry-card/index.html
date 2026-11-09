@@ -176,6 +176,7 @@ body.present .stations{grid-template-columns:repeat(var(--cols,4),minmax(0,1fr))
   --icon:clamp(64px,10vh,104px);
   display:flex;flex-direction:column;gap:6px;min-width:0;min-height:clamp(300px,48vh,560px);
   padding:22px 14px 14px;overflow:hidden;
+  container:st/inline-size;
 }
 /* colour bar: the station's gradient */
 .st::before{content:"";position:absolute;top:0;left:0;right:0;height:10px;background:var(--g)}
@@ -183,11 +184,18 @@ body.present .stations{grid-template-columns:repeat(var(--cols,4),minmax(0,1fr))
   box-shadow:0 6px 14px -6px var(--c)}
 .st-head{display:flex;align-items:center;gap:8px;min-height:var(--icon)}
 .st .ttl{background:var(--gt);-webkit-background-clip:text;background-clip:text;color:transparent;caret-color:var(--c);
-  font-size:clamp(24px,3.8vh,44px);
-  flex:1;min-width:0;display:block;text-align:center;
-  padding:0 4px 0 84px;word-break:break-word}
+  font-size:clamp(20px,min(3.8vh,13cqi),44px);
+  flex:1 1 6em;min-width:0;display:block;text-align:center;
+  padding:0 4px 0 84px;word-break:normal;overflow-wrap:break-word}
+/* narrow station (many stations / projector): title gets its own full-width row under the icons */
+@container st (max-width:340px){
+  .st-head{flex-wrap:wrap;justify-content:center;row-gap:4px}
+  .st .ttl{flex-basis:100%;padding:0 4px}
+  body.present .st-head:has(.intel.none) .ttl{margin-top:40px}
+}
 .st .hint{text-align:center}
 body.present .st .hint{display:none}
+body.present .st [contenteditable]:empty:before{content:none}
 .st .lines{flex:1;font-size:clamp(20px,3.2vh,36px)}
 /* intelligence icons (1–3): top-right, before the title */
 .intel{
@@ -217,7 +225,7 @@ body.present .bring:has(.bf:empty){display:none}
   width:clamp(22px,3vh,28px);height:clamp(22px,3vh,28px);border-radius:50%;background:var(--g);color:#fff;
   display:flex;align-items:center;justify-content:center;font:700 clamp(16px,2.3vh,22px)/1 'Tamlil',sans-serif;
 }
-body.present .intel.none{visibility:hidden}
+body.present .intel.none{display:none}
 .del{position:absolute;top:56px;left:14px;z-index:5;width:28px;height:28px;border-radius:50%;border:0;cursor:pointer;
   background:#F1EEF8;color:var(--muted);font:700 18px/1 'Tamlil',sans-serif;opacity:0;transition:.15s}
 .st:hover .del,.del:focus{opacity:1}
@@ -605,6 +613,7 @@ function setMinutes(m){
   ring.style.transition = 'none'; draw(); ring.getBoundingClientRect(); ring.style.transition = '';
 }
 function start(){
+  unlockAudio();
   if (left <= 0) setMinutes(state.minutes);
   endAt = Date.now() + left * 1000; timerEl.classList.remove('end'); timerEl.classList.add('run');
   tick = setInterval(() => {
@@ -622,17 +631,33 @@ function finish(){
   goBtn.textContent = '▶ שוב'; stEl.textContent = 'הזמן נגמר!';
   chime();
 }
+// Browsers block sound that isn't started by a click, so the audio is unlocked
+// on the teacher's click (start) and reused when the time is up.
+let ac = null;
+function unlockAudio(){
+  try {
+    if (!ac) ac = new (window.AudioContext || window.webkitAudioContext)();
+    if (ac.state !== 'running') ac.resume();
+    const b = ac.createBuffer(1, 1, 22050), s = ac.createBufferSource();   // silent blip (iOS/Safari)
+    s.buffer = b; s.connect(ac.destination); s.start(0);
+  } catch(e) {}
+}
 function chime(){
   try {
-    const ac = new (window.AudioContext || window.webkitAudioContext)();
-    [0, .28, .56].forEach((d, i) => {
-      const o = ac.createOscillator(), g = ac.createGain();
-      o.type = 'sine'; o.frequency.value = [784, 988, 1175][i];
-      g.gain.setValueAtTime(0, ac.currentTime + d);
-      g.gain.linearRampToValueAtTime(.3, ac.currentTime + d + .02);
-      g.gain.exponentialRampToValueAtTime(.001, ac.currentTime + d + .9);
-      o.connect(g).connect(ac.destination); o.start(ac.currentTime + d); o.stop(ac.currentTime + d + 1);
-    });
+    if (!ac) ac = new (window.AudioContext || window.webkitAudioContext)();
+    const play = () => {
+      const t0 = ac.currentTime + .05;
+      for (let r = 0; r < 3; r++)                 // three bell rounds, loud enough for a classroom
+        [0, .28, .56].forEach((d, i) => {
+          const at = t0 + r * 1.4 + d, o = ac.createOscillator(), g = ac.createGain();
+          o.type = 'triangle'; o.frequency.value = [784, 988, 1175][i];
+          g.gain.setValueAtTime(0, at);
+          g.gain.linearRampToValueAtTime(.6, at + .02);
+          g.gain.exponentialRampToValueAtTime(.001, at + 1.1);
+          o.connect(g).connect(ac.destination); o.start(at); o.stop(at + 1.2);
+        });
+    };
+    ac.state === 'running' ? play() : ac.resume().then(play);
   } catch(e) {}
 }
 goBtn.onclick = toggle;
