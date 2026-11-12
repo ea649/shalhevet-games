@@ -256,14 +256,15 @@ body.present .edit-only,body.present .foot-note{display:none}
 
   <section class="track" id="track"></section>
 
-  <p class="foot-note">לוחצים על העיגול שמעל התחנה ובוחרים צבע לקבוצה · כותבים כותרת · לוחצים על הריבוע כדי לבחור תמונה לפעילות · הכול נשמר אוטומטית במחשב הזה</p>
+  <p class="foot-note">לוחצים על העיגול שמעל התחנה ובוחרים צבע לקבוצה · כותבים כותרת · לוחצים על הריבוע כדי לבחור תמונה לפעילות (או להעלות תמונה מהמחשב) · הכול נשמר אוטומטית במחשב הזה</p>
 </div>
 
 <div class="pick" id="pickEmoji">
   <div class="panel">
     <h3>בחירת תמונה לפעילות בתחנה</h3>
     <div class="grid" id="emojiGrid"></div>
-    <div class="pfoot"><button class="tb" data-clear="emoji">בלי תמונה</button><button class="tb main" data-close>סגירה</button></div>
+    <input type="file" id="uploadIn" accept="image/*" hidden>
+    <div class="pfoot"><button class="tb main" id="uploadBtn">📷 תמונה מהמחשב</button><button class="tb" data-clear="emoji">בלי תמונה</button><button class="tb main" data-close>סגירה</button></div>
   </div>
 </div>
 <div class="pick" id="pickIntel">
@@ -290,7 +291,7 @@ body.present .edit-only,body.present .foot-note{display:none}
 const EMOJI = [
   ['board', 'לוח מחיק'],
   ['lgames', 'משחקי למידה'],
-  ['games', 'משחקים רגילים'],
+  ['games', 'משחק'],
   ['pc', 'מחשבים'],
   ['teacher', 'מורה'],
   ['notebook', 'מחברת'],
@@ -305,7 +306,7 @@ const EMOJI = [
   ['marker', 'מרקר+ דף'],
   ['cards', 'קלפים'],
 ];
-const emojiHTML = k => EMOJI.some(x => x[0] === k) ? `<img class="big" src="img/web2/${k}.webp" alt="">` : '';
+const emojiHTML = (k, img) => k === 'custom' && img ? `<img class="big" src="${img}" alt="">` : EMOJI.some(x => x[0] === k) ? `<img class="big" src="img/web2/${k}.webp" alt="">` : '';
 const INTEL = [
   ['linguistic','לשונית'],['logical','לוגית מתמטית'],['spatial','מרחבית'],['bodily','גופנית תנועתית'],
   ['musical','מוזיקלית'],['interpersonal','בין אישית'],['intrapersonal','תוך אישית'],['naturalist','נטורליסטית']
@@ -344,6 +345,7 @@ function render(){
     const g = groupAt(i), col = state.groups[g] || '';
     const its = (s.intels || []).map(k => INTEL.find(x => x[0] === k)).filter(Boolean);
     const lbl = (EMOJI.find(x => x[0] === s.emoji) || [])[1] || '';
+    const pic = emojiHTML(s.emoji, s.img);
     const el = document.createElement('div');
     el.className = 'st';
     el.innerHTML = `
@@ -352,8 +354,8 @@ function render(){
         <span class="num">${i + 1}</span>
         ${n > MIN_ST ? `<button class="del" data-del="${i}" title="מחיקת תחנה ${i + 1}" aria-label="מחיקת תחנה">×</button>` : ''}
         <span class="ttl" contenteditable="${!present()}" data-s="${i}" data-ph="כותרת התחנה"></span>
-        <button class="act ${s.emoji ? '' : 'none'}" data-emo="${i}" title="${lbl || 'בחירת תמונה'}">
-          ${s.emoji ? emojiHTML(s.emoji) + `<span class="lbl">${lbl}</span>` : '<span class="plus">+</span>בחירת תמונה'}
+        <button class="act ${pic ? '' : 'none'}" data-emo="${i}" title="${lbl || 'בחירת תמונה'}">
+          ${pic ? pic + (lbl ? `<span class="lbl">${lbl}</span>` : '') : '<span class="plus">+</span>בחירת תמונה'}
         </button>
         <button class="intel ${its.length ? '' : 'none'}" data-int="${i}" data-n="${its.length}" title="${its.length ? its.map(x => x[1]).join(' · ') : 'בחירת אינטליגנציה'}">
           ${its.length ? its.map(x => `<img src="../entry-card/img/${x[0]}.png" alt="${x[1]}">`).join('') : '+ סמל אינטליגנציה'}
@@ -438,8 +440,30 @@ document.querySelectorAll('.pick').forEach(p => p.addEventListener('click', e =>
 document.addEventListener('keydown', e => { if (e.key === 'Escape') closeAll(); });
 emojiGrid.addEventListener('click', e => {
   const b = e.target.closest('button'); if (!b) return;
-  state.stations[pickFor].emoji = b.dataset.v; save(); render(); closeAll();
+  const s = state.stations[pickFor]; s.emoji = b.dataset.v; delete s.img; save(); render(); closeAll();
 });
+// free image from the teacher's computer – shrunk and kept in this browser
+const uploadIn = document.getElementById('uploadIn');
+document.getElementById('uploadBtn').onclick = () => { uploadIn.value = ''; uploadIn.click(); };
+uploadIn.onchange = () => {
+  const f = uploadIn.files[0]; if (!f) return;
+  const i = pickFor, url = URL.createObjectURL(f), im = new Image();
+  im.onload = () => {
+    const M = 600, r = Math.min(1, M / Math.max(im.naturalWidth, im.naturalHeight));
+    const c = document.createElement('canvas');
+    c.width = Math.round(im.naturalWidth * r); c.height = Math.round(im.naturalHeight * r);
+    c.getContext('2d').drawImage(im, 0, 0, c.width, c.height);
+    URL.revokeObjectURL(url);
+    let d = c.toDataURL('image/webp', .82);
+    if (!d.startsWith('data:image/webp')) d = c.toDataURL('image/png');
+    const s = state.stations[i]; s.emoji = 'custom'; s.img = d;
+    try { localStorage.setItem(KEY, JSON.stringify(state)); }
+    catch(e) { delete s.img; s.emoji = ''; return say('אין מספיק מקום לשמור את התמונה – נסו תמונה קטנה יותר'); }
+    render(); closeAll();
+  };
+  im.onerror = () => { URL.revokeObjectURL(url); say('לא הצלחנו לפתוח את הקובץ – בחרו קובץ תמונה'); };
+  im.src = url;
+};
 intelGrid.addEventListener('click', e => {
   const b = e.target.closest('button'); if (!b) return;
   const s = state.stations[pickFor], list = s.intels || [], k = b.dataset.v;
@@ -456,7 +480,7 @@ colorGrid.addEventListener('click', e => {
 });
 document.querySelectorAll('[data-clear]').forEach(b => b.onclick = () => {
   const s = state.stations[pickFor];
-  if (b.dataset.clear === 'emoji') s.emoji = ''; else s.intels = [];
+  if (b.dataset.clear === 'emoji') { s.emoji = ''; delete s.img; } else s.intels = [];
   save(); render(); closeAll();
 });
 
@@ -566,8 +590,11 @@ document.getElementById('clearBtn').onclick = () => {
   state = blank(); save(); render(); setMinutes(state.minutes); setNoise(state.noise);
 };
 document.getElementById('shareBtn').onclick = async () => {
-  const url = location.href.split('#')[0] + '#' + encode(state);
-  try { await navigator.clipboard.writeText(url); say('הקישור הועתק – מי שיפתח אותו יקבל את המפה הזו'); }
+  // pictures from the computer are too big for a link – they are left out of it
+  const hasOwn = state.stations.some(s => s.img);
+  const light = {...state, stations: state.stations.map(s => s.img ? {...s, emoji:'', img:undefined} : s)};
+  const url = location.href.split('#')[0] + '#' + encode(light);
+  try { await navigator.clipboard.writeText(url); say(hasOwn ? 'הקישור הועתק (בלי התמונות שהועלו מהמחשב)' : 'הקישור הועתק – מי שיפתח אותו יקבל את המפה הזו'); }
   catch(e) { prompt('העתיקו את הקישור:', url); }
 };
 </script>
