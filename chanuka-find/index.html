@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>חפשו ומצאו – חנוכה</title>
+<style>
+  @font-face{font-family:"Tamlil";src:url("../fonts/FbTamlil-Bold.otf") format("opentype");font-weight:700}
+  @font-face{font-family:"TamlilR";src:url("../fonts/FbTamlil-Regular.otf") format("opentype")}
+  :root{--indigo:#4F3795;--magenta:#AA479A;--pink:#EE3461;--cyan:#08B7D5;--yellow:#FCB918;--green:#2DBE6C;--ink:#1B1533}
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+  html,body{height:100%}
+  body{height:100dvh;overflow:hidden;display:flex;flex-direction:column;align-items:center;
+    background:radial-gradient(1200px 600px at 80% -10%,#DCEFFC 0%,transparent 60%),linear-gradient(165deg,#F6F4FF 0%,#FFFFFF 55%,#FFF3F7 100%);
+    font-family:"TamlilR",sans-serif;color:var(--ink);padding:8px 14px;gap:6px;position:relative}
+  button{font-family:"Tamlil",sans-serif}
+  .logo-m{position:absolute;top:8px;left:14px;height:clamp(34px,7vh,70px);z-index:2}
+  .logo-s{position:absolute;top:8px;right:14px;height:clamp(28px,6vh,56px);z-index:2}
+  h1{font-family:"Tamlil",sans-serif;font-size:clamp(20px,3.6vh,36px);text-align:center;
+    background:linear-gradient(135deg,#4F3795 0%,#AA479A 55%,#EE3461 100%);-webkit-background-clip:text;background-clip:text;color:transparent}
+  .task{font-family:"Tamlil",sans-serif;font-size:clamp(15px,2.5vh,24px);text-align:center;color:var(--indigo);min-height:1.4em}
+  .bar{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;align-items:center}
+  .btn{border:0;border-radius:999px;padding:7px 18px;font-size:clamp(14px,2.1vh,19px);cursor:pointer;color:#fff;background:var(--indigo);box-shadow:0 3px 0 rgba(0,0,0,.18)}
+  .btn.alt{background:#fff;color:var(--indigo);border:2px solid var(--indigo)}
+  .btn.pink{background:var(--pink)}
+  .btn.on{background:var(--magenta);color:#fff}
+  .count{font-family:"Tamlil",sans-serif;font-size:clamp(15px,2.3vh,22px);background:var(--yellow);color:var(--ink);border-radius:999px;padding:5px 16px}
+  .stage{position:relative;flex:1;min-height:0;width:100%;display:flex;align-items:center;justify-content:center}
+  .pic{position:relative;border-radius:18px;overflow:hidden;
+    box-shadow:0 10px 30px rgba(79,55,149,.25);border:4px solid #fff;cursor:crosshair;touch-action:manipulation}
+  .pic img{width:100%;height:100%;display:block;user-select:none;-webkit-user-drag:none}
+  .pic svg{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+  .ring{fill:none;stroke-width:9;stroke-linecap:round;animation:pop .45s ease-out}
+  .ring.ok{stroke:var(--green)}
+  .ring.seal{stroke:var(--yellow);stroke-width:12}
+  .ring.sol{stroke:var(--pink);stroke-dasharray:22 12}
+  .tag rect{fill:#fff;stroke:var(--indigo);stroke-width:3}
+  .tag text{font-family:"Tamlil",sans-serif;font-size:30px;fill:var(--indigo);text-anchor:middle;dominant-baseline:central}
+  .miss{fill:none;stroke:#E53935;stroke-width:8;stroke-linecap:round;animation:fade 0.9s forwards}
+  @keyframes pop{0%{transform-box:fill-box;transform-origin:center;transform:scale(.2);opacity:0}100%{transform:scale(1);opacity:1}}
+  @keyframes fade{0%{opacity:1}70%{opacity:1}100%{opacity:0}}
+  .lens{position:absolute;width:220px;height:220px;border-radius:50%;border:5px solid #fff;box-shadow:0 6px 20px rgba(0,0,0,.35);
+    pointer-events:none;display:none;background-repeat:no-repeat;z-index:3}
+  /* מסך פתיחה */
+  .home{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;width:100%}
+  .home p{font-size:clamp(16px,2.6vh,24px);text-align:center;max-width:760px;line-height:1.5}
+  .cards{display:flex;gap:22px;flex-wrap:wrap;justify-content:center}
+  .gcard{width:min(42vw,420px);background:#fff;border-radius:22px;overflow:hidden;cursor:pointer;border:0;text-align:right;
+    box-shadow:0 8px 26px rgba(79,55,149,.18);transition:transform .15s}
+  .gcard:hover{transform:translateY(-4px)}
+  .gcard img{width:100%;aspect-ratio:3/2;object-fit:cover;display:block}
+  .gcard div{padding:12px 16px;font-family:"Tamlil",sans-serif;font-size:clamp(17px,2.6vh,24px);color:var(--indigo)}
+  .gcard small{display:block;font-family:"TamlilR",sans-serif;font-size:clamp(13px,1.9vh,17px);color:#555;margin-top:4px}
+  .win{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(27,21,51,.45);z-index:10}
+  .win .box{background:#fff;border-radius:26px;padding:28px 36px;text-align:center;max-width:560px;box-shadow:0 20px 50px rgba(0,0,0,.3)}
+  .win h2{font-family:"Tamlil",sans-serif;font-size:clamp(26px,4.5vh,42px);color:var(--pink);margin-bottom:8px}
+  .win p{font-size:clamp(16px,2.5vh,22px);line-height:1.5;margin-bottom:16px}
+  .hidden{display:none!important}
+</style>
+</head>
+<body>
+<img class="logo-m" src="../canva/kislev/img/logo-otzarot-hamoreshet.png" alt="">
+<img class="logo-s" src="../canva/kislev/img/shalhevet-logo.png" alt="">
+
+<!-- מסך פתיחה -->
+<section id="home" class="home">
+  <h1>חַפְּשׂוּ וּמִצְאוּ – חֲנֻכָּה</h1>
+  <p>שְׁנֵי מִשְׂחֲקֵי "עַיִן חַדָּה". הִסְתַּכְּלוּ הֵיטֵב, וְלַחֲצוּ עַל מָה שֶׁמָּצָאתֶם!</p>
+  <div class="cards">
+    <button class="gcard" onclick="start(0)"><img src="img/heichal.png" alt=""><div>1. פַּךְ הַשֶּׁמֶן<small>מִצְאוּ אֶת הַכַּדִּים הַשְּׁלֵמִים בַּהֵיכָל הֶהָרוּס – וְאַחַר כָּךְ אֶת הַכַּד עִם הַחוֹתָם</small></div></button>
+    <button class="gcard" onclick="start(1)"><img src="img/shuk.png" alt=""><div>2. יְהוּדִים בַּשּׁוּק הַיְּוָנִי<small>מִצְאוּ אֶת הַיְּהוּדִים לְפִי הַסִּימָנִים שֶׁלָּהֶם</small></div></button>
+  </div>
+</section>
+
+<!-- מסך משחק -->
+<section id="game" class="hidden" style="display:flex;flex-direction:column;align-items:center;gap:6px;flex:1;min-height:0;width:100%">
+  <h1 id="gTitle"></h1>
+  <div class="task" id="gTask"></div>
+  <div class="bar">
+    <span class="count" id="gCount"></span>
+    <button class="btn alt" id="lensBtn" onclick="toggleLens()">🔍 זְכוּכִית מַגְדֶּלֶת</button>
+    <button class="btn pink" onclick="showSolution()">שְׁקוּפִית פִּתְרוֹן</button>
+    <button class="btn alt" onclick="start(cur)">מֵהַתְחָלָה</button>
+    <button class="btn" onclick="goHome()">לַמִּשְׂחָקִים</button>
+  </div>
+  <div class="stage">
+    <div class="pic" id="pic">
+      <img id="gImg" alt="" draggable="false">
+      <svg id="ov" viewBox="0 0 1536 1024"></svg>
+      <div class="lens" id="lens"></div>
+    </div>
+  </div>
+</section>
+
+<div class="win" id="win"><div class="box"><h2 id="wT"></h2><p id="wP"></p>
+  <button class="btn" id="wBtn"></button></div></div>
+
+<script>
+// קואורדינטות בפיקסלים של התמונה המקורית (1536x1024)
+const GAMES=[
+ {title:'פַּךְ הַשֶּׁמֶן', img:'img/heichal.png',
+  task1:'הַיְּוָנִים נִכְנְסוּ לַהֵיכָל וְשָׁבְרוּ אֶת הַכַּדִּים. מִצְאוּ אֶת כָּל הַכַּדִּים הַשְּׁלֵמִים!',
+  task2:'מְצָאתֶם! אֲבָל רַק שֶׁמֶן אֶחָד טָהוֹר… לַחֲצוּ עַל הַכַּד שֶׁיֵּשׁ עָלָיו חוֹתָם שֶׁל הַכֹּהֵן הַגָּדוֹל',
+  noun:'כַּדִּים שְׁלֵמִים',
+  items:[{x:212,y:208,r:46},{x:224,y:512,r:48},{x:352,y:688,r:50},{x:668,y:690,r:50},{x:1198,y:200,r:46},{x:1056,y:510,r:48},{x:1453,y:912,r:56,seal:true}],
+  sealHint:'זֶה הַכַּד עִם הַחוֹתָם!'},
+ {title:'יְהוּדִים בַּשּׁוּק הַיְּוָנִי', img:'img/shuk.png',
+  task1:'בַּשּׁוּק הַיְּוָנִי מִסְתַּתְּרִים יְהוּדִים. מִצְאוּ אוֹתָם לְפִי הַסִּימָנִים: כִּפָּה, צִיצִית, סֵפֶר תּוֹרָה – וּמִי שֶׁלֹּא מִשְׁתַּחֲוֶה לַפֶּסֶל!',
+  noun:'יְהוּדִים',
+  items:[
+   {x:425,y:255,r:95,label:'כִּפָּה וְצִיצִית'},
+   {x:145,y:520,r:110,label:'כִּפָּה וְצִיצִית'},
+   {x:1172,y:270,r:100,label:'סֵפֶר תּוֹרָה וְטַלִּית'},
+   {x:800,y:360,r:95,label:'לֹא מִשְׁתַּחֲוֶה לַפֶּסֶל!'},
+   {x:1305,y:720,r:115,label:'כִּפָּה וְצִיצִית'}]}
+];
+let cur=0,found,phase,done,lensOn=false;
+const $=id=>document.getElementById(id), NS='http://www.w3.org/2000/svg';
+function el(t,a,p){const e=document.createElementNS(NS,t);for(const k in a)e.setAttribute(k,a[k]);(p||$('ov')).appendChild(e);return e}
+
+function start(i){
+  cur=i;const g=GAMES[i];found=new Set();phase=1;done=false;
+  $('home').classList.add('hidden');$('game').classList.remove('hidden');$('win').style.display='none';
+  $('gTitle').textContent=g.title;$('gTask').textContent=g.task1;$('gImg').src=g.img;$('ov').innerHTML='';
+  $('lens').style.backgroundImage=`url(${g.img})`;updCount();requestAnimationFrame(fit);
+}
+function goHome(){$('game').classList.add('hidden');$('home').classList.remove('hidden');$('win').style.display='none'}
+function updCount(){const g=GAMES[cur];$('gCount').textContent=`נִמְצְאוּ ${found.size} מִתּוֹךְ ${g.items.length} ${g.noun}`}
+
+function toImg(ev){const r=$('pic').getBoundingClientRect();return{x:(ev.clientX-r.left)/r.width*1536,y:(ev.clientY-r.top)/r.height*1024,r}}
+
+$('pic').addEventListener('click',ev=>{
+  if(done)return;const g=GAMES[cur],p=toImg(ev);
+  const hit=g.items.findIndex(it=>Math.hypot(it.x-p.x,it.y-p.y)<=it.r);
+  if(phase===1){
+    if(hit<0||found.has(hit)){if(hit<0)miss(p);return}
+    found.add(hit);const it=g.items[hit];
+    el('circle',{cx:it.x,cy:it.y,r:it.r+6,class:'ring ok'});
+    if(it.label)tag(it,it.label);
+    updCount();
+    if(found.size===g.items.length){
+      if(cur===0){phase=2;setTimeout(()=>{$('gTask').textContent=g.task2;$('gCount').textContent='אֵיזֶה כַּד כָּשֵׁר?'},700)}
+      else finish();
+    }
+  }else if(phase===2){
+    if(hit>=0&&g.items[hit].seal){const it=g.items[hit];el('circle',{cx:it.x,cy:it.y,r:it.r+18,class:'ring seal'});tag(it,g.sealHint);finish()}
+    else miss(p);
+  }
+});
+function miss(p){const s=22,gEl=el('g',{});el('path',{d:`M${p.x-s} ${p.y-s}L${p.x+s} ${p.y+s}M${p.x+s} ${p.y-s}L${p.x-s} ${p.y+s}`,class:'miss'},gEl);setTimeout(()=>gEl.remove(),950)}
+function tag(it,txt){const w=txt.length*15+40,y=it.y-it.r-40<30?it.y+it.r+40:it.y-it.r-40;
+  const x=Math.min(1536-w/2-8,Math.max(w/2+8,it.x));const g=el('g',{class:'tag'});
+  el('rect',{x:x-w/2,y:y-26,width:w,height:52,rx:26},g);const t=el('text',{x,y},g);t.textContent=txt}
+function finish(){done=true;setTimeout(()=>{
+  const g=GAMES[cur];$('wT').textContent='כׇּל הַכָּבוֹד! 🎉';
+  $('wP').textContent=cur===0?'מְצָאתֶם אֶת פַּךְ הַשֶּׁמֶן הַטָּהוֹר עִם חוֹתַם הַכֹּהֵן הַגָּדוֹל – וְנַעֲשָׂה בּוֹ נֵס, וְדָלַק שְׁמוֹנָה יָמִים!':'מְצָאתֶם אֶת כׇּל הַיְּהוּדִים! גַּם בְּתוֹךְ שׁוּק יְוָנִי הֵם שָׁמְרוּ עַל הַמִּצְווֹת וְלֹא הִשְׁתַּחֲווּ לַפֶּסֶל.';
+  $('wBtn').textContent=cur===0?'לַמִּשְׂחָק הַבָּא ←':'לַמִּשְׂחָקִים';$('wBtn').onclick=cur===0?()=>start(1):goHome;
+  $('win').style.display='flex'},1100)}
+function showSolution(){
+  const g=GAMES[cur];$('ov').innerHTML='';done=true;
+  g.items.forEach(it=>{el('circle',{cx:it.x,cy:it.y,r:it.r+(it.seal?18:6),class:'ring '+(it.seal?'seal':'sol')});
+    if(it.label)tag(it,it.label);if(it.seal)tag(it,'הַכַּד הַכָּשֵׁר – עִם חוֹתָם');});
+  $('gTask').textContent='פִּתְרוֹן: '+(cur===0?'7 כַּדִּים שְׁלֵמִים – וְרַק לְאֶחָד מֵהֶם יֵשׁ חוֹתָם (בַּצָּהֹב)':'5 יְהוּדִים מִסְתַּתְּרִים בַּשּׁוּק');
+  $('gCount').textContent='שְׁקוּפִית פִּתְרוֹן';
+}
+function fit(){const st=document.querySelector(".stage"),w=st.clientWidth,h=st.clientHeight;if(!w||!h)return;let W=Math.min(w,h*1.5);$("pic").style.width=W+"px";$("pic").style.height=W/1.5+"px"}
+addEventListener("resize",fit);
+// זכוכית מגדלת
+function toggleLens(){lensOn=!lensOn;$('lensBtn').classList.toggle('on',lensOn);if(!lensOn)$('lens').style.display='none'}
+$('pic').addEventListener('pointermove',ev=>{
+  if(!lensOn)return;const L=$('lens'),p=toImg(ev),r=p.r,Z=2.6,sz=220;
+  const lx=ev.clientX-r.left,ly=ev.clientY-r.top;L.style.display='block';
+  L.style.left=(lx-sz/2)+'px';L.style.top=(ly-sz/2)+'px';
+  L.style.backgroundSize=`${r.width*Z}px ${r.height*Z}px`;
+  L.style.backgroundPosition=`${-(lx*Z-sz/2)}px ${-(ly*Z-sz/2)}px`;
+});
+$('pic').addEventListener('pointerleave',()=>$('lens').style.display='none');
+</script>
+</body>
+</html>
