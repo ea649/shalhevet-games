@@ -120,9 +120,9 @@ function el(t,a,p){const e=document.createElementNS(NS,t);for(const k in a)e.set
 
 function start(i){
   cur=i;const g=GAMES[i];found=new Set();phase=1;done=false;
-  $('home').classList.add('hidden');$('game').classList.remove('hidden');$('win').style.display='none';
+  clearTimeout(winT);$('home').classList.add('hidden');$('game').classList.remove('hidden');$('win').style.display='none';
   $('gTitle').textContent=g.title;$('gTask').textContent=g.task1;$('gImg').src=g.img;$('ov').innerHTML='';
-  $('lens').style.backgroundImage=`url(${g.img})`;updCount();requestAnimationFrame(fit);
+  $('lens').style.backgroundImage=`url(${g.img})`;updCount();setTimeout(fit,0);
 }
 function goHome(){$('game').classList.add('hidden');$('home').classList.remove('hidden');$('win').style.display='none'}
 function updCount(){const g=GAMES[cur];$('gCount').textContent=`נִמְצְאוּ ${found.size} מִתּוֹךְ ${g.items.length} ${g.noun}`}
@@ -151,20 +151,20 @@ function miss(p){const s=22,gEl=el('g',{});el('path',{d:`M${p.x-s} ${p.y-s}L${p.
 function tag(it,txt){const w=txt.length*15+40,y=it.y-it.r-40<30?it.y+it.r+40:it.y-it.r-40;
   const x=Math.min(1536-w/2-8,Math.max(w/2+8,it.x));const g=el('g',{class:'tag'});
   el('rect',{x:x-w/2,y:y-26,width:w,height:52,rx:26},g);const t=el('text',{x,y},g);t.textContent=txt}
-function finish(){done=true;setTimeout(()=>{
+let winT;function finish(){done=true;winT=setTimeout(()=>{
   const g=GAMES[cur];$('wT').textContent='כׇּל הַכָּבוֹד! 🎉';
   $('wP').textContent=cur===0?'מְצָאתֶם אֶת פַּךְ הַשֶּׁמֶן הַטָּהוֹר עִם חוֹתַם הַכֹּהֵן הַגָּדוֹל – וְנַעֲשָׂה בּוֹ נֵס, וְדָלַק שְׁמוֹנָה יָמִים!':'מְצָאתֶם אֶת כׇּל הַיְּהוּדִים! גַּם בְּתוֹךְ שׁוּק יְוָנִי הֵם שָׁמְרוּ עַל הַמִּצְווֹת וְלֹא הִשְׁתַּחֲווּ לַפֶּסֶל.';
   $('wBtn').textContent=cur===0?'לַמִּשְׂחָק הַבָּא ←':'לַמִּשְׂחָקִים';$('wBtn').onclick=cur===0?()=>start(1):goHome;
   $('win').style.display='flex'},1100)}
 function showSolution(){
-  const g=GAMES[cur];$('ov').innerHTML='';done=true;
+  const g=GAMES[cur];clearTimeout(winT);$('win').style.display='none';$('ov').innerHTML='';done=true;
   g.items.forEach(it=>{el('circle',{cx:it.x,cy:it.y,r:it.r+(it.seal?18:6),class:'ring '+(it.seal?'seal':'sol')});
     if(it.label)tag(it,it.label);if(it.seal)tag(it,'הַכַּד הַכָּשֵׁר – עִם חוֹתָם');});
   $('gTask').textContent='פִּתְרוֹן: '+(cur===0?'7 כַּדִּים שְׁלֵמִים – וְרַק לְאֶחָד מֵהֶם יֵשׁ חוֹתָם (בַּצָּהֹב)':'5 יְהוּדִים מִסְתַּתְּרִים בַּשּׁוּק');
   $('gCount').textContent='שְׁקוּפִית פִּתְרוֹן';
 }
 function fit(){const st=document.querySelector(".stage"),w=st.clientWidth,h=st.clientHeight;if(!w||!h)return;let W=Math.min(w,h*1.5);$("pic").style.width=W+"px";$("pic").style.height=W/1.5+"px"}
-addEventListener("resize",fit);
+addEventListener("resize",fit);new ResizeObserver(fit).observe(document.querySelector(".stage"));
 // זכוכית מגדלת
 function toggleLens(){lensOn=!lensOn;$('lensBtn').classList.toggle('on',lensOn);if(!lensOn)$('lens').style.display='none'}
 $('pic').addEventListener('pointermove',ev=>{
