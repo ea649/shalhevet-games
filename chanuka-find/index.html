@@ -102,21 +102,21 @@ const GAMES=[
   decoys:[{x:346,y:155},{x:1343,y:160},{x:1500,y:240},{x:796,y:458},{x:1318,y:640},{x:110,y:783},{x:767,y:910},{x:1290,y:705}],
   decoyMsg:'כַּד סָגוּר – אֲבָל אֵין עָלָיו חוֹתָם',
   winText:'מְצָאתֶם אֶת פַּךְ הַשֶּׁמֶן הַטָּהוֹר עִם חוֹתַם הַכֹּהֵן הַגָּדוֹל – וְנַעֲשָׂה בּוֹ נֵס, וְדָלַק שְׁמוֹנָה יָמִים!'},
- {title:'יְהוּדִים בַּשּׁוּק הַיְּוָנִי', img:'img/shuk_v18.jpg',
+ {title:'יְהוּדִים בַּשּׁוּק הַיְּוָנִי', img:'img/shuk_v19.jpg',
   task:'מִצְאוּ בַּשּׁוּק הַיְּוָנִי אֶת הַיְּהוּדִים שֶׁשָּׁמְרוּ עַל סִימְנֵי הַיַּהֲדוּת',
   noun:'יְהוּדִים',
   items:[
-   {x:340,y:210,r:50,label:'כִּפָּה וְצִיצִית'},
-   {x:55,y:430,r:42,ty:515,label:'כִּפָּה'},
-   {x:125,y:375,r:40,label:'כִּפָּה'},
-   {x:232,y:440,r:48,label:'סֵפֶר תּוֹרָה'},
-   {x:1281,y:150,r:50,label:'טַלִּית'},
-   {x:1369,y:490,r:48,label:'כִּפָּה'},
-   {x:1434,y:530,r:48,ty:615,label:'צְדָקָה'},
-   {x:697,y:770,r:55,label:'מָגֵן דָּוִד'},
-   {x:992,y:840,r:48,label:'כִּפָּה'}],
+   {x:251,y:214,w:46,h:118,label:'כִּפָּה'},
+   {x:835,y:201,w:48,h:112,label:'כִּפָּה'},
+   {x:1276,y:176,w:54,h:104,label:'טַלִּית'},
+   {x:147,y:490,w:60,h:72,label:'סֵפֶר תּוֹרָה'},
+   {x:652,y:505,w:54,h:132,label:'כִּפָּה'},
+   {x:1215,y:500,w:52,h:130,label:'צְדָקָה'},
+   {x:662,y:892,w:64,h:150,label:'מָגֵן דָּוִד'},
+   {x:1444,y:866,w:64,h:80,label:'כִּפָּה'}],
   winText:'מְצָאתֶם אֶת כׇּל הַיְּהוּדִים! גַּם בְּתוֹךְ שׁוּק יְוָנִי הֵם שָׁמְרוּ עַל הַמִּצְווֹת.'}
 ];
+GAMES.forEach(g=>g.items.forEach(it=>{if(it.r){it.w=it.h=it.r*2}}));
 let cur=0,found,done,lensOn=false,winT;
 const $=id=>document.getElementById(id), NS='http://www.w3.org/2000/svg';
 function el(t,a,p){const e=document.createElementNS(NS,t);for(const k in a)e.setAttribute(k,a[k]);(p||$('ov')).appendChild(e);return e}
@@ -139,18 +139,18 @@ function toImg(ev){const r=$('pic').getBoundingClientRect();return{x:(ev.clientX
 
 $('pic').addEventListener('click',ev=>{
   if(done)return;const g=GAMES[cur],p=toImg(ev);
-  let hit=-1,bd=1e9;g.items.forEach((it,i)=>{const d=Math.hypot(it.x-p.x,it.y-p.y);if(d<=it.r&&d<bd){bd=d;hit=i}});
+  const PAD=10;let hit=-1,bd=1e9;g.items.forEach((it,i)=>{const dx=Math.abs(it.x-p.x),dy=Math.abs(it.y-p.y);if(dx<=it.w/2+PAD&&dy<=it.h/2+PAD){const d=Math.hypot(dx/it.w,dy/it.h);if(d<bd){bd=d;hit=i}}});
   if(hit<0){
     if(g.decoys&&g.decoys.some(d=>Math.hypot(d.x-p.x,d.y-p.y)<=30)){toast(g.decoyMsg,true);return}
     miss(p);return}
   if(found.has(hit))return;
   found.add(hit);const it=g.items[hit];
-  el('circle',{cx:it.x,cy:it.y,r:it.r+6,class:'ring '+(g.items.length===1?'gold':'ok')});tag(it,it.label);
+  el('ellipse',{cx:it.x,cy:it.y,rx:it.w/2+10,ry:it.h/2+10,class:'ring '+(g.items.length===1?'gold':'ok')});tag(it,it.label);
   updCount();
   if(found.size===g.items.length)finish();else{toast('כׇּל הַכָּבוֹד! 🎉');confetti(ev.clientX,ev.clientY,70)}
 });
 function miss(p){const s=20,gEl=el('g',{});el('path',{d:`M${p.x-s} ${p.y-s}L${p.x+s} ${p.y+s}M${p.x+s} ${p.y-s}L${p.x-s} ${p.y+s}`,class:'miss'},gEl);setTimeout(()=>gEl.remove(),950)}
-function tag(it,txt){const w=txt.length*14+40,y=it.ty||(it.y-it.r-36<30?it.y+it.r+36:it.y-it.r-36);
+function tag(it,txt){const w=txt.length*14+40,y=it.ty||(it.y-it.h/2-40<30?it.y+it.h/2+40:it.y-it.h/2-40);
   const x=Math.min(1536-w/2-8,Math.max(w/2+8,it.x));const g=el('g',{class:'tag'});
   el('rect',{x:x-w/2,y:y-24,width:w,height:48,rx:24},g);el('text',{x,y},g).textContent=txt}
 function toast(txt,small){const t=$('toast');t.textContent=txt;t.classList.toggle('small',!!small);t.classList.add('show');
@@ -159,7 +159,7 @@ function finish(){done=true;toast('כׇּל הַכָּבוֹד! 🎉');confetti(
   winT=setTimeout(()=>{$('wP').textContent=GAMES[cur].winText;$('win').style.display='flex'},1800)}
 function showSolution(){
   const g=GAMES[cur];clearTimeout(winT);$('win').style.display='none';$('ov').innerHTML='';done=true;
-  g.items.forEach(it=>{el('circle',{cx:it.x,cy:it.y,r:it.r+8,class:'ring '+(g.items.length===1?'gold':'sol')});tag(it,it.label)});
+  g.items.forEach(it=>{el('ellipse',{cx:it.x,cy:it.y,rx:it.w/2+12,ry:it.h/2+12,class:'ring '+(g.items.length===1?'gold':'sol')});tag(it,it.label)});
   $('gCount').style.display='';$('gCount').textContent='פִּתְרוֹן';
 }
 // מסך מלא
