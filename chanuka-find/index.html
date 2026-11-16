@@ -47,8 +47,10 @@
   /* מסך מלא: התמונה ממלאת את המסך והכפתורים צפים מעליה */
   body.full{padding:0;gap:0;background:#1B1533}
   body.full .logo-s,body.full h1{display:none}
-  body.full .top{position:fixed;top:8px;left:50%;transform:translateX(-50%);z-index:6;background:rgba(255,255,255,.93);
-    border-radius:22px;padding:6px 12px;box-shadow:0 6px 20px rgba(0,0,0,.3);max-width:96vw}
+  body.full .top{position:static;flex-direction:row;flex-wrap:wrap;justify-content:center;align-items:center;gap:6px 12px;width:100%;background:#fff;padding:4px 10px;box-shadow:0 2px 10px rgba(0,0,0,.25);z-index:6}
+  body.full .task{font-size:clamp(14px,2vh,20px)}
+  body.full .count{font-size:clamp(16px,2.6vh,26px);padding:2px 16px}
+  body.full .btn{padding:4px 12px;font-size:clamp(13px,1.8vh,16px)}
   body.full .pic{border:0;border-radius:0}
   /* הודעות */
   .toast{position:fixed;left:50%;top:40%;transform:translate(-50%,-50%) scale(.6);opacity:0;z-index:20;pointer-events:none;white-space:nowrap;
@@ -100,13 +102,14 @@ const GAMES=[
   decoys:[{x:346,y:155},{x:1343,y:160},{x:1500,y:240},{x:796,y:458},{x:1318,y:640},{x:110,y:783},{x:767,y:910},{x:1290,y:705}],
   decoyMsg:'כַּד סָגוּר – אֲבָל אֵין עָלָיו חוֹתָם',
   winText:'מְצָאתֶם אֶת פַּךְ הַשֶּׁמֶן הַטָּהוֹר עִם חוֹתַם הַכֹּהֵן הַגָּדוֹל – וְנַעֲשָׂה בּוֹ נֵס, וְדָלַק שְׁמוֹנָה יָמִים!'},
- {title:'יְהוּדִים בַּשּׁוּק הַיְּוָנִי', img:'img/shuk_v17.jpg',
+ {title:'יְהוּדִים בַּשּׁוּק הַיְּוָנִי', img:'img/shuk_v18.jpg',
   task:'מִצְאוּ בַּשּׁוּק הַיְּוָנִי אֶת הַיְּהוּדִים שֶׁשָּׁמְרוּ עַל סִימְנֵי הַיַּהֲדוּת',
   noun:'יְהוּדִים',
   items:[
    {x:340,y:210,r:50,label:'כִּפָּה וְצִיצִית'},
-   {x:50,y:430,r:45,ty:515,label:'כִּפָּה'},
-   {x:232,y:430,r:50,label:'סֵפֶר תּוֹרָה'},
+   {x:55,y:430,r:42,ty:515,label:'כִּפָּה'},
+   {x:125,y:375,r:40,label:'כִּפָּה'},
+   {x:232,y:440,r:48,label:'סֵפֶר תּוֹרָה'},
    {x:1281,y:150,r:50,label:'טַלִּית'},
    {x:1369,y:490,r:48,label:'כִּפָּה'},
    {x:1434,y:530,r:48,ty:615,label:'צְדָקָה'},
