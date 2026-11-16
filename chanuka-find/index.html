@@ -100,16 +100,19 @@ const GAMES=[
   decoys:[{x:346,y:155},{x:1343,y:160},{x:1500,y:240},{x:796,y:458},{x:1318,y:640},{x:110,y:783},{x:767,y:910},{x:1290,y:705}],
   decoyMsg:'כַּד סָגוּר – אֲבָל אֵין עָלָיו חוֹתָם',
   winText:'מְצָאתֶם אֶת פַּךְ הַשֶּׁמֶן הַטָּהוֹר עִם חוֹתַם הַכֹּהֵן הַגָּדוֹל – וְנַעֲשָׂה בּוֹ נֵס, וְדָלַק שְׁמוֹנָה יָמִים!'},
- {title:'יְהוּדִים בַּשּׁוּק הַיְּוָנִי', img:'img/shuk_v14.png',
+ {title:'יְהוּדִים בַּשּׁוּק הַיְּוָנִי', img:'img/shuk_v16.png',
   task:'מִצְאוּ בַּשּׁוּק הַיְּוָנִי אֶת הַיְּהוּדִים שֶׁשָּׁמְרוּ עַל סִימְנֵי הַיַּהֲדוּת',
   noun:'יְהוּדִים',
   items:[
-   {x:395,y:225,r:75,label:'כִּפָּה וְצִיצִית'},
-   {x:305,y:440,r:75,label:'סֵפֶר תּוֹרָה'},
-   {x:1290,y:205,r:75,label:'טַלִּית'},
-   {x:1235,y:420,r:70,label:'צְדָקָה'},
-   {x:590,y:740,r:75,label:'מָגֵן דָּוִד'},
-   {x:1385,y:905,r:70,label:'כִּפָּה'}],
+   {x:340,y:210,r:50,label:'כִּפָּה וְצִיצִית'},
+   {x:50,y:430,r:45,label:'כִּפָּה'},
+   {x:232,y:430,r:50,label:'סֵפֶר תּוֹרָה'},
+   {x:1281,y:150,r:50,label:'טַלִּית'},
+   {x:1369,y:490,r:48,label:'כִּפָּה'},
+   {x:1434,y:530,r:48,label:'צְדָקָה'},
+   {x:697,y:770,r:55,label:'מָגֵן דָּוִד'},
+   {x:992,y:840,r:48,label:'כִּפָּה'},
+   {x:1369,y:915,r:50,label:'מַדְלִיק נֵר'}],
   winText:'מְצָאתֶם אֶת כׇּל הַיְּהוּדִים! גַּם בְּתוֹךְ שׁוּק יְוָנִי הֵם שָׁמְרוּ עַל הַמִּצְווֹת.'}
 ];
 let cur=0,found,done,lensOn=false,winT;
@@ -134,7 +137,7 @@ function toImg(ev){const r=$('pic').getBoundingClientRect();return{x:(ev.clientX
 
 $('pic').addEventListener('click',ev=>{
   if(done)return;const g=GAMES[cur],p=toImg(ev);
-  const hit=g.items.findIndex(it=>Math.hypot(it.x-p.x,it.y-p.y)<=it.r);
+  let hit=-1,bd=1e9;g.items.forEach((it,i)=>{const d=Math.hypot(it.x-p.x,it.y-p.y);if(d<=it.r&&d<bd){bd=d;hit=i}});
   if(hit<0){
     if(g.decoys&&g.decoys.some(d=>Math.hypot(d.x-p.x,d.y-p.y)<=30)){toast(g.decoyMsg,true);return}
     miss(p);return}
