@@ -105,11 +105,11 @@ const GAMES=[
   noun:'יְהוּדִים',
   items:[
    {x:340,y:210,r:50,label:'כִּפָּה וְצִיצִית'},
-   {x:50,y:430,r:45,label:'כִּפָּה'},
+   {x:50,y:430,r:45,ty:515,label:'כִּפָּה'},
    {x:232,y:430,r:50,label:'סֵפֶר תּוֹרָה'},
    {x:1281,y:150,r:50,label:'טַלִּית'},
    {x:1369,y:490,r:48,label:'כִּפָּה'},
-   {x:1434,y:530,r:48,label:'צְדָקָה'},
+   {x:1434,y:530,r:48,ty:615,label:'צְדָקָה'},
    {x:697,y:770,r:55,label:'מָגֵן דָּוִד'},
    {x:992,y:840,r:48,label:'כִּפָּה'},
    {x:1369,y:915,r:50,label:'מַדְלִיק נֵר'}],
@@ -148,7 +148,7 @@ $('pic').addEventListener('click',ev=>{
   if(found.size===g.items.length)finish();else{toast('כׇּל הַכָּבוֹד! 🎉');confetti(ev.clientX,ev.clientY,70)}
 });
 function miss(p){const s=20,gEl=el('g',{});el('path',{d:`M${p.x-s} ${p.y-s}L${p.x+s} ${p.y+s}M${p.x+s} ${p.y-s}L${p.x-s} ${p.y+s}`,class:'miss'},gEl);setTimeout(()=>gEl.remove(),950)}
-function tag(it,txt){const w=txt.length*14+40,y=it.y-it.r-36<30?it.y+it.r+36:it.y-it.r-36;
+function tag(it,txt){const w=txt.length*14+40,y=it.ty||(it.y-it.r-36<30?it.y+it.r+36:it.y-it.r-36);
   const x=Math.min(1536-w/2-8,Math.max(w/2+8,it.x));const g=el('g',{class:'tag'});
   el('rect',{x:x-w/2,y:y-24,width:w,height:48,rx:24},g);el('text',{x,y},g).textContent=txt}
 function toast(txt,small){const t=$('toast');t.textContent=txt;t.classList.toggle('small',!!small);t.classList.add('show');
