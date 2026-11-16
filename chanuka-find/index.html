@@ -23,7 +23,11 @@
   .btn.alt{background:#fff;color:var(--indigo);border:2px solid var(--indigo)}
   .btn.pink{background:var(--pink)}
   .btn.on{background:var(--magenta);color:#fff;border-color:var(--magenta)}
-  .count{font-family:"Tamlil",sans-serif;font-size:clamp(15px,2.2vh,21px);background:var(--yellow);color:var(--ink);border-radius:999px;padding:5px 16px}
+  .count{font-family:"Tamlil",sans-serif;font-size:clamp(20px,3.6vh,36px);background:var(--yellow);color:var(--ink);border-radius:999px;padding:4px 22px;box-shadow:0 4px 0 #D99A00;display:flex;gap:14px;align-items:center}
+  .count b{color:var(--green);font-size:1.25em}
+  .count i{font-style:normal;color:var(--pink);font-size:1.25em}
+  .count.bump{animation:bump .5s}
+  @keyframes bump{0%{transform:scale(1)}40%{transform:scale(1.25)}100%{transform:scale(1)}}
   .stage{position:relative;flex:1;min-height:0;width:100%;display:flex;align-items:center;justify-content:center}
   .pic{position:relative;border-radius:16px;overflow:hidden;box-shadow:0 10px 30px rgba(79,55,149,.25);border:4px solid #fff;cursor:crosshair;touch-action:manipulation}
   .pic img{width:100%;height:100%;display:block;user-select:none;-webkit-user-drag:none}
@@ -96,14 +100,16 @@ const GAMES=[
   decoys:[{x:346,y:155},{x:1343,y:160},{x:1500,y:240},{x:796,y:458},{x:1318,y:640},{x:110,y:783},{x:767,y:910},{x:1290,y:705}],
   decoyMsg:'כַּד סָגוּר – אֲבָל אֵין עָלָיו חוֹתָם',
   winText:'מְצָאתֶם אֶת פַּךְ הַשֶּׁמֶן הַטָּהוֹר עִם חוֹתַם הַכֹּהֵן הַגָּדוֹל – וְנַעֲשָׂה בּוֹ נֵס, וְדָלַק שְׁמוֹנָה יָמִים!'},
- {title:'יְהוּדִים בַּשּׁוּק הַיְּוָנִי', img:'img/shuk_v3.png',
-  task:'מִצְאוּ אֶת הַיְּהוּדִים בַּשּׁוּק – לְפִי הַסִּימָנִים שֶׁלָּהֶם',
+ {title:'יְהוּדִים בַּשּׁוּק הַיְּוָנִי', img:'img/shuk_v10.png',
+  task:'מִצְאוּ בַּשּׁוּק הַיְּוָנִי אֶת הַיְּהוּדִים שֶׁשָּׁמְרוּ עַל סִימְנֵי הַיַּהֲדוּת',
   noun:'יְהוּדִים',
   items:[
    {x:207,y:425,r:48,label:'כִּפָּה'},
    {x:378,y:552,r:55,label:'סֵפֶר תּוֹרָה'},
    {x:1060,y:352,r:50,label:'טַלִּית'},
-   {x:1440,y:640,r:52,label:'צְדָקָה'}],
+   {x:1440,y:640,r:52,label:'צְדָקָה'},
+   {x:657,y:787,r:50,label:'מָגֵן דָּוִד'},
+   {x:1413,y:858,r:50,label:'כִּפָּה'}],
   winText:'מְצָאתֶם אֶת כׇּל הַיְּהוּדִים! גַּם בְּתוֹךְ שׁוּק יְוָנִי הֵם שָׁמְרוּ עַל הַמִּצְווֹת.'}
 ];
 let cur=0,found,done,lensOn=false,winT;
@@ -117,7 +123,8 @@ function start(i){
 }
 function updCount(){const g=GAMES[cur];
   $('gCount').style.display=g.items.length>1?'':'none';
-  $('gCount').textContent=`נִמְצְאוּ ${found.size} מִתּוֹךְ ${g.items.length} ${g.noun||''}`}
+  const c=$('gCount');c.innerHTML=`<span>✔ מָצָאנוּ: <b>${found.size}</b></span><span>🔍 נִשְׁאַר לִמְצֹא: <i>${g.items.length-found.size}</i></span>`;
+  c.classList.remove('bump');void c.offsetWidth;if(found.size)c.classList.add('bump')}
 
 function fit(){const st=document.querySelector('.stage'),w=st.clientWidth,h=st.clientHeight;if(!w||!h)return;
   const W=Math.min(w,h*1.5);$('pic').style.width=W+'px';$('pic').style.height=W/1.5+'px'}
