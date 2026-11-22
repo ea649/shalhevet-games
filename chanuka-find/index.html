@@ -62,6 +62,20 @@
   .win .box{background:#fff;border-radius:26px;padding:26px 36px;text-align:center;max-width:580px;box-shadow:0 20px 50px rgba(0,0,0,.3)}
   .win h2{font-family:"Tamlil",sans-serif;font-size:clamp(30px,5vh,48px);color:var(--pink);margin-bottom:8px}
   .win p{font-size:clamp(17px,2.6vh,23px);line-height:1.5;margin-bottom:16px}
+  /* שעון חול של דקה */
+  .timer{display:flex;align-items:center;gap:6px;cursor:pointer;background:#fff;border:2px solid var(--indigo);border-radius:999px;padding:2px 14px 2px 10px;
+    font-family:"Tamlil",sans-serif;font-size:clamp(16px,2.4vh,24px);color:var(--indigo);box-shadow:0 3px 0 rgba(0,0,0,.18);user-select:none}
+  .timer svg{height:clamp(30px,4.6vh,46px);width:auto;transition:transform .5s}
+  .timer .sand{fill:var(--yellow)}
+  .timer .stream{stroke:var(--yellow);stroke-width:1.6;stroke-dasharray:2 2;animation:flow .4s linear infinite;opacity:0}
+  .timer.run .stream{opacity:1}
+  @keyframes flow{to{stroke-dashoffset:-4}}
+  .timer.low{border-color:var(--pink);color:var(--pink);animation:bump 1s infinite}
+  .timer.low .sand,.timer.low .stream{fill:var(--pink);stroke:var(--pink)}
+  .timer.end{background:var(--pink);border-color:var(--pink);color:#fff}
+  .timer.flip svg{transform:rotate(180deg)}
+  body.full .timer{font-size:clamp(14px,2vh,20px);padding:1px 10px 1px 8px}
+  body.full .timer svg{height:clamp(24px,3.4vh,34px)}
   #confetti{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:30}
 </style>
 </head>
@@ -73,6 +87,21 @@
   <div class="task" id="gTask"></div>
   <span class="count" id="gCount"></span>
   <div class="bar">
+    <div class="timer" id="timer" onclick="timerClick()" title="שָׁעוֹן חוֹל שֶׁל דַּקָּה">
+      <svg viewBox="0 0 40 60">
+        <defs>
+          <clipPath id="glassTop"><path d="M9 7 H31 C31 20 22 25 21.2 30 H18.8 C18 25 9 20 9 7 Z"/></clipPath>
+          <clipPath id="glassBot"><path d="M18.8 30 H21.2 C22 35 31 40 31 53 H9 C9 40 18 35 18.8 30 Z"/></clipPath>
+        </defs>
+        <rect class="sand" id="sandTop" x="0" y="11" width="40" height="19" clip-path="url(#glassTop)"/>
+        <rect class="sand" id="sandBot" x="0" y="53" width="40" height="0" clip-path="url(#glassBot)"/>
+        <line class="stream" x1="20" y1="30" x2="20" y2="53"/>
+        <path d="M9 7 H31 C31 20 22 25 21.2 30 C22 35 31 40 31 53 H9 C9 40 18 35 18.8 30 C18 25 9 20 9 7 Z" fill="rgba(8,183,213,.12)" stroke="#4F3795" stroke-width="2"/>
+        <rect x="5" y="2" width="30" height="5" rx="2" fill="#AA479A"/>
+        <rect x="5" y="53" width="30" height="5" rx="2" fill="#AA479A"/>
+      </svg>
+      <span id="timerTxt">1:00</span>
+    </div>
     <button class="btn alt" id="fullBtn" onclick="toggleFull()">⛶ מָסָךְ מָלֵא</button>
     <button class="btn alt" id="lensBtn" onclick="toggleLens()">🔍 זְכוּכִית מַגְדֶּלֶת</button>
     <button class="btn pink" onclick="showSolution()">✔ פִּתְרוֹן</button>
@@ -125,6 +154,7 @@ function start(i){
   clearTimeout(winT);cur=i;const g=GAMES[i];found=new Set();done=false;
   $('win').style.display='none';$('gTitle').textContent=g.title;$('gTask').textContent=g.task;
   $('gImg').src=g.img;$('ov').innerHTML='';$('lens').style.backgroundImage=`url(${g.img})`;updCount();setTimeout(fit,0);
+  if(typeof timerReset==='function')timerReset();
 }
 function updCount(){const g=GAMES[cur];
   $('gCount').style.display=g.items.length>1?'':'none';
@@ -155,7 +185,7 @@ function tag(it,txt){const w=txt.length*14+40,y=it.ty||(it.y-it.h/2-40<30?it.y+i
   el('rect',{x:x-w/2,y:y-24,width:w,height:48,rx:24},g);el('text',{x,y},g).textContent=txt}
 function toast(txt,small){const t=$('toast');t.textContent=txt;t.classList.toggle('small',!!small);t.classList.add('show');
   clearTimeout(t._h);t._h=setTimeout(()=>t.classList.remove('show'),small?1500:1100)}
-function finish(){done=true;toast('כׇּל הַכָּבוֹד! 🎉');confetti(innerWidth/2,innerHeight*0.4,280);
+function finish(){done=true;if(tState==='run'){tState='pause';timerDraw()}toast('כׇּל הַכָּבוֹד! 🎉');confetti(innerWidth/2,innerHeight*0.4,280);
   winT=setTimeout(()=>{$('wP').textContent=GAMES[cur].winText;$('win').style.display='flex'},1800)}
 function showSolution(){
   const g=GAMES[cur];clearTimeout(winT);$('win').style.display='none';$('ov').innerHTML='';done=true;
@@ -181,6 +211,23 @@ $('pic').addEventListener('pointermove',ev=>{
   L.style.backgroundPosition=`${-(lx*Z-sz/2)}px ${-(ly*Z-sz/2)}px`;
 });
 $('pic').addEventListener('pointerleave',()=>$('lens').style.display='none');
+// שעון חול של דקה: לחיצה — מתחיל / עוצר / ממשיך; כשנגמר — לחיצה מתחילה מחדש
+const TOTAL=60000;let tLeft=TOTAL,tState='idle',tLast=0,tRaf=0;
+function timerDraw(){const f=tLeft/TOTAL,s=Math.ceil(tLeft/1000);
+  $('sandTop').setAttribute('y',11+19*(1-f));$('sandTop').setAttribute('height',19*f);
+  const hb=20*(1-f);$('sandBot').setAttribute('y',53-hb);$('sandBot').setAttribute('height',hb);
+  $('timerTxt').textContent=tState==='end'?'הַזְּמַן נִגְמַר!':`${Math.floor(s/60)}:${String(s%60).padStart(2,'0')}`;
+  const T=$('timer');T.classList.toggle('run',tState==='run');T.classList.toggle('low',tState==='run'&&tLeft<=10000);T.classList.toggle('end',tState==='end')}
+function timerTick(now){if(tState!=='run'){tRaf=0;return}
+  tLeft=Math.max(0,tLeft-(now-tLast));tLast=now;
+  if(tLeft<=0){tState='end';timerDraw();toast('⏳ הַזְּמַן נִגְמַר!');tRaf=0;return}
+  timerDraw();tRaf=requestAnimationFrame(timerTick)}
+function timerRun(){tState='run';tLast=performance.now();timerDraw();if(!tRaf)tRaf=requestAnimationFrame(timerTick)}
+function timerReset(){tState='idle';tLeft=TOTAL;timerDraw()}
+function timerClick(){
+  if(tState==='run'){tState='pause';timerDraw();return}
+  if(tState==='end'||tState==='idle'){tLeft=TOTAL;const T=$('timer');T.classList.add('flip');setTimeout(()=>{T.classList.remove('flip')},500)}
+  timerRun()}
 // קונפטי
 const cv=$('confetti'),cx=cv.getContext('2d');let parts=[],raf=0;
 const COLORS=['#4F3795','#AA479A','#EE3461','#08B7D5','#FCB918','#2DBE6C'];
