@@ -333,6 +333,8 @@ body.present .tools .btns .edit-only,body.present .foot-note{display:none}
       <button class="tb main" id="presentBtn">מצב הקרנה</button>
       <button class="tb edit-only lessons-btn" id="lessonsBtn">📚 השיעורים שלי · <b id="curName"></b></button>
       <button class="tb edit-only" id="newBtn">+ שיעור חדש</button>
+      <button class="tb edit-only nk-on" id="nikBtn">ניקוד: פועל</button>
+      <button class="tb edit-only nk-fix" id="nikFixBtn" title="לוחצים על שדה ואז כאן – כדי לבחור ניקוד אחר או לתקן ידנית">תיקון ניקוד</button>
       <button class="tb edit-only" id="shareBtn">העתקת קישור לשיעור</button>
       <button class="tb edit-only" id="printBtn">הדפסה</button>
       <button class="tb ghost" id="showEntry" hidden>+ כרטיס כניסה</button>
@@ -431,6 +433,7 @@ body.present .tools .btns .edit-only,body.present .foot-note{display:none}
 </div>
 <div class="toast" id="toast"></div>
 
+<script src="../nikud.js"></script>
 <script>
 const INTEL = [
   ['linguistic','לשונית'],['logical','לוגית מתמטית'],['spatial','מרחבית'],['bodily','גופנית תנועתית'],
@@ -726,6 +729,7 @@ function showCur(){ curName.textContent = lib.items[lib.cur].name || 'ללא ש�
 function openLesson(id){
   lib.cur = id; state = lib.items[id].data; saveLib();
   fillFields(); renderStations(); setMinutes(state.minutes || 15); setNoise(state.noise); showCur(); applyHide();
+  if (window.nikReady) Nikud.all();
 }
 function addLesson(data, name){
   const id = newId();
@@ -791,6 +795,24 @@ document.getElementById('showEntry').onclick = () => { state.hideEntry = false; 
 document.getElementById('hideNoise').onclick = () => { lib.hideNoise = true; saveLib(); applyHide(); };
 document.getElementById('showNoise').onclick = () => { lib.hideNoise = false; saveLib(); applyHide(); };
 applyHide();
+
+// ---------- automatic nikud for everything typed (../nikud.js – Dicta Nakdan, fixing panel, on/off) ----------
+// "תיקון ניקוד" works on the last field the teacher clicked
+const isNikField = el => !!(el && el.matches && el.matches('[contenteditable]') && (el.dataset.k || el.dataset.s));
+Nikud.init({
+  key: 'shalhevet-entry-card-nikud', btn: document.getElementById('nikBtn'), say: t => say(t),
+  isField: isNikField,
+  fields: () => [...document.querySelectorAll('[contenteditable]')].filter(isNikField),
+  store: el => {
+    if (el.dataset.k) state[el.dataset.k] = el.innerText.trim();
+    else state.stations[+el.dataset.s][el.dataset.f] = el.innerText.trim();
+    save();
+  },
+  dict: () => lib.nikud || (lib.nikud = {plain:{}, keepBare:{}}),
+  saveDict: () => saveLib(),
+});
+window.nikReady = true;
+document.getElementById('nikFixBtn').onclick = () => Nikud.openFix();
 </script>
 </body>
 </html>

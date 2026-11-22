@@ -35,23 +35,9 @@ button,input,select,textarea{font-family:'Tamlil',sans-serif}
   box-shadow:0 6px 16px -6px rgba(8,58,110,.35);transition:.18s}
 .tb:hover{transform:translateY(-2px);box-shadow:0 12px 22px -8px rgba(8,58,110,.45)}
 .tb.main{background:var(--g-brand);color:#fff;box-shadow:0 10px 24px -8px rgba(106,59,255,.6)}
-.ttl.busy{opacity:.6}
-.tb.nik.on{background:#3DBB4E;color:#fff;box-shadow:0 10px 24px -8px rgba(61,187,78,.6)}
 .fixnik{border:0;background:#F1EEF8;color:var(--indigo);border-radius:999px;padding:4px 14px;font:700 14px 'Tamlil',sans-serif;cursor:pointer;margin-top:-4px}
 .fixnik:hover{background:#E4DCFA}
 .fixnik[hidden],body.present .fixnik,body.nikoff .fixnik{display:none}
-.nwords{display:grid;gap:10px;margin-bottom:14px}
-.nrow{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;padding:8px;border-radius:16px;background:#F8F6FE}
-.nrow button{border:2px solid transparent;background:#fff;border-radius:14px;padding:2px 14px;font:700 32px/1.5 'Tamlil',sans-serif;color:var(--ink);cursor:pointer;box-shadow:0 2px 6px -3px rgba(40,30,90,.3)}
-.nrow button.sel{border-color:var(--magenta);background:#FFF5FD}
-.nrow button small{display:block;font:700 13px/1 'Tamlil',sans-serif;color:var(--muted)}
-.nwait{text-align:center;color:var(--muted)}
-.ntext{width:100%;font:700 38px/1.6 'Tamlil',sans-serif;text-align:center;border:2px solid #D8D1EE;border-radius:16px;padding:6px 12px;color:#2B1F66;outline:none}
-.ntext:focus{border-color:var(--magenta)}
-.npad{display:grid;grid-template-columns:repeat(auto-fill,minmax(68px,1fr));gap:8px;margin-top:10px}
-.npad button{border:0;background:#F8F6FE;border-radius:14px;padding:2px 4px 6px;cursor:pointer;display:flex;flex-direction:column;align-items:center;font:700 34px/1.3 'Tamlil',sans-serif;color:var(--ink)}
-.npad button span{font:700 13px 'Tamlil',sans-serif;color:var(--muted)}
-.npad button:hover{background:#EDE7FA}
 .toast{position:fixed;bottom:22px;left:50%;transform:translate(-50%,30px);opacity:0;background:var(--ink);color:#fff;
   padding:10px 18px;border-radius:12px;font-size:16px;transition:.3s;z-index:50;pointer-events:none}
 .toast.show{opacity:1;transform:translate(-50%,0)}
@@ -219,7 +205,7 @@ body.present .edit-only,body.present .foot-note{display:none}
     <img class="logo" src="../canva/assets/shalhevet-logo.png" alt="שלהבות חב&quot;ד">
     <div class="btns">
       <button class="tb main" id="presentBtn">מצב הקרנה</button>
-      <button class="tb edit-only nik on" id="nikBtn" title="כל מה שמקלידים בכותרות מקבל ניקוד אוטומטי (נקדן דיקטה) · לחיצה מכבה / מפעילה">ניקוד: פועל</button>
+      <button class="tb edit-only nk-on" id="nikBtn">ניקוד: פועל</button>
       <button class="tb edit-only" id="shareBtn">העתקת קישור לשיעור</button>
       <button class="tb edit-only" id="clearBtn">ניקוי המפה</button>
       <button class="tb edit-only" id="printBtn">הדפסה</button>
@@ -300,18 +286,9 @@ body.present .edit-only,body.present .foot-note{display:none}
     <div class="pfoot"><button class="tb main" data-close>סגירה</button></div>
   </div>
 </div>
-<div class="pick" id="pickNik">
-  <div class="panel">
-    <h3>תיקון ניקוד</h3>
-    <p class="pnote">לכל מילה לוחצים על הניקוד הנכון · או מתקנים ידנית: לוחצים בטקסט אחרי האות ובוחרים סימן</p>
-    <div class="nwords" id="nikWords"></div>
-    <input class="ntext" id="nikText" dir="rtl" aria-label="הכותרת עם הניקוד">
-    <div class="npad" id="nikPad"></div>
-    <div class="pfoot"><button class="tb main" id="nikSave">שמירה</button><button class="tb" data-close>ביטול</button></div>
-  </div>
-</div>
 <div class="toast" id="toast"></div>
 
+<script src="../nikud.js"></script>
 <script>
 // ---------- data ----------
 // activity pictures – the list from the lesson-map document (es@, 3.11.2026), in the same order.
@@ -431,7 +408,7 @@ track.addEventListener('click', e => {
     state.shift = state.shift % state.stations.length; save(); render(); return;
   }
   if (present()) return;
-  const f = e.target.closest('[data-fix]'); if (f) return openNikFix(+f.dataset.fix);
+  const f = e.target.closest('[data-fix]'); if (f) return Nikud.openFix(f.parentNode.querySelector('.ttl'));
   const t = e.target.closest('.tok'); if (t) return openPick('pickColor', +t.dataset.g);
   const a = e.target.closest('[data-emo]'); if (a) return openPick('pickEmoji', +a.dataset.emo);
   const n = e.target.closest('[data-int]'); if (n) return openPick('pickIntel', +n.dataset.int);
@@ -440,134 +417,20 @@ track.addEventListener('input', e => {
   const t = e.target; if (t.dataset.s == null) return;
   state.stations[+t.dataset.s].title = t.innerText.trim(); save();
   t.parentNode.querySelector('.fixnik').hidden = !/[א-ת]/.test(t.innerText);
-  nikSoon(t);
 });
 document.addEventListener('keydown', e => { if (e.key === 'Enter' && e.target.matches('.ttl')) { e.preventDefault(); e.target.blur(); } });
-track.addEventListener('focusout', e => { if (e.target.matches('.ttl')) nikNow(e.target, true); });
 
-// ---------- automatic nikud (Dicta Nakdan) ----------
-// on by default: every finished word in a station title gets nikud while typing; the last word gets it on leaving the field.
-// "ניקוד: כבוי" stops it and takes the nikud off (words go back to how they were typed – the nakdan writes ktiv haser).
-const NIK_URL = 'https://nakdan-2-0.loadbalancer.dicta.org.il/api', NIK_KEY = KEY + '-nikud';
-const NIKUD = /[֑-ׇ]/g, bare = s => s.replace(NIKUD, '');
-let nikOn = true; try { nikOn = localStorage.getItem(NIK_KEY) !== '0'; } catch(e) {}
-if (!state.plain) state.plain = {};          // vocalized word → the word as it was typed
-const cleanOpt = o => String(Array.isArray(o) ? o[0] : o).replace(/\|/g, '');
-async function nakdanTokens(text, keep){
-  // text/plain keeps the request "simple" (no CORS preflight)
-  const r = await fetch(NIK_URL, {method:'POST', headers:{'Content-Type':'text/plain;charset=UTF-8'},
-    body: JSON.stringify({task:'nakdan', data:text, genre:'modern', addmorph:false, keepqq:false, nodageshdefmem:false, patachma:false, keepnikud:keep})});
-  if (!r.ok) throw new Error(r.status);
-  return r.json();
-}
-async function nakdan(text){
-  const toks = await nakdanTokens(text, true);
-  // nikud text is written in ktiv haser (פינת → פִּנַּת), so letters may change – only the spaces must stay the same
-  const ins = text.split(/\s+/), outs = [];
-  const out = toks.map(w => {
-    if (w.sep) return w.word;
-    let v = (w.options && w.options[0]) ? cleanOpt(w.options[0]) : w.word;
-    const orig = ins[outs.length]; if (state.keepBare && state.keepBare[orig]) v = orig;   // the teacher chose "בלי ניקוד" for it
-    outs.push(v); return v;
-  }).join('');
-  if (!out.trim() || outs.length !== ins.length) throw new Error('mismatch');
-  outs.forEach((v, k) => { if (v !== ins[k] && bare(ins[k]) === ins[k]) state.plain[v] = ins[k]; });
-  return out;
-}
-const unNik = t => t.split(/(\s+)/).map(w => /^\s+$/.test(w) ? w : (state.plain[w] || bare(w))).join('');
-const nikBtn = document.getElementById('nikBtn');
-const nikShow = () => { nikBtn.classList.toggle('on', nikOn); nikBtn.textContent = 'ניקוד: ' + (nikOn ? 'פועל' : 'כבוי'); document.body.classList.toggle('nikoff', !nikOn); };
-nikShow();
-nikBtn.onclick = () => {
-  nikOn = !nikOn; nikWarned = false; nikShow();
-  try { localStorage.setItem(NIK_KEY, nikOn ? '1' : '0'); } catch(e) {}
-  if (nikOn) { track.querySelectorAll('.ttl').forEach(el => nikNow(el, true)); say('ניקוד פועל – כל מה שמקלידים מקבל ניקוד'); }
-  else { state.stations.forEach(s => s.title = unNik(s.title || '')); save(); render(); say('ניקוד כבוי – הכותרות בלי ניקוד'); }
-};
-const caretAtEnd = el => {
-  const sel = getSelection(); if (!sel.rangeCount || !el.contains(sel.anchorNode)) return false;
-  const r = document.createRange(); r.selectNodeContents(el); r.setStart(sel.anchorNode, sel.anchorOffset);
-  return r.toString().length === 0;
-};
-const putCaretEnd = el => { const r = document.createRange(); r.selectNodeContents(el); r.collapse(false); const s = getSelection(); s.removeAllRanges(); s.addRange(r); };
-let nikTimer = null, nikWarned = false;
-function nikSoon(el){ if (!nikOn) return; clearTimeout(nikTimer); nikTimer = setTimeout(() => nikNow(el, false), 450); }
-async function nikNow(el, all){
-  if (!nikOn) return;
-  const text = el.innerText.replace(/\n/g, ' ');
-  // while typing – only up to the last space (the word being typed stays as is); on leaving – everything
-  const cut = all ? text.length : text.search(/\s\S*$/) + 1;
-  const head = text.slice(0, cut), tail = text.slice(cut);
-  if (!/[א-ת]/.test(head)) return;
-  const lead = head.match(/^\s*/)[0], trail = head.match(/\s*$/)[0];   // the nakdan drops edge spaces – put them back
-  if (!all && !caretAtEnd(el)) return;            // editing in the middle – wait until leaving the field
-  if (all) el.classList.add('busy');
-  try {
-    const done = lead + await nakdan(head.trim()) + trail;
-    if (el.innerText.replace(/\n/g, ' ') !== text || !el.isConnected) return;   // typed more meanwhile – next round will do it
-    if (done === head) return;
-    const focused = document.activeElement === el;
-    el.innerText = done + tail;
-    if (focused) putCaretEnd(el);
-    state.stations[+el.dataset.s].title = el.innerText.trim(); save();
-  } catch(e) {
-    if (!nikWarned) { nikWarned = true; say('הנקדן לא זמין כרגע – הטקסט נשמר בלי ניקוד'); }
-  } finally { el.classList.remove('busy'); }
-}
-// titles written before (without nikud) get it when the page opens
-track.querySelectorAll('.ttl').forEach(el => nikNow(el, true));
-
-// ---------- fixing the nikud: the nakdan's other options for every word + manual marks ----------
-const NIK_MARKS = [['בָ','קמץ'],['בַ','פתח'],['בֵ','צירה'],['בֶ','סגול'],['בִ','חיריק'],['בֹ','חולם'],
-  ['בֻ','קובוץ'],['בְ','שווא'],['בֲ','חטף פתח'],['בֱ','חטף סגול'],['בֳ','חטף קמץ'],['בּ','דגש'],
-  ['שׁ','שׁ ימנית'],['שׂ','שׂ שמאלית'],['⌫','מחיקה']];
-const nikWords = document.getElementById('nikWords'), nikText = document.getElementById('nikText'), nikPad = document.getElementById('nikPad');
-let nikOpts = [];
-nikPad.innerHTML = NIK_MARKS.map(([g, n]) => `<button data-m="${g === '⌫' ? '' : g.slice(1)}" title="${n}">${g}<span>${n}</span></button>`).join('');
-nikPad.addEventListener('mousedown', e => e.preventDefault());          // keep the caret in the text
-nikPad.addEventListener('click', e => {
-  const b = e.target.closest('button'); if (!b) return;
-  let s = nikText.selectionStart ?? nikText.value.length, en = nikText.selectionEnd ?? s;
-  if (b.dataset.m) nikText.setRangeText(b.dataset.m, s, en, 'end');
-  else if (s !== en) nikText.setRangeText('', s, en, 'end');
-  else if (s > 0) nikText.setRangeText('', s - 1, s, 'end');
-  nikText.focus(); drawNikWords();
+// ---------- automatic nikud for the station titles (../nikud.js – Dicta Nakdan, fixing panel, on/off) ----------
+if (!state.plain) state.plain = {};
+if (!state.keepBare) state.keepBare = {};
+Nikud.init({
+  key: KEY + '-nikud', btn: document.getElementById('nikBtn'), say: t => say(t),
+  isField: el => el.matches && el.matches('.ttl'),
+  fields: () => [...track.querySelectorAll('.ttl')],
+  store: el => { state.stations[+el.dataset.s].title = el.innerText.trim(); save(); el.parentNode.querySelector('.fixnik').hidden = !/[א-ת]/.test(el.innerText); },
+  dict: () => { if (!state.plain) state.plain = {}; if (!state.keepBare) state.keepBare = {}; return state; },
+  saveDict: () => save(),
 });
-const words = t => t.split(/(\s+)/).filter(p => p !== '');
-function drawNikWords(){
-  const ws = words(nikText.value).filter(p => !/^\s+$/.test(p));
-  if (!nikOpts) { nikWords.innerHTML = '<p class="nwait">טוען אפשרויות ניקוד…</p>'; return; }
-  nikWords.innerHTML = ws.map((w, k) => {
-    const list = [...new Set([...(nikOpts[k] || []), w])].filter(v => bare(v) !== v);
-    const plain = state.plain[w] || bare(w);
-    return `<div class="nrow">${list.map(v => `<button data-k="${k}" data-v="${v}" class="${v === w ? 'sel' : ''}">${v}</button>`).join('')}
-      <button data-k="${k}" data-v="${plain}" class="${plain === w ? 'sel' : ''}">${plain}<small>בלי ניקוד</small></button></div>`;
-  }).join('');
-}
-nikWords.addEventListener('click', e => {
-  const b = e.target.closest('button'); if (!b) return;
-  let k = -1; nikText.value = words(nikText.value).map(p => /^\s+$/.test(p) ? p : (++k === +b.dataset.k ? b.dataset.v : p)).join('');
-  drawNikWords();
-});
-nikText.addEventListener('input', drawNikWords);
-nikText.addEventListener('keydown', e => { if (e.key === 'Enter') document.getElementById('nikSave').click(); });
-async function openNikFix(i){
-  pickFor = i; const title = state.stations[i].title || '';
-  nikText.value = title; nikOpts = null; drawNikWords();
-  document.getElementById('pickNik').classList.add('show');
-  try {
-    const toks = await nakdanTokens(unNik(title), false);
-    if (pickFor !== i) return;
-    nikOpts = toks.filter(w => !w.sep).map(w => [...new Set((w.options || []).map(cleanOpt))]);
-  } catch(e) { nikOpts = []; say('הנקדן לא זמין כרגע – אפשר לתקן ידנית'); }
-  drawNikWords();
-}
-document.getElementById('nikSave').onclick = () => {
-  const t = nikText.value.replace(/\s+/g, ' ').trim();
-  state.keepBare = state.keepBare || {};
-  t.split(' ').forEach(w => { if (!/[א-ת]/.test(w)) return; if (bare(w) === w) state.keepBare[w] = true; else { delete state.keepBare[state.plain[w] || bare(w)]; delete state.keepBare[bare(w)]; } });
-  state.stations[pickFor].title = t; save(); render(); closeAll();
-};
 document.addEventListener('paste', e => {
   if (!e.target.closest('[contenteditable]')) return;
   e.preventDefault(); document.execCommand('insertText', false, (e.clipboardData || window.clipboardData).getData('text'));
