@@ -359,6 +359,7 @@ body.present .tools .btns .edit-only,body.present .foot-note{display:none}
       <button class="tb main" id="presentBtn">מצב הקרנה</button>
       <button class="tb edit-only lessons-btn" id="lessonsBtn">📚 השיעורים שלי · <b id="curName"></b></button>
       <button class="tb edit-only" id="newBtn">+ שיעור חדש</button>
+      <button class="tb main edit-only" id="botBtn" title="מדביקים את סיכום המערך מהשלהבוט – והכרטיסיות מתמלאות לבד">📋 מילוי מהשלהבוט</button>
       <button class="tb edit-only nk-on" id="nikBtn">ניקוד: פועל</button>
       <button class="tb edit-only nk-fix" id="nikFixBtn" title="לוחצים על שדה ואז כאן – כדי לבחור ניקוד אחר או לתקן ידנית">תיקון ניקוד</button>
       <button class="tb edit-only" id="shareBtn">העתקת קישור לשיעור</button>
@@ -471,6 +472,7 @@ body.present .tools .btns .edit-only,body.present .foot-note{display:none}
 <div class="toast" id="toast"></div>
 
 <script src="../nikud.js"></script>
+<script src="../shalhebot.js"></script>
 <script>
 const INTEL = [
   ['linguistic','לשונית'],['logical','לוגית מתמטית'],['spatial','מרחבית'],['bodily','גופנית תנועתית'],
@@ -904,6 +906,19 @@ Nikud.init({
   saveDict: () => saveLib(),
 });
 window.nikReady = true;
+
+// ---------- "מילוי מהשלהבוט": the pasted summary opens as a new lesson in "השיעורים שלי" (never overwrites one) ----------
+Shalhebot.init({
+  btn: document.getElementById('botBtn'), say: t => say(t),
+  onFill: L => {
+    const data = blank();
+    data.entry = L.entry; data.exit = L.exit;
+    if (L.minutes) data.minutes = L.minutes;
+    data.stations = L.stations.map(s => ({intels:s.intels, sub:s.title, text:s.task, bring:s.bring}));
+    addLesson(data, L.topic || 'שיעור מהשלהבוט');
+    say(`נוצר שיעור חדש עם ${L.stations.length} תחנות – אפשר לתקן כל שדה`);
+  },
+});
 document.getElementById('nikFixBtn').onclick = () => Nikud.openFix();
 </script>
 </body>

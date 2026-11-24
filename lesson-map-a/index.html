@@ -205,6 +205,7 @@ body.present .edit-only,body.present .foot-note{display:none}
     <img class="logo" src="../canva/assets/shalhevet-logo.png" alt="שלהבות חב&quot;ד">
     <div class="btns">
       <button class="tb main" id="presentBtn">מצב הקרנה</button>
+      <button class="tb main edit-only" id="botBtn" title="מדביקים את סיכום המערך מהשלהבוט – והמפה מתמלאת לבד">📋 מילוי מהשלהבוט</button>
       <button class="tb edit-only nk-on" id="nikBtn">ניקוד: פועל</button>
       <button class="tb edit-only" id="shareBtn">העתקת קישור לשיעור</button>
       <button class="tb edit-only" id="clearBtn">ניקוי המפה</button>
@@ -289,6 +290,7 @@ body.present .edit-only,body.present .foot-note{display:none}
 <div class="toast" id="toast"></div>
 
 <script src="../nikud.js"></script>
+<script src="../shalhebot.js"></script>
 <script>
 // ---------- data ----------
 // activity pictures – the list from the lesson-map document (es@, 3.11.2026), in the same order.
@@ -618,6 +620,22 @@ document.getElementById('shareBtn').onclick = async () => {
   try { await navigator.clipboard.writeText(url); say(hasOwn ? 'הקישור הועתק (בלי התמונות שהועלו מהמחשב)' : 'הקישור הועתק – מי שיפתח אותו יקבל את המפה הזו'); }
   catch(e) { prompt('העתיקו את הקישור:', url); }
 };
+
+// ---------- "מילוי מהשלהבוט": station titles, pictures and intelligences from the pasted summary ----------
+Shalhebot.init({
+  btn: document.getElementById('botBtn'), say: t => say(t), pictures: EMOJI,
+  onFill: L => {
+    const has = state.stations.some(s => s.title || s.emoji || (s.intels || []).length);
+    if (has && !confirm('להחליף את המפה הנוכחית במפה מהשלהבוט?')) return false;
+    const list = L.stations.slice(0, MAX_ST);
+    while (list.length < MIN_ST) list.push({title:'', picture:'', intels:[]});
+    state.stations = list.map(s => ({title:s.title, emoji:s.picture || '', intels:s.intels}));
+    state.groups = COLORS.slice(0, state.stations.length); state.shift = 0;
+    if (L.minutes) setMinutes(L.minutes);
+    save(); render(); Nikud.all();
+    say(`המפה מולאה – ${L.stations.length} תחנות. אפשר לתקן כל דבר`);
+  },
+});
 </script>
 </body>
 </html>
