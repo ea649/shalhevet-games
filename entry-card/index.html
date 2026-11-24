@@ -241,6 +241,31 @@ body.present .intel.none{display:none}
   display:flex;align-items:center;justify-content:center;font:700 26px/1 'Tamlil',sans-serif}
 body.present .del,body.present .add-st{display:none}
 
+/* ---------- group colours above the stations + "החלפת תחנות" ---------- */
+.rot-row{display:flex;justify-content:center}
+.rotate{border:0;cursor:pointer;border-radius:999px;padding:8px 28px;font:900 clamp(18px,2.6vh,26px)/1 'TamlilCond','Tamlil',sans-serif;
+  color:#fff;background:var(--g-brand);box-shadow:0 12px 26px -10px rgba(106,59,255,.65);display:flex;align-items:center;gap:10px;transition:.2s}
+.rotate:hover{transform:translateY(-2px) scale(1.02)}
+.rotate .arr{display:inline-block;transition:transform .5s}
+.rotate.spin .arr{transform:translateX(-14px)}
+.stations{--tok:clamp(40px,6vh,62px);position:relative}
+.stations.one-row::before{content:"";position:absolute;inset-inline:4%;top:calc(var(--tok) / 2 - 4px);height:8px;border-radius:9px;
+  background:repeating-linear-gradient(90deg,#D9D2F0 0 20px,transparent 20px 34px);z-index:0}
+.stw{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;gap:6px;min-width:0;min-height:0}
+.stw .st{width:100%;flex:1}
+.stw .st.grp{box-shadow:0 0 0 3px var(--gc),var(--shadow)}
+.tok{width:var(--tok);height:var(--tok);flex:none;border-radius:50%;border:5px solid #fff;cursor:pointer;padding:0;position:relative;z-index:3;
+  background:radial-gradient(circle at 35% 30%,color-mix(in srgb,var(--gc) 55%,#fff),var(--gc) 62%);
+  box-shadow:0 8px 18px -8px var(--gc),0 0 0 2px color-mix(in srgb,var(--gc) 40%,transparent)}
+.tok.empty{background:#fff;border:3px dashed #C9C1E2;box-shadow:none;color:var(--muted);font:700 13px/1.1 'Tamlil',sans-serif}
+body.present .tok{cursor:default}
+body.present .tok.empty{visibility:hidden}
+.add-st{margin-top:calc(var(--tok) + 6px)}
+.colors{display:flex;flex-wrap:wrap;gap:14px;justify-content:center}
+.colors button{width:70px;height:70px;border-radius:50%;border:5px solid #fff;cursor:pointer;background:var(--gc);box-shadow:0 0 0 2px #E2DCF2;transition:.15s}
+.colors button:hover{transform:scale(1.08)}
+.colors button.sel{box-shadow:0 0 0 4px var(--ink)}
+
 /* ---------- exit ---------- */
 .exit{display:flex;align-items:center;gap:16px;padding:8px 18px}
 .exit .ttl{flex:none;font-size:clamp(20px,2.8vh,30px);padding:0}
@@ -293,7 +318,7 @@ body.present .tools .btns .edit-only,body.present .foot-note{display:none}
 @media (min-width:901px) and (min-height:560px){
   html,body{height:100%}
   body{height:100dvh;overflow:hidden;display:flex;flex-direction:column}
-  .page{flex:1;min-height:0;width:100%;grid-template-rows:auto auto minmax(0,1fr) auto;gap:clamp(10px,1.8vh,20px)}
+  .page{flex:1;min-height:0;width:100%;grid-template-rows:auto auto auto minmax(0,1fr) auto;gap:clamp(8px,1.5vh,18px)}
   .foot-note{display:none}
   .stations{min-height:0;grid-auto-rows:minmax(0,1fr)}
   .st{min-height:0}
@@ -302,7 +327,8 @@ body.present .tools .btns .edit-only,body.present .foot-note{display:none}
 
 @media (max-width:900px){
   .stations,body.present .stations{grid-template-columns:repeat(2,1fr)}
-  .add-st{grid-column:auto!important;grid-row:auto!important;min-height:90px}
+  .add-st{grid-column:auto!important;grid-row:auto!important;min-height:90px;margin-top:0}
+  .stations.one-row::before{display:none}
   .exit{flex-direction:column;align-items:stretch}
   .top{flex-wrap:wrap}
   .entry{flex-basis:100%}
@@ -316,7 +342,7 @@ body.present .tools .btns .edit-only,body.present .foot-note{display:none}
 }
 @media print{
   body{padding:0}
-  .tools .btns,.tctl,.dur,.foot-note,.toast,.del,.add-st{display:none!important}
+  .tools .btns,.tctl,.dur,.foot-note,.toast,.del,.add-st,.rot-row{display:none!important}
   .intel.none{visibility:hidden}
   .page{max-width:none}
   *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
@@ -404,6 +430,10 @@ body.present .tools .btns .edit-only,body.present .foot-note{display:none}
     </div>
   </section>
 
+  <div class="rot-row">
+    <button class="rotate" id="rotateBtn" title="כל קבוצה עוברת לתחנה הבאה">החלפת תחנות <span class="arr">⬅</span></button>
+  </div>
+
   <section class="stations" id="stations"></section>
 
   <div class="card exit">
@@ -420,6 +450,13 @@ body.present .tools .btns .edit-only,body.present .foot-note{display:none}
     <p class="pnote">אפשר לבחור עד 3 אייקונים לתחנה · לחיצה נוספת על אייקון מבטלת אותו</p>
     <div class="grid" id="pickGrid"></div>
     <div class="foot"><button class="tb" id="noIntel">בלי אייקון</button><button class="tb main" id="pickClose">סיום</button></div>
+  </div>
+</div>
+<div class="pick" id="pickColor">
+  <div class="panel" style="max-width:560px">
+    <h3>צבע הקבוצה</h3>
+    <div class="colors" id="colorGrid"></div>
+    <div class="foot"><button class="tb" id="noColor">בלי צבע</button><button class="tb main" id="colorClose">סגירה</button></div>
   </div>
 </div>
 <div class="pick lessons" id="lessons">
@@ -480,14 +517,33 @@ saveLib();
 // ---------- stations ----------
 const wrap = document.getElementById('stations');
 const MIN_ST = 1, MAX_ST = 8;
+// group colours: group g stands at station (g + shift) % n; "החלפת תחנות" adds 1 to shift
+const COLORS = ['#EE2F62','#1EBCD7','#FDB916','#3DBB4E','#F36F29','#AA479A','#513996','#BDCC32','#8B5A2B','#9AA0A6'];
+const nextColor = () => COLORS.find(c => !state.groups.includes(c)) || '';
+function ensureGroups(){
+  const n = state.stations.length;
+  if (!Array.isArray(state.groups)) state.groups = [];
+  while (state.groups.length < n) state.groups.push(nextColor());
+  state.groups.length = n;
+  state.shift = ((+state.shift || 0) % n + n) % n;
+}
+const groupAt = i => { const n = state.stations.length; return ((i - state.shift) % n + n) % n; };
 function renderStations(){
+  ensureGroups();
   wrap.innerHTML = '';
   const n = state.stations.length, rows = n > 5 ? 2 : 1;
   wrap.style.setProperty('--cols', Math.ceil(n / rows));
+  wrap.classList.toggle('one-row', rows === 1);
   const present = document.body.classList.contains('present');
   state.stations.forEach((s,i) => {
+    const g = groupAt(i), col = state.groups[g] || '';
+    const sw = document.createElement('div');
+    sw.className = 'stw';
+    sw.innerHTML = `<button class="tok ${col ? '' : 'empty'}" data-g="${g}" style="--gc:${col || '#ccc'}" title="צבע הקבוצה" aria-label="צבע הקבוצה">${col ? '' : 'צבע'}</button>`;
     const el = document.createElement('div');
-    el.className = `card st ${ST_LOOK[i % ST_LOOK.length]}`;
+    el.className = `card st ${ST_LOOK[i % ST_LOOK.length]} ${col ? 'grp' : ''}`;
+    if (col) el.style.setProperty('--gc', col);
+    sw.appendChild(el);
     const its = intelsOf(s).map(k => INTEL.find(x => x[0] === k)).filter(Boolean);
     el.innerHTML = `
       <span class="tab">תחנה ${i+1}</span>
@@ -505,7 +561,7 @@ function renderStations(){
         <label class="bl">מה צריך להביא:</label>
         <div class="bf" contenteditable="${!present}" data-s="${i}" data-f="bring" data-ph="ציוד / חומרים לתחנה"></div>
       </div>`;
-    wrap.appendChild(el);
+    wrap.appendChild(sw);
     el.querySelector('[data-f=sub]').innerText = s.sub || '';
     el.querySelector('[data-f=text]').innerText = s.text || '';
     el.querySelector('[data-f=bring]').innerText = s.bring || '';
@@ -522,14 +578,50 @@ renderStations();
 wrap.addEventListener('click', e => {
   const bl = e.target.closest('.bring .bl'); if (bl) { bl.nextElementSibling.focus(); return; }
   if (e.target.closest('.add-st')) {
-    state.stations.push({intels:[],sub:'',text:'',bring:''}); save(); renderStations();
+    ensureGroups();
+    state.stations.push({intels:[],sub:'',text:'',bring:''}); state.groups.push(nextColor()); save(); renderStations();
     return;
   }
+  const tk = e.target.closest('.tok');
+  if (tk) { if (!document.body.classList.contains('present')) openColors(+tk.dataset.g); return; }
   const d = e.target.closest('[data-del]'); if (!d) return;
   const i = +d.dataset.del, s = state.stations[i];
   if ((s.sub || s.text || intelsOf(s).length || s.bring) && !confirm(`למחוק את תחנה ${i+1} ואת מה שכתוב בה?`)) return;
-  state.stations.splice(i, 1); save(); renderStations();
+  ensureGroups(); const g = groupAt(i);
+  state.stations.splice(i, 1); state.groups.splice(g, 1); save(); renderStations();
 });
+
+// "החלפת תחנות" – every group moves on to the next station, the colour circles slide (FLIP)
+document.getElementById('rotateBtn').onclick = e => {
+  const before = {};
+  wrap.querySelectorAll('.tok').forEach(t => before[t.dataset.g] = t.getBoundingClientRect());
+  state.shift = (state.shift + 1) % state.stations.length; save(); renderStations();
+  wrap.querySelectorAll('.tok').forEach(t => {
+    const a = before[t.dataset.g], b = t.getBoundingClientRect(); if (!a) return;
+    t.animate([{transform:`translate(${a.left - b.left}px,${a.top - b.top}px)`},{transform:'none'}], {duration:700, easing:'cubic-bezier(.3,1.2,.4,1)'});
+  });
+  const btn = e.currentTarget; btn.classList.add('spin'); setTimeout(() => btn.classList.remove('spin'), 500);
+};
+
+// group colour picker
+const pickColor = document.getElementById('pickColor'), colorGrid = document.getElementById('colorGrid');
+let colorFor = -1;
+colorGrid.innerHTML = COLORS.map(c => `<button data-v="${c}" style="--gc:${c}" aria-label="צבע"></button>`).join('');
+function openColors(g){
+  colorFor = g;
+  colorGrid.querySelectorAll('button').forEach(b => b.classList.toggle('sel', b.dataset.v === state.groups[g]));
+  pickColor.classList.add('show');
+}
+colorGrid.addEventListener('click', e => {
+  const b = e.target.closest('button'); if (!b) return;
+  const c = b.dataset.v, other = state.groups.indexOf(c);
+  if (other >= 0 && other !== colorFor) state.groups[other] = state.groups[colorFor];   // swap, so two groups never share a colour
+  state.groups[colorFor] = c; save(); renderStations(); pickColor.classList.remove('show');
+});
+document.getElementById('noColor').onclick = () => { state.groups[colorFor] = ''; save(); renderStations(); pickColor.classList.remove('show'); };
+document.getElementById('colorClose').onclick = () => pickColor.classList.remove('show');
+pickColor.addEventListener('click', e => { if (e.target === pickColor) pickColor.classList.remove('show'); });
+document.addEventListener('keydown', e => { if (e.key === 'Escape') pickColor.classList.remove('show'); });
 
 // ---------- editable fields ----------
 function fillFields(){ document.querySelectorAll('[data-k]').forEach(el => { el.innerText = state[el.dataset.k] || '' }); }
